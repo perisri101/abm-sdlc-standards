@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABM Universal SDLC | v0.906</title>
+<style>
+:root {
+  --navy: #1B3DA8;
+  --navy-light: #2548D4;
+  --green: #EF8933;
+  --green-light: #F5A055;
+  --bg: #F4F6F9;
+  --card: #FFFFFF;
+  --text: #1C2336;
+  --muted: #5C6B84;
+  --border: #CBD5E8;
+  --tag-iso: #FFF0E0;
+  --tag-iso-text: #A84800;
+  --tag-git: #EBF0FF;
+  --tag-git-text: #1A56B0;
+  --warn: #FFF3CD;
+  --warn-border: #FFAB00;
+  --critical: #FDECEA;
+  --critical-border: #C62828;
+  --sidebar-w: 270px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  position: fixed; top: 0; left: 0; width: var(--sidebar-w);
+  height: 100vh; background: var(--navy); overflow-y: auto;
+  display: flex; flex-direction: column; z-index: 100;
+}
+#sidebar-header {
+  padding: 20px 18px 14px; border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+#sidebar-header .abm-logo {
+  font-size: 22px; font-weight: 800; color: #fff; letter-spacing: 1px;
+}
+#sidebar-header .abm-logo span { color: var(--green); }
+#sidebar-header .doc-label {
+  font-size: 10px; color: rgba(255,255,255,0.55); text-transform: uppercase;
+  letter-spacing: 1.2px; margin-top: 4px;
+}
+#toc { padding: 10px 0 20px; }
+#toc a {
+  display: block; padding: 6px 18px; color: rgba(255,255,255,0.72);
+  text-decoration: none; font-size: 12px; transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+#toc a:hover { color: #fff; background: rgba(255,255,255,0.06); border-left-color: var(--green); }
+#toc a.active { color: #fff; background: rgba(239,137,51,0.18); border-left-color: var(--green); }
+#toc .toc-group { padding: 14px 18px 4px; font-size: 10px; color: rgba(255,255,255,0.35);
+  text-transform: uppercase; letter-spacing: 1.4px; font-weight: 700; }
+
+/* ── MAIN ── */
+#main { margin-left: var(--sidebar-w); min-height: 100vh; }
+
+/* ── TOP BANNER ── */
+#doc-banner {
+  background: linear-gradient(135deg, #1B3DA8 0%, #254AE9 55%, #3B60EE 100%);
+  padding: 36px 48px 28px; color: #fff;
+}
+#doc-banner .doc-classification {
+  display: inline-block; background: var(--green); color: #fff;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; padding: 3px 10px; border-radius: 3px; margin-bottom: 12px;
+}
+#doc-banner h1 { font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+#doc-banner .doc-sub { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+#doc-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+#doc-meta .meta-item { }
+#doc-meta .meta-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+#doc-meta .meta-val { font-size: 13px; color: #fff; font-weight: 600; }
+
+/* ── CONTENT ── */
+#content { padding: 40px 48px 80px; max-width: 1080px; }
+
+/* ── SECTIONS ── */
+.section { margin-bottom: 52px; scroll-margin-top: 24px; }
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 2px solid var(--navy); padding-bottom: 10px; margin-bottom: 24px;
+}
+.section-num {
+  background: var(--navy); color: #fff; font-size: 12px; font-weight: 800;
+  width: 30px; height: 30px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+}
+.section-header h2 { font-size: 20px; font-weight: 700; color: var(--navy); }
+
+h3 { font-size: 15px; font-weight: 700; color: var(--navy-light); margin: 22px 0 10px; }
+h4 { font-size: 13px; font-weight: 700; color: var(--text); margin: 14px 0 6px; }
+p { margin-bottom: 10px; }
+ul, ol { margin: 8px 0 12px 20px; }
+li { margin-bottom: 4px; }
+
+/* ── CARDS ── */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+.card-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+
+/* ── PHASE BOX ── */
+.phase-box {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  margin-bottom: 20px; overflow: hidden;
+}
+.phase-header {
+  background: var(--navy); color: #fff; padding: 12px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.phase-num {
+  background: var(--green); color: #fff; font-size: 11px; font-weight: 800;
+  padding: 3px 9px; border-radius: 12px; white-space: nowrap;
+}
+.phase-header h3 { color: #fff; font-size: 15px; font-weight: 700; margin: 0; }
+.phase-body { padding: 20px 24px; }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px; margin: 2px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.tag-iso { background: var(--tag-iso); color: var(--tag-iso-text); }
+.tag-git { background: var(--tag-git); color: var(--tag-git-text); }
+.tag-all { background: #F3E8FF; color: #6B21A8; }
+.tag-code { background: #FEF3C7; color: #92400E; }
+.tag-lowcode { background: #DBEAFE; color: #1E40AF; }
+.tag-nocode { background: #FCE7F3; color: #9D174D; }
+.tag-saas { background: #D1FAE5; color: #065F46; }
+.tag-iac { background: #F3F4F6; color: #374151; border: 1px solid #D1D5DB; }
+
+/* ── TABLES ── */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th { background: var(--navy); color: #fff; padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px; }
+td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: #F8FAFC; }
+tr:hover td { background: #EDF2F9; }
+
+/* ── CALLOUTS ── */
+.callout { border-radius: 6px; padding: 14px 18px; margin: 14px 0; border-left: 4px solid; }
+.callout-iso { background: var(--tag-iso); border-color: var(--green); }
+.callout-iso .callout-label { color: var(--tag-iso-text); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+.callout-warn { background: var(--warn); border-color: var(--warn-border); }
+.callout-warn .callout-label { color: #7A4F00; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+.callout-critical { background: var(--critical); border-color: var(--critical-border); }
+.callout-critical .callout-label { color: var(--critical-border); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+
+/* ── RULE BOX ── */
+.rule-box {
+  background: #F0F4FF; border: 1.5px solid var(--navy-light);
+  border-radius: 6px; padding: 12px 16px; margin: 10px 0;
+  font-size: 13px; font-weight: 600; color: var(--navy);
+}
+.rule-box::before { content: "RULE "; font-size: 10px; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 3px; }
+
+/* ── PIPELINE FLOW ── */
+.pipeline-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; margin: 16px 0; }
+.pipe-step {
+  background: var(--navy); color: #fff; font-size: 11px; font-weight: 700;
+  padding: 8px 14px; border-radius: 4px; white-space: nowrap;
+}
+.pipe-step.green { background: var(--green); }
+.pipe-step.gate { background: #C62828; }
+.pipe-step.warn { background: var(--warn-border); color: #fff; }
+.pipe-arrow { color: var(--muted); font-size: 18px; padding: 0 4px; }
+
+/* ── MATRIX ── */
+.matrix-check { color: var(--green); font-weight: 700; }
+.matrix-partial { color: var(--warn-border); font-weight: 700; }
+.matrix-na { color: var(--muted); }
+
+/* ── PRINT ── */
+@media print {
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  #doc-banner { background: var(--navy) !important; -webkit-print-color-adjust: exact; }
+  .phase-header { background: var(--navy) !important; -webkit-print-color-adjust: exact; }
+  .section { page-break-inside: avoid; }
+}
+
+@media (max-width: 900px) {
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  #content { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <div class="abm-logo">ABM<span>.</span></div>
+    <div class="doc-label">Universal IT SDLC Master</div>
+  </div>
+  <div id="toc">
+    <div class="toc-group">Foundation</div>
+    <a href="#s1">1. Executive Summary</a>
+    <a href="#s2">2. Purpose &amp; Scope</a>
+    <a href="#s3">3. Governance Architecture</a>
+    <a href="#s4">4. Development Paradigms</a>
+
+    <div class="toc-group">SDLC Phases</div>
+    <a href="#s5">5. Requirements &amp; Planning</a>
+    <a href="#s6">6. Architecture &amp; Design</a>
+    <a href="#s7">7. Development Standards</a>
+    <a href="#s8">8. Data Security &amp; Integration</a>
+    <a href="#s9">9. Source Code &amp; Git Workflow</a>
+    <a href="#s10">10. Testing &amp; Quality Assurance</a>
+    <a href="#s11">11. DevSecOps &amp; Security</a>
+    <a href="#s12">12. Environment Management</a>
+    <a href="#s13">13. Release &amp; Change Mgmt</a>
+
+    <div class="toc-group">Enterprise Controls</div>
+    <a href="#s14">14. Access Control &amp; SoD</a>
+
+    <div class="toc-group">Compliance &amp; Governance</div>
+    <a href="#s15">15. ISO 27001 Mapping</a>
+    <a href="#s16">16. Guardrails &amp; Enforcement</a>
+    <a href="#s17">17. Child SDLC Extension Model</a>
+    <a href="#s18">18. Templates &amp; Artifacts Reference</a>
+    <a href="#s19">19. Appendix</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ MAIN -->
+<div id="main">
+
+<!-- ── BANNER -->
+<div id="doc-banner">
+  <div class="doc-classification">Internal — Confidential</div>
+  <h1>ABM Universal SDLC</h1>
+  <div class="doc-sub">Master Standard Operating Procedure · All Development Paradigms · ISO 27001 Aligned</div>
+  <div id="doc-meta">
+    <div class="meta-item"><div class="meta-label">Document Version</div><div class="meta-val">0.906</div></div>
+    <div class="meta-item"><div class="meta-label">Effective Date</div><div class="meta-val">April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Review Cycle</div><div class="meta-val">Quarterly</div></div>
+    <div class="meta-item"><div class="meta-label">Chief Architect</div><div class="meta-val">Srinivas Peri</div></div>
+    <div class="meta-item"><div class="meta-label">Sponsor / Executive Sponsor</div><div class="meta-val">Uday Hebbar, Sr. Director · Trilok Manchinila, VP IT</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-val">Active</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ════════════════════════════════════════ S1 EXECUTIVE SUMMARY -->
+<div class="section" id="s1">
+  <div class="section-header"><div class="section-num">1</div><h2>Executive Summary</h2></div>
+
+  <p>ABM Industries operates a diverse technology estate spanning custom-coded applications, integration platforms, low-code and no-code tooling, SaaS solutions, and cloud infrastructure. Each engineering team has historically defined its own delivery practices — creating inconsistency in quality, security posture, audit readiness, and risk exposure.</p>
+
+  <p>This document establishes the <strong>ABM Universal SDLC</strong>: a single master standard that every IT team adopts as a floor. It covers the complete software delivery lifecycle — from idea to production — across all development paradigms. Teams extend it for their specific technology stack; they never reduce it.</p>
+
+  <div class="card">
+    <div class="card-title">What This Document Establishes</div>
+    <table>
+      <tr><td width="30%"><strong>One common language</strong></td><td>Every team — from Team Connect to Boomi to Oracle — speaks the same SDLC vocabulary</td></tr>
+      <tr><td><strong>Non-negotiable controls</strong></td><td>Source control, access segregation, security scanning, environment separation, and CAB approval are universal</td></tr>
+      <tr><td><strong>Extensible framework</strong></td><td>Teams add practices for their stack; child documents reference this master and augment — never subtract</td></tr>
+      <tr><td><strong>Audit-ready by design</strong></td><td>Every phase produces artifacts that directly satisfy ISO 27001 A.8 controls owned by Trilok Manchinila</td></tr>
+      <tr><td><strong>Git-centric enforcement</strong></td><td>Branch protection, PR gates, and CI/CD pipelines enforce the standards — providing systematic, auditable enforcement that complements human review</td></tr>
+    </table>
+  </div>
+
+  <div class="callout callout-iso">
+    <div class="callout-label">ISO 27001 Alignment</div>
+    This document serves as primary evidence for controls A.8.4, A.8.25, A.8.26, A.8.27, A.8.28, A.8.29, A.8.31, A.8.33, and A.5.23 — all assigned to the Executive Sponsor. Each section is tagged with the controls it satisfies.
+  </div>
+
+  <!-- ── DIAGRAM: SDLC LIFECYCLE OVERVIEW ── -->
+  <h3 style="margin-top:28px;">SDLC at a Glance — 9 Phases</h3>
+  <p style="margin-bottom:14px; font-size:13px; color:var(--muted);">Every ABM IT project — regardless of paradigm — flows through these phases. Sections 5–14 cover each phase in depth.</p>
+  <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:20px 16px; overflow-x:auto;">
+    <!-- Row 1 -->
+    <div style="display:flex; align-items:stretch; gap:0; min-width:800px; margin-bottom:6px;">
+      <!-- Phase tiles row 1 -->
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#1B3DA8; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">REQUIREMENTS</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">📋</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Requirements<br>&amp; Planning</div>
+          <div style="font-size:9px; color:#5C6B84;">FRD · 3 Amigos<br>Sprint Cadence</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900;">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#2548D4; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">DESIGN</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">🏗️</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Architecture<br>&amp; Design</div>
+          <div style="font-size:9px; color:#5C6B84;">FTA · STRIDE<br>ADR · KISS</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900;">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#3B60D4; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">DEVELOPMENT</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">💻</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Development<br>Standards</div>
+          <div style="font-size:9px; color:#5C6B84;">SOLID · KISS<br>DRY · YAGNI</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900;">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#A84800; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">§8 SOURCE CODE</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">🔀</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Git &amp; SCM<br>Workflow</div>
+          <div style="font-size:9px; color:#5C6B84;">Branches · PR Gates<br>Code Review</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900;">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#EF8933; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">§9 TESTING</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">🧪</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Testing &amp;<br>Quality</div>
+          <div style="font-size:9px; color:#5C6B84;">Unit · QA · UAT<br>Performance</div>
+        </div>
+      </div>
+    </div>
+    <!-- connector arrow row 1 → row 2 -->
+    <div style="display:flex; min-width:800px; justify-content:flex-end; padding-right:calc(10% - 8px);">
+      <div style="width:24px; height:16px; border-right:2px solid #EF8933; border-bottom:2px solid #EF8933; border-radius:0 0 6px 0;"></div>
+    </div>
+    <!-- Row 2 — reversed flow -->
+    <div style="display:flex; align-items:stretch; gap:0; min-width:800px; flex-direction:row-reverse;">
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#7B2FBE; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">§10 SECURITY</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">🔒</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">DevSecOps<br>&amp; Security</div>
+          <div style="font-size:9px; color:#5C6B84;">SAST · DAST<br>OWASP · STRIDE</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900; transform:rotate(180deg);">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#B45309; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">§11 ENVIRONMENTS</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">🌐</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Environment<br>Management</div>
+          <div style="font-size:9px; color:#5C6B84;">DEV→QA→UAT<br>→PROD Pipeline</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900; transform:rotate(180deg);">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#C62828; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">§12 RELEASE</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">🚀</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Release &amp;<br>Change Mgmt</div>
+          <div style="font-size:9px; color:#5C6B84;">CAB · RFC<br>Go/No-Go</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900; transform:rotate(180deg);">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#fff;">
+        <div style="background:#0F766E; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">§13 OPERATIONS</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">📊</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Operations &amp;<br>Monitoring</div>
+          <div style="font-size:9px; color:#5C6B84;">APM · SLA<br>Incident Mgmt</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; padding:0 4px; color:#EF8933; font-size:18px; font-weight:900; transform:rotate(180deg);">→</div>
+      <div style="flex:1; border-radius:8px; overflow:hidden; border:2px solid #EF8933; background:#FFF0E0;">
+        <div style="background:#EF8933; color:#fff; text-align:center; font-size:9px; font-weight:800; padding:5px; letter-spacing:0.8px;">§16–17 IMPROVE</div>
+        <div style="padding:10px 8px; text-align:center;">
+          <div style="font-size:22px;">🔄</div>
+          <div style="font-size:11px; font-weight:700; color:#1B3DA8; margin:4px 0 2px;">Continuous<br>Improvement</div>
+          <div style="font-size:9px; color:#5C6B84;">Tech Debt · Retros<br>SDLC Reviews</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;">Row 2 reads right-to-left following the flow: Security → Environments → Release → Operations → Improvement ↻</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ S2 PURPOSE & SCOPE -->
+<div class="section" id="s2">
+  <div class="section-header"><div class="section-num">2</div><h2>Purpose &amp; Scope</h2></div>
+
+  <h3>2.1 Purpose</h3>
+  <p>To define the standardized, enterprise-wide processes, controls, and practices governing software development across all of ABM IT — ensuring consistent quality, security by design, regulatory compliance, and operational reliability regardless of the technology platform or development paradigm in use.</p>
+
+  <h3>2.2 Scope</h3>
+  <p>This standard applies to <strong>all ABM IT development activity</strong>, including:</p>
+  <div style="display:flex; gap:10px; flex-wrap:wrap; margin:12px 0;">
+    <span class="tag tag-code">Full-Code (Python, .NET, Java, Node)</span>
+    <span class="tag tag-lowcode">Low-Code (Boomi, Power Automate)</span>
+    <span class="tag tag-nocode">No-Code (Power Apps, SharePoint)</span>
+    <span class="tag tag-saas">SaaS/PaaS (Oracle, ServiceNow, Salesforce)</span>
+  </div>
+  <div class="callout callout-warn" style="margin:10px 0 14px;">
+    <div class="callout-label">Power BI — Scoping Note</div>
+    Power BI is a reporting and analytics platform (no-code paradigm). Governance principles in this master apply; however, Power BI-specific controls (workspace governance, dataset certification, row-level security, report deployment pipelines) are being defined by Rashmi's data team in a separate child SDLC. Until that child SDLC is published, Power BI changes require: ADO change record, peer review, and Technology Manager approval.
+  </div>
+  <p>It applies to all team members involved in delivering software: developers, integrators, architects, QA engineers, business analysts, product owners, and technology managers.</p>
+  <div class="callout callout-warn">
+    <div class="callout-label">Infrastructure — Coordinating Separately</div>
+    Cloud infrastructure provisioning (Terraform, Bicep, ARM templates, CloudFormation) is managed by Adam Houdashell's infrastructure team and is being addressed under a separate workstream. This SDLC governs <strong>application delivery</strong>. Infrastructure SDLC alignment will be incorporated in a future revision once that team's practices are reviewed.
+  </div>
+
+  <h3>2.3 Core Principles</h3>
+  <table>
+    <tr><th>Principle</th><th>Application</th></tr>
+    <tr><td><strong>SOLID</strong></td><td>Foundation for maintainable, extensible object-oriented design in all custom code</td></tr>
+    <tr><td><strong>KISS</strong> (Keep It Simple)</td><td>Simplest working solution is preferred; complexity must be justified</td></tr>
+    <tr><td><strong>DRY</strong> (Don't Repeat Yourself)</td><td>Single source of truth for logic, configuration, and data definitions</td></tr>
+    <tr><td><strong>YAGNI</strong> (You Aren't Gonna Need It)</td><td>Build what is required now; avoid speculative features and premature abstractions</td></tr>
+    <tr><td><strong>Security by Design</strong></td><td>Security is integrated at every phase — not bolted on at the end</td></tr>
+    <tr><td><strong>Shift Left</strong></td><td>Testing, security scanning, and quality gates happen early, not at release</td></tr>
+    <tr><td><strong>Everything in Git</strong></td><td>All artifacts, code, config, and IaC live in version-controlled repositories</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════ S3 GOVERNANCE ARCHITECTURE -->
+<div class="section" id="s3">
+  <div class="section-header"><div class="section-num">3</div><h2>Governance Architecture</h2></div>
+
+  <h3>3.1 Master–Child Model</h3>
+  <p>The ABM Universal SDLC operates as a <strong>master document</strong> from which every team creates a <strong>child SDLC</strong>. The relationship is strictly additive: child documents extend the master for their specific platform, stack, or delivery context. No child document may remove, weaken, or override a control defined in this master.</p>
+
+  <div class="card">
+    <div class="card-title">Master → Child Hierarchy</div>
+    <table>
+      <tr><th>Level</th><th>Document</th><th>Owner</th><th>Relationship</th></tr>
+      <tr><td><strong>Master</strong></td><td>ABM Universal SDLC (this document)</td><td>IT Architecture / Chief Architect</td><td>—</td></tr>
+      <tr><td>Child</td><td>Team Connect SDLC SOP</td><td>Application Team Owner</td><td>Extends master with .NET MAUI, Azure, mobile specifics</td></tr>
+      <tr><td>Child</td><td>Boomi Integrations SDLC</td><td>Application Team Owner</td><td>Extends master with low-code integration specifics</td></tr>
+      <tr><td>Child</td><td>Oracle SaaS SDLC</td><td>Landry Baggett</td><td>Extends master with Oracle SaaS (HCM, ERP) configuration &amp; extension controls</td></tr>
+      <tr><td>Child</td><td>Oracle PaaS / Integration Cloud SDLC</td><td>Anjali Taswani</td><td>Extends master with Oracle PaaS, OIC, and low-code integration controls</td></tr>
+      <tr><td>Child</td><td>Power Platform SDLC</td><td>Anjali Taswani</td><td>Extends master with Power Apps, Power Automate no-code governance</td></tr>
+      <tr><td>Child</td><td>Power BI / Analytics SDLC</td><td>Rashmi (Data Team)</td><td>Extends master with BI/analytics platform governance — child SDLC in progress</td></tr>
+      <tr><td>Child</td><td>[Additional teams]</td><td>TBD</td><td>Defined as teams onboard</td></tr>
+    </table>
+  </div>
+
+  <div class="rule-box">Child documents MUST include an attestation table citing this master version and listing every section as "Adopted", "Extended — [additions listed]", or "Extended — N/A [justified reason]". They may never mark any section as "Removed" or "Replaced".</div>
+
+  <!-- ── DIAGRAM: MASTER–CHILD GOVERNANCE TREE ── -->
+  <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:24px 20px; margin:20px 0; overflow-x:auto;">
+    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;">Governance Hierarchy — Master owns the floor, teams own the extensions</div>
+    <svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg" style="width:100%; min-width:700px; height:auto; display:block;">
+      <!-- Master box -->
+      <rect x="260" y="10" width="340" height="64" rx="8" fill="#1B3DA8"/>
+      <text x="430" y="34" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">ABM Universal SDLC</text>
+      <text x="430" y="52" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="11" font-family="Segoe UI,Arial,sans-serif">Chief Architect · Sponsor · Executive Sponsor</text>
+      <text x="430" y="67" text-anchor="middle" fill="#EF8933" font-size="10" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">GATEKEEPER — Approves all child SDLCs</text>
+      <!-- Vertical trunk -->
+      <line x1="430" y1="74" x2="430" y2="110" stroke="#EF8933" stroke-width="2"/>
+      <!-- Horizontal bar -->
+      <line x1="90" y1="110" x2="770" y2="110" stroke="#EF8933" stroke-width="2"/>
+      <!-- Vertical drops to children -->
+      <line x1="90" y1="110" x2="90" y2="136" stroke="#EF8933" stroke-width="2"/>
+      <line x1="258" y1="110" x2="258" y2="136" stroke="#EF8933" stroke-width="2"/>
+      <line x1="430" y1="110" x2="430" y2="136" stroke="#EF8933" stroke-width="2"/>
+      <line x1="600" y1="110" x2="600" y2="136" stroke="#EF8933" stroke-width="2"/>
+      <line x1="770" y1="110" x2="770" y2="136" stroke="#EF8933" stroke-width="2"/>
+      <!-- Child box 1: Team Connect -->
+      <rect x="22" y="136" width="136" height="72" rx="6" fill="white" stroke="#CBD5E8" stroke-width="1.5"/>
+      <rect x="22" y="136" width="136" height="20" rx="6" fill="#2548D4"/>
+      <rect x="22" y="148" width="136" height="8" fill="#2548D4"/>
+      <text x="90" y="150" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">TEAM CONNECT</text>
+      <text x="90" y="170" text-anchor="middle" fill="#1B3DA8" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">Application Team Owner</text>
+      <text x="90" y="183" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">.NET MAUI · Azure</text>
+      <text x="90" y="196" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Mobile · QA/UAT</text>
+      <text x="90" y="212" text-anchor="middle" fill="#EF8933" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">✓ EXTENDS</text>
+      <!-- Child box 2: Boomi -->
+      <rect x="190" y="136" width="136" height="72" rx="6" fill="white" stroke="#CBD5E8" stroke-width="1.5"/>
+      <rect x="190" y="136" width="136" height="20" rx="6" fill="#2548D4"/>
+      <rect x="190" y="148" width="136" height="8" fill="#2548D4"/>
+      <text x="258" y="150" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">BOOMI INTEGRATIONS</text>
+      <text x="258" y="170" text-anchor="middle" fill="#1B3DA8" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">Application Team Owner</text>
+      <text x="258" y="183" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Low-Code · Process</text>
+      <text x="258" y="196" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Building · Connectors</text>
+      <text x="258" y="212" text-anchor="middle" fill="#EF8933" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">✓ EXTENDS</text>
+      <!-- Child box 3: Oracle -->
+      <rect x="362" y="136" width="136" height="72" rx="6" fill="white" stroke="#CBD5E8" stroke-width="1.5"/>
+      <rect x="362" y="136" width="136" height="20" rx="6" fill="#2548D4"/>
+      <rect x="362" y="148" width="136" height="8" fill="#2548D4"/>
+      <text x="430" y="150" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">ORACLE SaaS/PaaS</text>
+      <text x="430" y="170" text-anchor="middle" fill="#1B3DA8" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">Landry Baggett</text>
+      <text x="430" y="183" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">SaaS Config · Ext.</text>
+      <text x="430" y="196" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Vendor SOC2 Ref.</text>
+      <text x="430" y="212" text-anchor="middle" fill="#FFAB00" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">⏳ ONBOARDING</text>
+      <!-- Child box 4: Power Platform -->
+      <rect x="532" y="136" width="136" height="72" rx="6" fill="white" stroke="#CBD5E8" stroke-width="1.5"/>
+      <rect x="532" y="136" width="136" height="20" rx="6" fill="#2548D4"/>
+      <rect x="532" y="148" width="136" height="8" fill="#2548D4"/>
+      <text x="600" y="150" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">POWER PLATFORM</text>
+      <text x="600" y="170" text-anchor="middle" fill="#1B3DA8" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">Anjali Taswani</text>
+      <text x="600" y="183" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">No-Code · Power Apps</text>
+      <text x="600" y="196" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Power Automate</text>
+      <text x="600" y="212" text-anchor="middle" fill="#FFAB00" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">⏳ ONBOARDING</text>
+      <!-- Child box 5: Others -->
+      <rect x="702" y="136" width="136" height="72" rx="6" fill="white" stroke="#CBD5E8" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <rect x="702" y="136" width="136" height="20" rx="6" fill="#5C6B84"/>
+      <rect x="702" y="148" width="136" height="8" fill="#5C6B84"/>
+      <text x="770" y="150" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">FUTURE TEAMS</text>
+      <text x="770" y="170" text-anchor="middle" fill="#1B3DA8" font-size="9" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">Application Team Owners</text>
+      <text x="770" y="183" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Custom .NET / Python</text>
+      <text x="770" y="196" text-anchor="middle" fill="#5C6B84" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Data Teams · Others</text>
+      <text x="770" y="212" text-anchor="middle" fill="#5C6B84" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">+ ADDING OVER TIME</text>
+      <!-- "ADDS ONLY — NEVER REMOVES" banner -->
+      <rect x="0" y="228" width="860" height="28" rx="4" fill="#FFF0E0"/>
+      <text x="430" y="246" text-anchor="middle" fill="#A84800" font-size="11" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">▲ All child documents EXTEND the master — they NEVER remove or weaken a control ▲</text>
+    </svg>
+  </div>
+
+  <h3>3.2 Gatekeeper Responsibilities</h3>
+  <p>The Chief Architect, under guidance of the Executive Sponsor, owns this document and is responsible for ensuring ABM SDLC standards are employed across all application teams.</p>
+  <ul>
+    <li>Own and maintain this master document; manage version control via Git</li>
+    <li>Review and approve all child SDLC documents before publication</li>
+    <li>Periodically conduct child SDLC reviews to ensure ABM standards are being followed</li>
+    <li>Where gaps are identified in individual child documents, work with the application owner to remediate and bring the child SDLC into alignment</li>
+    <li>Evaluate and document exception requests from teams for any control variation</li>
+  </ul>
+
+  <h3>3.3 Git-Based Document Governance</h3>
+  <p>This master and all child SDLC documents are version-controlled in Git. The workflow:</p>
+  <ul>
+    <li><strong>Repository:</strong> <a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>abm-it/sdlc-standards</code></a> (<a href="https://dev.azure.com/abm-ss/AIFoundations/" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">Azure DevOps</a>)</li>
+    <li><strong>Master branch:</strong> Protected — direct commits prohibited</li>
+    <li><strong>Updates to master:</strong> PR required → reviewed by Executive Sponsor or delegate → merged by gatekeeper</li>
+    <li><strong>Child documents:</strong> Separate branches or subdirectories, PRs reviewed by gatekeeper before merge</li>
+    <li><strong>Version tagging:</strong> Semantic versioning (1.0, 1.1, 2.0) on every approved release</li>
+  </ul>
+
+  <h3>3.4 Review &amp; Approval</h3>
+  <table>
+    <tr><th>Activity</th><th>Frequency</th><th>Participants</th><th>Output</th></tr>
+    <tr><td>Master SDLC review</td><td>Periodically</td><td>Gatekeeper + Technology Managers</td><td>Updated master + version tag</td></tr>
+    <tr><td>Child SDLC review</td><td>Periodically</td><td>Gatekeeper + Application Team Owner</td><td>Updated child + attestation</td></tr>
+    <tr><td>Audit readiness check</td><td>Annual (pre-ISO audit)</td><td>Chief Architect + InfoSec</td><td>Evidence gap report</td></tr>
+    <tr><td>Exception review</td><td>As needed</td><td>Gatekeeper + requester</td><td>Approved exception or rejection</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════ S4 DEVELOPMENT PARADIGMS -->
+<div class="section" id="s4">
+  <div class="section-header"><div class="section-num">4</div><h2>Development Paradigm Matrix</h2></div>
+
+  <p>ABM IT delivers software through five distinct paradigms. This master SDLC applies universally; the matrix below shows which controls are mandatory, applicable with adaptation, or not applicable for each paradigm.</p>
+
+  <table>
+    <tr>
+      <th>Control Area</th>
+      <th><span class="tag tag-code">Full Code</span></th>
+      <th><span class="tag tag-lowcode">Low-Code</span></th>
+      <th><span class="tag tag-nocode">No-Code</span></th>
+      <th><span class="tag tag-saas">SaaS/PaaS</span></th>
+    </tr>
+    <tr>
+      <td>Requirements (FRD/story)</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+    </tr>
+    <tr>
+      <td>Architecture &amp; Design Review</td>
+      <td class="matrix-check">✔ Full FTA</td><td class="matrix-check">✔ Integration Design</td>
+      <td class="matrix-partial">~ App Design</td><td class="matrix-partial">~ Config Design</td>
+    </tr>
+    <tr>
+      <td>Version Control (Git)</td>
+      <td class="matrix-check">✔ Source code</td><td class="matrix-check">✔ Process exports</td>
+      <td class="matrix-partial">~ Solution exports</td><td class="matrix-partial">~ Config files</td>
+    </tr>
+    <tr>
+      <td>Peer / Tech Manager Review</td>
+      <td class="matrix-check">✔ 2 peers + TM</td><td class="matrix-check">✔ Peer + TM</td>
+      <td class="matrix-check">✔ Peer + TM</td><td class="matrix-check">✔ TM approval</td>
+    </tr>
+    <tr>
+      <td>Automated Unit Testing</td>
+      <td class="matrix-check">✔ ≥70% coverage</td><td class="matrix-partial">~ Test mode</td>
+      <td class="matrix-na">— Platform managed</td><td class="matrix-na">— Vendor managed</td>
+    </tr>
+    <tr>
+      <td>SAST Security Scanning</td>
+      <td class="matrix-check">✔ Every commit</td><td class="matrix-partial">~ On export/deploy</td>
+      <td class="matrix-na">— Vendor managed</td><td class="matrix-na">— Vendor managed</td>
+    </tr>
+    <tr>
+      <td>DAST Security Scanning</td>
+      <td class="matrix-check">✔ Pre-prod</td><td class="matrix-partial">~ Pre-prod</td>
+      <td class="matrix-na">— Vendor managed</td><td class="matrix-na">— Vendor managed</td>
+    </tr>
+    <tr>
+      <td>Environment Separation (Dev/QA/UAT/Prod)</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+    </tr>
+    <tr>
+      <td>CAB/RFC for Production</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+    </tr>
+    <tr>
+      <td>Secrets in Key Vault / Secret Manager</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Process extensions</td>
+      <td class="matrix-partial">~ Where applicable</td><td class="matrix-partial">~ Integration creds</td>
+    </tr>
+    <tr>
+      <td>No Prod Data in Non-Prod</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+    </tr>
+    <tr>
+      <td>Access Control / Least Privilege</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+    </tr>
+    <tr>
+      <td>Segregation of Duties (builder ≠ promoter)</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+      <td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td>
+    </tr>
+  </table>
+  <p style="font-size:12px; color:var(--muted);">✔ Fully mandatory &nbsp;|&nbsp; ~ Applicable with adaptation (child SOP defines how) &nbsp;|&nbsp; — Not applicable (vendor or platform responsibility; SOC 2 Type 2 / ISO cert serves as evidence) &nbsp;|&nbsp; Infrastructure / IaC: coordinated separately with Adam Houdashell's team — out of current scope.</p>
+</div>
+
+<!-- ════════════════════════════════════════ S5 REQUIREMENTS & PLANNING -->
+<div class="section" id="s5">
+  <div class="section-header"><div class="section-num">5</div><h2>Requirements &amp; Planning</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.26</span><span class="tag tag-all">All Paradigms</span></div>
+
+  <div class="rule-box" style="border-left-color:#C62828; background:#FDECEA;">
+    <strong>Non-Negotiable Control:</strong> No development work begins until requirements have been reviewed with the Security team and a security green light has been obtained. This applies across all paradigms.
+  </div>
+
+  <h3>Requirements Artifacts</h3>
+  <p>Development cannot begin without a documented requirement that has been formally accepted by all parties. Think of it this way: a painter cannot start until they know exactly what to paint, which colour, and where. The requirement artifacts provide that clarity.</p>
+
+  <table>
+    <tr><th>Artifact</th><th>Purpose</th><th>Required For</th><th>Storage</th></tr>
+    <tr><td><strong>Functional Requirements Document (FRD)</strong></td><td>Defines exactly what the system must do — features, data, integrations, business rules, and non-functional requirements. Formally handed off from business to development.</td><td>All full-code, integration, and significant configuration changes</td><td>SharePoint + linked in ADO work item</td></tr>
+    <tr><td><strong>Configuration Change Request</strong></td><td>Describes the SaaS/PaaS configuration change, its business driver, and expected outcome</td><td>SaaS/PaaS configuration changes</td><td>ADO / ServiceNow ticket</td></tr>
+    <tr><td><strong>Business Requirements Summary</strong></td><td>High-level requirement for no-code / Power Platform deliverables</td><td>No-code / Power Apps / Power Automate</td><td>SharePoint</td></tr>
+  </table>
+
+
+  <h3>Non-Functional Requirements (NFRs)</h3>
+  <p>All development work must identify and document non-functional requirements alongside functional requirements. NFRs are part of the FRD and are subject to the same security review gate. They drive architecture decisions, test plans, and release criteria.</p>
+  <table>
+    <tr><th>NFR Category</th><th>Description</th><th>Documented In</th></tr>
+    <tr><td><strong>Performance</strong></td><td>API response time targets, page load thresholds, concurrent user capacity, throughput</td><td>FRD (performance section) + load test plan</td></tr>
+    <tr><td><strong>Security</strong></td><td>Authentication method, authorisation model, data encryption requirements, audit logging scope</td><td>FRD + Security Review Gate</td></tr>
+    <tr><td><strong>Availability / Reliability</strong></td><td>Uptime SLA (e.g. 99.9%), RTO/RPO targets, failover requirements</td><td>FRD + architecture design (Section 6)</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Expected growth, horizontal/vertical scaling, peak load handling</td><td>FRD + FTA</td></tr>
+    <tr><td><strong>Maintainability</strong></td><td>Logging and observability requirements, alerting thresholds, on-call supportability</td><td>FRD + ADR</td></tr>
+    <tr><td><strong>Compliance</strong></td><td>Regulatory requirements, data residency, retention and disposal policy</td><td>FRD + Security Review Gate</td></tr>
+    <tr><td><strong>Accessibility</strong></td><td>WCAG compliance level for user-facing interfaces</td><td>FRD (UI features only)</td></tr>
+  </table>
+
+  <h3>Technical Design Document (TDD)</h3>
+  <p>Once the FRD is accepted, the development team produces a <strong>Technical Design Document</strong> before any code is written. The TDD answers: <em>How are we going to build this?</em></p>
+  <ul>
+    <li>Integration architecture — API, file-based, messaging, or hybrid approach</li>
+    <li>Authentication and authorisation controls</li>
+    <li>Exception handling strategy and expected SLAs for failure scenarios</li>
+    <li>Data flow and data classification (PII, financial, operational)</li>
+    <li>Encryption requirements (at rest and in transit)</li>
+    <li>DRY validation — confirm no existing component or service is being duplicated</li>
+  </ul>
+  <p>The TDD, together with the integration architecture diagram, is reviewed with the Security team prior to development start.</p>
+
+  <h3>Security Review Gate</h3>
+  <p>Before any development begins, the team walks the Security team through:</p>
+  <ul>
+    <li>What is being built and why</li>
+    <li>Authentication and authorisation design</li>
+    <li>Data classification and any PII / financial data in scope</li>
+    <li>Encryption and data handling controls</li>
+    <li>Identified risks and proposed mitigations</li>
+  </ul>
+  <div class="rule-box">Security sign-off is required before development starts. If a requirement or design does not meet security standards, a formal exception must be raised and approved before proceeding.</div>
+  <div class="card" style="margin-top:12px;">
+    <div class="card-title">Security Exception Process</div>
+    <ol style="font-size:13px; padding-left:18px; margin:0;">
+      <li style="margin-bottom:6px;"><strong>Document the request:</strong> Technology Manager submits an exception via ADO/ServiceNow — control being waived, business justification, compensating controls, and proposed duration</li>
+      <li style="margin-bottom:6px;"><strong>Security review:</strong> InfoSec team reviews and either approves (with conditions), requests modifications, or rejects</li>
+      <li style="margin-bottom:6px;"><strong>Architecture sign-off:</strong> Chief Architect reviews technical risk and compensating controls</li>
+      <li style="margin-bottom:6px;"><strong>Executive approval:</strong> Any zero-tolerance control exception requires Executive Sponsor approval</li>
+      <li style="margin-bottom:6px;"><strong>Time-bound:</strong> Exceptions are valid for a maximum of 6 months. At expiry, the team must remediate or formally renew with escalated approval</li>
+      <li style="margin-bottom:0;"><strong>Exception register:</strong> All approved exceptions are logged in the register maintained by the Chief Architect and reviewed quarterly</li>
+    </ol>
+  </div>
+
+  <h3>Definition of Ready</h3>
+  <p>A work item is ready for development when all three parties have given a green light:</p>
+  <ul>
+    <li><strong>Business owner</strong> — confirms the FRD accurately represents the requirement</li>
+    <li><strong>Development lead / Architect</strong> — confirms technical approach is sound and TDD is complete</li>
+    <li><strong>Security</strong> — confirms security review is complete and no unmitigated risks remain</li>
+  </ul>
+
+  <h3>Iterative Delivery</h3>
+  <p>Teams deliver work iteratively, keeping work items small and shippable. Teams should balance feature delivery with platform health work (tech debt, security remediation, dependency updates). Delivery model (sprint-based, kanban, or hybrid) is at the team's discretion — the requirements and security gates above apply regardless of delivery model.</p>
+</div>
+
+<!-- ════════════════════════════════════════ S6 ARCHITECTURE & DESIGN -->
+<div class="section" id="s6">
+  <div class="section-header"><div class="section-num">6</div><h2>Architecture &amp; Design</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.27</span><span class="tag tag-iso">ISO A.8.26</span><span class="tag tag-all">All Paradigms</span></div>
+
+  <h3>6.1 Feature Technology Approach (FTA)</h3>
+  <p>The FTA is the primary design artifact for any significant feature, integration, or infrastructure change. It must be completed and approved <em>before</em> development begins. Template: <code>templates/fta-template.html</code></p>
+
+  <div class="card">
+    <div class="card-title">Required FTA Sections</div>
+    <table>
+      <tr><th>Section</th><th>Contents</th><th>Required For</th></tr>
+      <tr><td>Feature Overview</td><td>Business requirement summary, technical scope, success criteria</td><td>All</td></tr>
+      <tr><td>KISS Assessment</td><td>Justification that the approach is the simplest viable solution</td><td>All</td></tr>
+      <tr><td>Security Analysis</td><td>STRIDE threat model output; OWASP risks addressed; data classification</td><td>All with data or API surface</td></tr>
+      <tr><td>Architecture Design</td><td>Component/data flow diagrams; service integration points; patterns applied</td><td>New services, integrations, IaC</td></tr>
+      <tr><td>Risk Assessment</td><td>Technical risks, rollback plan, performance impact</td><td>All</td></tr>
+      <tr><td>DRY Validation</td><td>Confirmation no existing component/service is being duplicated</td><td>All code changes</td></tr>
+      <tr><td>Definition of Done</td><td>Feature-specific exit criteria beyond the universal DoD</td><td>All</td></tr>
+    </table>
+  </div>
+
+  <h3>6.2 Approval Chain</h3>
+  <table>
+    <tr><th>Role</th><th>Approves</th><th>Recorded In</th></tr>
+    <tr><td>Architect / Senior Developer</td><td>Technical correctness, pattern adherence</td><td>SharePoint FTA doc + ADO story</td></tr>
+    <tr><td>Technology Manager</td><td>Risk acceptance, resource scope, security sign-off</td><td>SharePoint FTA doc (signature)</td></tr>
+    <tr><td>Product Owner / Business Stakeholder</td><td>Business scope confirmation</td><td>ADO story approval field</td></tr>
+  </table>
+
+  <h3>6.3 Architecture Principles</h3>
+  <ul>
+    <li><strong>Clean Architecture:</strong> Separation of concerns; domain logic independent of frameworks and UI</li>
+    <li><strong>SOLID:</strong> Mandatory for all object-oriented code</li>
+    <li><strong>Offline-first:</strong> Required for any mobile or field-facing application (assume connectivity loss)</li>
+    <li><strong>API-first:</strong> All service boundaries defined via versioned, self-documenting OpenAPI specs</li>
+    <li><strong>Secure by default:</strong> Deny all, allow specifically; zero secrets in code or config files committed to Git</li>
+    <li><strong>Immutable infrastructure:</strong> For cloud resources, prefer replace-over-patch; IaC defines desired state</li>
+  </ul>
+
+  <h3>6.4 Required Design Artifacts</h3>
+  <ul>
+    <li>Data Flow Diagrams (DFD) — required for any feature with PII, financial data, or external integrations</li>
+    <li>Architecture Decision Records (ADRs) — for any significant architectural decision (template: <code>templates/adr-template.html</code>)</li>
+    <li>OpenAPI / interface specifications — for all APIs and integration endpoints</li>
+    <li>STRIDE threat model — for any new service, data store, or external integration</li>
+    <li>Security Requirements Document — for features touching authentication, authorization, or sensitive data</li>
+  </ul>
+
+  <div class="callout callout-iso">
+    <div class="callout-label">ISO A.8.27 Evidence</div>
+    Completed and approved FTA documents stored in SharePoint with version history constitute direct evidence for ISO 27001 A.8.27 (Secure system architecture and engineering principles).
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ S7 DEVELOPMENT STANDARDS -->
+<div class="section" id="s7">
+  <div class="section-header"><div class="section-num">7</div><h2>Development Standards</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.28</span><span class="tag tag-code">Full-Code</span><span class="tag tag-lowcode">Low-Code</span></div>
+  <div class="rule-box">All third-party and vendor development work must be executed under an ABM-approved vendor relationship with a valid Master Service Agreement (MSA). No vendor may access ABM systems, repositories, or data without an active MSA on file.</div>
+
+  <h3>7.1 Universal Coding Standards</h3>
+  <p>These standards apply regardless of programming language or platform. Team-specific coding standards are defined in child SDLC documents.</p>
+
+  <div class="card">
+    <div class="card-title">SOLID Principles (Mandatory for all object-oriented code)</div>
+    <table>
+      <tr><th>Principle</th><th>Rule</th></tr>
+      <tr><td><strong>S</strong> — Single Responsibility</td><td>Each class/module has one reason to change; one clear purpose</td></tr>
+      <tr><td><strong>O</strong> — Open/Closed</td><td>Open for extension via interfaces; closed to direct modification</td></tr>
+      <tr><td><strong>L</strong> — Liskov Substitution</td><td>Derived types must be substitutable for their base types without altering behavior</td></tr>
+      <tr><td><strong>I</strong> — Interface Segregation</td><td>Clients must not depend on methods they don't use; prefer focused interfaces</td></tr>
+      <tr><td><strong>D</strong> — Dependency Inversion</td><td>Depend on abstractions; use dependency injection for all service dependencies</td></tr>
+    </table>
+  </div>
+
+  <h3>7.2 Code Quality Thresholds</h3>
+  <p>The following metrics are enforced by CI/CD pipeline gates. PRs failing these thresholds are automatically blocked from merging. These objective, tool-measured thresholds provide auditable evidence that code quality standards are being met — they are not optional guidelines.</p>
+  <table>
+    <tr><th>Metric</th><th>Threshold</th><th>Tool</th><th>Enforcement</th></tr>
+    <tr><td>Unit test coverage</td><td>≥ 70% (PR gate); 100% must pass</td><td>Coverlet / pytest-cov</td><td>Pipeline blocks on failure</td></tr>
+    <tr><td>Cyclomatic complexity</td><td>≤ 10 per method</td><td>Coverlet / SonarQube</td><td>Pipeline blocks on breach</td></tr>
+    <tr><td>CRAP score</td><td>Below platform threshold</td><td>Coverlet</td><td>Pipeline blocks on breach</td></tr>
+    <tr><td>Code duplication</td><td>≤ 3%</td><td>SonarQube / code analyzers</td><td>PR review gate</td></tr>
+    <tr><td>Maintainability index</td><td>≥ 20</td><td>Coverlet / SonarQube</td><td>PR review gate</td></tr>
+    <tr><td>High/Critical SAST findings</td><td>Zero tolerance</td><td>Snyk</td><td>Pipeline blocks on finding</td></tr>
+  </table>
+
+  <h3>7.3 Definition of Done (Universal)</h3>
+  <p>A work item is complete only when ALL of the following are satisfied:</p>
+  <ul>
+    <li>Code complete and checked into feature branch following branching strategy</li>
+    <li>Unit tests written with ≥70% coverage; 100% of tests pass</li>
+    <li>Code complexity within thresholds (Coverlet / equivalent report attached to PR)</li>
+    <li>Code reviewed and approved by minimum 2 peers + Technology Manager</li>
+    <li>DRY validation — no code duplication introduced</li>
+    <li>SAST scan passed (zero High/Critical findings)</li>
+    <li>Merged to development branch and deployed to QA / equivalent environment</li>
+    <li>QA testing passed (QA exit criteria met)</li>
+    <li>Technical documentation / Wiki updated if applicable</li>
+    <li>Demo completed (P1 features require stakeholder demo)</li>
+  </ul>
+
+  <h3>7.4 AI-Assisted Development Standards</h3>
+  <p>AI tools may be used to accelerate development. All AI-assisted output is subject to the same quality and security review gates as human-authored code — the tool that generated the code does not change the review obligation.</p>
+  <ul>
+    <li>AI output is a <strong>draft</strong> — engineer review and accountability is mandatory before any AI-generated code is committed</li>
+    <li>Approved tools: Claude Code (code generation and review), CodeRabbit (automated PR review), Microsoft Copilot (documentation and code completion). Additional tools require Chief Architect approval before use.</li>
+    <li>No secrets, PII, or internal ABM data submitted to AI tools</li>
+    <li>AI-generated code must pass all quality gates identically to human-authored code</li>
+  </ul>
+
+  <div class="callout callout-iso">
+    <div class="callout-label">ISO A.8.28 Evidence</div>
+    These coding standards, combined with PR review records showing security findings resolution and SAST reports from pipeline runs, constitute direct evidence for ISO 27001 A.8.28 (Secure coding).
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════ S8 DATA SECURITY & INTEGRATION STANDARDS -->
+<div class="section" id="s8">
+  <div class="section-header"><div class="section-num">8</div><h2>Data Security &amp; Integration Standards</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.11</span><span class="tag tag-iso">ISO A.8.26</span><span class="tag tag-all">All Paradigms</span></div>
+
+  <div class="rule-box" style="border-left-color:#C62828; background:#FDECEA;">
+    <strong>Non-Negotiable Control:</strong> All data in transit between ABM systems must be encrypted using TLS 1.2 or higher. All data at rest containing PII, financial records, or employee data must be encrypted. Any integration transmitting PII must be classified, documented, and security-reviewed before go-live.
+  </div>
+
+  <h3>8.1 Data Classification</h3>
+  <p>Every data element handled by an ABM system must be classified. Classification drives encryption requirements, access controls, masking obligations, and retention policy. It is documented in the FRD data section and confirmed at the Security Review Gate.</p>
+  <table>
+    <tr><th>Classification</th><th>Examples</th><th>Encrypt at Rest</th><th>Encrypt in Transit</th><th>Mask in Non-Prod</th></tr>
+    <tr><td><strong>Restricted</strong></td><td>SSN, financial account numbers, employee health data, legal records</td><td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td></tr>
+    <tr><td><strong>Confidential</strong></td><td>Employee PII (name, pay, address), client contracts, business financials, integration credentials</td><td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td><td class="matrix-check">✔ Mandatory</td></tr>
+    <tr><td><strong>Internal</strong></td><td>Work orders, operational records, application logs, non-sensitive configuration data</td><td class="matrix-partial">~ Where practical</td><td class="matrix-check">✔ Mandatory</td><td class="matrix-partial">~ Recommended</td></tr>
+    <tr><td><strong>Public</strong></td><td>Published content, public-facing documentation, marketing materials</td><td class="matrix-na">— Not required</td><td class="matrix-partial">~ Best practice</td><td class="matrix-na">— Not required</td></tr>
+  </table>
+
+  <h3>8.2 Encryption Standards</h3>
+  <table>
+    <tr><th>Requirement</th><th>Standard</th><th>Applies To</th></tr>
+    <tr><td>Encryption in transit</td><td>TLS 1.2 minimum (TLS 1.3 preferred)</td><td>All API calls, web traffic, inter-service communication, file transfers</td></tr>
+    <tr><td>Encryption at rest</td><td>AES-256</td><td>All databases, file stores, and blob storage containing Restricted or Confidential data</td></tr>
+    <tr><td>API authentication</td><td>OAuth 2.0 / Azure AD (Entra ID) tokens</td><td>All internal and external API integrations</td></tr>
+    <tr><td>File transfer encryption</td><td>SFTP or FTPS (preferred); AES-256 encrypted archive as fallback</td><td>All file-based exchanges with external parties — Audatex, insurance carriers, third-party vendors</td></tr>
+    <tr><td>Secrets / connection strings</td><td>Azure Key Vault — never in source code or configuration files</td><td>All database connections, API keys, integration credentials</td></tr>
+  </table>
+
+  <h3>8.3 Integration Architecture — Hub and Spoke</h3>
+  <p>ABM IT uses a <strong>hub-and-spoke integration architecture</strong>. Boomi AtomSphere is the primary central integration hub. All system-to-system data flows should route through the integration layer rather than creating direct point-to-point connections between applications.</p>
+
+  <div class="callout callout-warn">
+    <div class="callout-label">Integration Topology Principle</div>
+    Point-to-point integrations that bypass the integration hub are strongly discouraged — they create undocumented data flows, duplicate logic, and make PII inventory management difficult. New integrations must use the existing Boomi hub or Azure Logic Apps. Any exception (direct connection bypassing the hub) requires Chief Architect approval via a documented ADR, and must be flagged during the FTA design review.
+  </div>
+
+  <h3>8.4 Integration Tooling Matrix</h3>
+  <table>
+    <tr><th>Tool</th><th>Primary Use Case</th><th>Data Tier Handled</th><th>Governed By</th></tr>
+    <tr><td><strong>Boomi AtomSphere</strong></td><td>Enterprise integration hub — ERP, HR, field operations, cross-system orchestration</td><td>Confidential / Internal</td><td>Boomi Integrations child SDLC</td></tr>
+    <tr><td><strong>Azure Logic Apps</strong></td><td>Cloud-native orchestration — Microsoft 365 ecosystem, lightweight event-driven workflows</td><td>Internal</td><td>This master SDLC</td></tr>
+    <tr><td><strong>Audatex / Claims Platforms</strong></td><td>Insurance claims data exchange — batch file transfers with external insurance carriers</td><td>Confidential (PII)</td><td>Vendor-specific controls + this master</td></tr>
+    <tr><td><strong>Oracle Integration Cloud (OIC)</strong></td><td>Oracle SaaS integrations — HCM, ERP, procurement workflows</td><td>Confidential / Restricted</td><td>Oracle SaaS/PaaS child SDLC</td></tr>
+    <tr><td><strong>Microsoft Power Automate</strong></td><td>Low-code automation — Teams notifications, SharePoint workflows, approval routing</td><td>Internal</td><td>Power Platform child SDLC</td></tr>
+  </table>
+
+  <h3>8.5 PII Identification &amp; Handling</h3>
+  <p>Before any integration or feature goes live, the team must complete a PII impact assessment as part of the FRD / TDD:</p>
+  <ul>
+    <li>Identify all PII fields transmitted or stored (name, address, SSN, date of birth, employee ID, pay data, health information)</li>
+    <li>Document PII in the FRD data classification section and the data flow diagram</li>
+    <li>Confirm encryption in transit and at rest for all Restricted and Confidential data fields</li>
+    <li>Confirm masking or anonymisation in all non-production environments before testing begins</li>
+    <li>Obtain Security team sign-off on the PII handling approach before development starts</li>
+    <li>Register any external PII flows with the InfoSec team's data flow inventory</li>
+  </ul>
+
+  <div class="rule-box">Any integration transmitting employee PII (name, compensation, personal records) or customer data to an external system requires explicit Security team approval before go-live, and must be registered in the data flow inventory maintained by the InfoSec team. This applies to new integrations and to material changes to existing ones.</div>
+
+  <div class="callout callout-iso">
+    <div class="callout-label">ISO A.8.11 Evidence</div>
+    Data classification records, masking configuration screenshots, PII impact assessments in FRD documents, and the data flow inventory register constitute direct evidence for ISO 27001 A.8.11 (Data masking) and support A.8.26 (Application security requirements).
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ S8 GIT WORKFLOW -->
+<div class="section" id="s9">
+  <div class="section-header"><div class="section-num">9</div><h2>Source Code Management &amp; Git Workflow</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.4</span><span class="tag tag-all">All Paradigms</span></div>
+
+  <h3>8.1 Universal Git Requirements</h3>
+  <div class="rule-box">All ABM IT artifacts — source code, integration processes, IaC, configuration templates, and SDLC documents — MUST be stored in a version-controlled Git repository. Storing artifacts solely on local machines, network shares, or zip files is prohibited.</div>
+
+  <h3>8.2 Standard Branching Strategy</h3>
+  <p>All repositories follow this branching model. Child SDLCs may define additional branch types but may not remove these protected branches:</p>
+  <div class="callout callout-warn" style="margin-bottom:14px;">
+    <div class="callout-label">Branching Adaptation — Low-Code Platforms (Review Required)</div>
+    The branching model above applies directly to full-code repositories. For low-code platforms such as Boomi, where version control uses platform-native mechanisms (Boomi revision history, packaged component exports), the child SDLC defines equivalent branching and promotion controls. The Boomi Integrations SDLC should be reviewed with Alpesh's team to confirm the branching strategy is aligned and documented before this master is finalised.
+  </div>
+
+  <table>
+    <tr><th>Branch</th><th>Purpose</th><th>Who Can Commit</th><th>Promotion Authority</th></tr>
+    <tr><td><code>main</code></td><td>Production-ready code</td><td>No direct commits — PR only</td><td>Technology Manager + CAB approval</td></tr>
+    <tr><td><code>uat</code></td><td>User acceptance testing</td><td>No direct commits — PR only</td><td>Technology Manager</td></tr>
+    <tr><td><code>qa</code> / <code>staging</code></td><td>Quality assurance testing</td><td>No direct commits — PR only</td><td>Technology Manager or Senior Dev</td></tr>
+    <tr><td><code>develop</code></td><td>Active integration branch</td><td>Merge from feature branches only</td><td>Automatic on PR approval</td></tr>
+    <tr><td><code>feature/*</code></td><td>Individual feature work</td><td>Assigned developer(s)</td><td>PR to develop</td></tr>
+    <tr><td><code>hotfix/*</code></td><td>Emergency production fixes</td><td>Senior Dev + TM</td><td>Expedited — TM + CAB fast-track</td></tr>
+  </table>
+
+  <!-- ── DIAGRAM: GIT BRANCHING STRATEGY ── -->
+  <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:20px 16px; margin:16px 0; overflow-x:auto;">
+    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Git Branch Flow — Promotion requires explicit gates at every level</div>
+    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; min-width:760px; height:auto; display:block;">
+      <!-- Branch labels -->
+      <text x="10" y="44" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">feature/*</text>
+      <text x="10" y="96" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">develop</text>
+      <text x="10" y="144" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">qa</text>
+      <text x="10" y="192" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">uat</text>
+      <text x="10" y="240" fill="#1B3DA8" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">main</text>
+      <text x="10" y="270" fill="#C62828" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">hotfix/*</text>
+      <!-- Feature branch lines -->
+      <line x1="80" y1="40" x2="230" y2="40" stroke="#7B8FA6" stroke-width="2" stroke-dasharray="6,3"/>
+      <line x1="80" y1="60" x2="280" y2="60" stroke="#7B8FA6" stroke-width="2" stroke-dasharray="6,3"/>
+      <!-- Merge points to develop (diagonal lines) -->
+      <line x1="230" y1="40" x2="260" y2="92" stroke="#7B8FA6" stroke-width="1.5"/>
+      <line x1="280" y1="60" x2="300" y2="92" stroke="#7B8FA6" stroke-width="1.5"/>
+      <!-- develop line -->
+      <line x1="80" y1="92" x2="750" y2="92" stroke="#2548D4" stroke-width="2.5"/>
+      <!-- Merge dots on develop -->
+      <circle cx="260" cy="92" r="5" fill="#2548D4"/>
+      <circle cx="300" cy="92" r="5" fill="#2548D4"/>
+      <!-- PR Gate 1: develop → qa -->
+      <rect x="370" y="78" width="72" height="28" rx="5" fill="#1B3DA8"/>
+      <text x="406" y="90" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PR GATE</text>
+      <text x="406" y="101" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">TM Approval</text>
+      <line x1="406" y1="106" x2="406" y2="140" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
+      <!-- qa line -->
+      <line x1="80" y1="140" x2="750" y2="140" stroke="#EF8933" stroke-width="2.5"/>
+      <circle cx="406" cy="140" r="5" fill="#EF8933"/>
+      <!-- PR Gate 2: qa → uat -->
+      <rect x="510" y="126" width="88" height="28" rx="5" fill="#7B2FBE"/>
+      <text x="554" y="138" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PR GATE</text>
+      <text x="554" y="149" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">TM + QA Sign-off</text>
+      <line x1="554" y1="154" x2="554" y2="188" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
+      <!-- uat line -->
+      <line x1="80" y1="188" x2="750" y2="188" stroke="#B45309" stroke-width="2.5"/>
+      <circle cx="554" cy="188" r="5" fill="#B45309"/>
+      <!-- PR Gate 3: uat → main -->
+      <rect x="626" y="174" width="100" height="28" rx="5" fill="#C62828"/>
+      <text x="676" y="186" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">CAB GATE</text>
+      <text x="676" y="197" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">RFC Approved</text>
+      <line x1="676" y1="202" x2="676" y2="233" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
+      <!-- main line -->
+      <line x1="80" y1="236" x2="760" y2="236" stroke="#1B3DA8" stroke-width="3"/>
+      <circle cx="676" cy="236" r="6" fill="#1B3DA8"/>
+      <!-- PROD arrow at end -->
+      <rect x="748" y="222" width="48" height="28" rx="5" fill="#EF8933"/>
+      <text x="772" y="234" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PROD</text>
+      <text x="772" y="245" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7" font-family="Segoe UI,Arial,sans-serif">🚀 LIVE</text>
+      <!-- hotfix line -->
+      <line x1="80" y1="265" x2="650" y2="265" stroke="#C62828" stroke-width="2" stroke-dasharray="5,3"/>
+      <line x1="650" y1="265" x2="676" y2="236" stroke="#C62828" stroke-width="1.5"/>
+      <text x="200" y="258" fill="#C62828" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Emergency fix — TM + CAB fast-track required</text>
+      <!-- Legend -->
+      <rect x="80" y="10" width="60" height="12" rx="3" fill="none" stroke="#7B8FA6" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <text x="146" y="21" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Developer-owned branch</text>
+      <rect x="280" y="10" width="60" height="12" rx="3" fill="#2548D4"/>
+      <text x="346" y="21" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Protected branch (no direct commits)</text>
+      <rect x="550" y="10" width="40" height="12" rx="3" fill="#C62828"/>
+      <text x="596" y="21" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Blocking gate</text>
+      <!-- Arrow marker def -->
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#EF8933"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3>8.3 Branch Naming Convention</h3>
+  <ul>
+    <li>Feature branches: <code>feature/{team}-{ticket-id}-{brief-description}</code> (e.g., <code>feature/TC-1234-clock-in-fix</code>)</li>
+    <li>Hotfix branches: <code>hotfix/{ticket-id}-{brief-description}</code></li>
+    <li>Release branches: <code>release/{version}</code></li>
+  </ul>
+
+  <h3>8.4 Pull Request Standards</h3>
+  <p>Every merge to <code>develop</code> or above requires a Pull Request. The following are enforced via branch protection policies:</p>
+
+  <div class="pipeline-flow">
+    <div class="pipe-step">Developer Opens PR</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step gate">CI Pipeline Runs</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step gate">Quality Gates</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step gate">Security Scan</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">2 Peer Reviews</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">TM Approval</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step green">Merge</div>
+  </div>
+
+  <table>
+    <tr><th>Gate</th><th>Requirement</th><th>Blocking?</th></tr>
+    <tr><td>Build</td><td>Zero compilation errors or warnings</td><td>Yes</td></tr>
+    <tr><td>Unit Tests</td><td>100% pass; ≥70% coverage</td><td>Yes</td></tr>
+    <tr><td>Code Complexity</td><td>All methods within cyclomatic complexity threshold</td><td>Yes</td></tr>
+    <tr><td>SAST (Snyk)</td><td>Zero High or Critical vulnerabilities</td><td>Yes</td></tr>
+    <tr><td>Secrets Scan</td><td>Zero hard-coded secrets, credentials, or API keys</td><td>Yes</td></tr>
+    <tr><td>Peer Reviews</td><td>Minimum 2 approved peer reviews</td><td>Yes</td></tr>
+    <tr><td>Technology Manager</td><td>Final approval before merge to develop and above</td><td>Yes</td></tr>
+    <tr><td>PR Template Completeness</td><td>PR description includes ticket reference, testing notes, risk flag</td><td>Yes (automated check)</td></tr>
+  </table>
+
+  <h3>8.5 Access Control (Source Code)</h3>
+  <table>
+    <tr><th>Role</th><th>Repository Access</th><th>Can Promote To</th></tr>
+    <tr><td>Developer</td><td>Read + contribute to feature branches</td><td>Develop (via PR)</td></tr>
+    <tr><td>Senior Developer</td><td>Read + contribute; review PRs</td><td>QA (via PR + TM approval)</td></tr>
+    <tr><td>Technology Manager</td><td>Full control of repo</td><td>UAT → Main</td></tr>
+    <tr><td>QA Engineer</td><td>Read-only</td><td>—</td></tr>
+    <tr><td>Architect / Gatekeeper</td><td>Read + review; admin on SDLC repo</td><td>—</td></tr>
+  </table>
+
+  <div class="rule-box">Developers own the feature branch. Only the Technology Manager (or designated senior) promotes code from develop → QA → UAT → main. This enforces segregation of duties and is non-negotiable across all paradigms.</div>
+
+  <h3>8.6 Access Review</h3>
+  <ul>
+    <li>Repository access reviewed monthly by Technology Manager</li>
+    <li>Access revoked immediately upon role change, team change, or departure</li>
+    <li>GitHub / Azure DevOps audit logs retained per ISO 27001 requirements (see Section 19)</li>
+  </ul>
+
+  <div class="callout callout-iso">
+    <div class="callout-label">ISO A.8.4 Evidence</div>
+    Repository access policy + monthly access review records + audit logs from GitHub/Azure DevOps constitute evidence for A.8.4 (Source code access). Technology Managers must retain access review records and provide repository names and access screenshots on request.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ S9 TESTING & QA -->
+<div class="section" id="s10">
+  <div class="section-header"><div class="section-num">10</div><h2>Testing &amp; Quality Assurance</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.29</span><span class="tag tag-iso">ISO A.8.33</span><span class="tag tag-all">All Paradigms</span></div>
+
+  <h3>9.1 Testing Levels</h3>
+  <table>
+    <tr><th>Level</th><th>Owner</th><th>When</th><th>Tools / Method</th><th>Exit Criteria</th></tr>
+    <tr><td>Unit Testing</td><td>Developer</td><td>During development; enforced at PR</td><td>Coverlet, pytest, JUnit, etc.</td><td>≥70% coverage; 100% pass</td></tr>
+    <tr><td>Integration Testing</td><td>Developer + QA</td><td>Post-merge to develop</td><td>Automated test suites; Postman</td><td>All integration contracts passing</td></tr>
+    <tr><td>QA (Quality Assurance Testing)</td><td>QA Team</td><td>Post-feature freeze (duration per team cadence and release scope)</td><td>Full regression + exploratory</td><td>Zero P1 defects; QA sign-off</td></tr>
+    <tr><td>UAT (User Acceptance Testing)</td><td>Business Stakeholders + QA</td><td>Post-QA sign-off (duration per business availability and stakeholder schedule)</td><td>Business scenario validation vs. FRD/AC</td><td>Stakeholder sign-off; zero critical defects</td></tr>
+    <tr><td>Performance Testing</td><td>Developer + QA</td><td>Pre-production (each release)</td><td>Azure Load Testing, k6, JMeter</td><td>API p95 ≤ 2s; error rate &lt; 1%</td></tr>
+    <tr><td>Security Testing</td><td>Developer (SAST) + QA (DAST)</td><td>SAST: every commit; DAST: pre-prod</td><td>Snyk, StackHawk, Wiz, Rapid7</td><td>Zero High/Critical unresolved</td></tr>
+    <tr><td>Regression Testing</td><td>QA Team</td><td>Every release cycle; hotfixes</td><td>Full automated suite</td><td>100% pass on regression suite</td></tr>
+  </table>
+
+  <h3>9.2 QA / UAT Entry &amp; Exit Gates</h3>
+  <table>
+    <tr><th></th><th>QA Entry</th><th>QA Exit</th><th>UAT Entry</th><th>UAT Exit</th></tr>
+    <tr>
+      <td><strong>Criteria</strong></td>
+      <td>Code complete; unit tests passing; internal demo done; dev env validated</td>
+      <td>Full regression passed; zero P1 defects; QA team sign-off documented</td>
+      <td>QA exit complete; QA certification; deployed to UAT environment</td>
+      <td>All new features tested vs. AC; stakeholder sign-off; zero critical defects</td>
+    </tr>
+  </table>
+
+  <h3>9.3 Test Data Handling</h3>
+  <div class="callout callout-critical">
+    <div class="callout-label">Mandatory Control — ISO A.8.33</div>
+    Production data MUST NOT be used in non-production environments unless it has been fully anonymized or masked. This applies to all paradigms including SaaS configuration and integration testing.
+  </div>
+  <ul>
+    <li>Non-production environments use synthetic, anonymized, or masked data only</li>
+    <li>ABM Active Directory / Entra ID user accounts may be used across environments (this is the only approved exception)</li>
+    <li>Any test data containing PII, financial records, or employee data must be masked before use in non-prod</li>
+    <li>Test data lifecycle: creation → use → deletion must be logged; periodic reviews confirm no residual production data in non-prod</li>
+    <li>Technology Managers are accountable for confirming test data handling within their team's environments</li>
+  </ul>
+
+  <div class="callout callout-iso">
+    <div class="callout-label">ISO A.8.29 Evidence</div>
+    QA sign-off records, UAT stakeholder sign-off documentation, SAST/DAST scan reports, and security test plans constitute evidence for A.8.29 (Security testing in development and acceptance).
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ S10 DEVSECOPS -->
+<div class="section" id="s11">
+  <div class="section-header"><div class="section-num">11</div><h2>DevSecOps &amp; Security Integration</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.25</span><span class="tag tag-iso">ISO A.8.26</span><span class="tag tag-iso">ISO A.8.27</span><span class="tag tag-iso">ISO A.8.28</span><span class="tag tag-iso">ISO A.8.29</span></div>
+
+  <h3>10.1 Security at Every Phase</h3>
+  <table>
+    <tr><th>Phase</th><th>Required Security Activity</th><th>Output</th></tr>
+    <tr><td>Requirements</td><td>Data classification; identify PII/financial data flows; stakeholder security requirements</td><td>Security section in FRD / requirements doc</td></tr>
+    <tr><td>Design</td><td>STRIDE threat model; OWASP Top 10 / OWASP Mobile Top 10 review; security baseline</td><td>Security Requirements Document; threat model in FTA</td></tr>
+    <tr><td>Development</td><td>Secure coding standards (Section 7); no secrets in code; dependency scanning</td><td>Coverlet reports; Snyk PR scan results</td></tr>
+    <tr><td>Code Review</td><td>Reviewers validate security checklist; security findings must be resolved before merge</td><td>PR approval with security sign-off</td></tr>
+    <tr><td>CI Pipeline</td><td>SAST on every commit; secrets scanning; dependency vulnerability check</td><td>Snyk report per build; pipeline pass/fail</td></tr>
+    <tr><td>Pre-Production</td><td>DAST scanning against QA/UAT environment</td><td>StackHawk / Wiz report; remediation tickets</td></tr>
+    <tr><td>Release</td><td>Security scan clean confirmation; no open High/Critical findings</td><td>Release checklist sign-off</td></tr>
+    <tr><td>Post-Release</td><td>Quarterly penetration testing; annual security assessment</td><td>Pen test report; remediation ADO tickets</td></tr>
+  </table>
+
+  <!-- ── DIAGRAM: SECURITY INTEGRATION ACROSS SDLC ── -->
+  <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:20px 16px; margin:16px 0; overflow-x:auto;">
+    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;">Security Touchpoints — Embedded at every phase, not bolted on at the end</div>
+    <div style="min-width:820px;">
+      <!-- Phase row -->
+      <div style="display:flex; gap:3px; margin-bottom:3px;">
+        <div style="width:80px; flex-shrink:0;"></div>
+        <div style="flex:1; background:#1B3DA8; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§5<br>REQUIREMENTS</div>
+        <div style="flex:1; background:#2548D4; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§6<br>DESIGN</div>
+        <div style="flex:1; background:#3B60D4; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§7<br>DEVELOPMENT</div>
+        <div style="flex:1; background:#A84800; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§9<br>CODE REVIEW</div>
+        <div style="flex:1; background:#EF8933; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§10<br>TESTING</div>
+        <div style="flex:1; background:#7B2FBE; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§12<br>PRE-PROD</div>
+        <div style="flex:1; background:#C62828; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§13<br>RELEASE</div>
+        <div style="flex:1; background:#0F766E; color:#fff; text-align:center; padding:6px 4px; border-radius:5px; font-size:9px; font-weight:800;">§14<br>ACCESS CTRL</div>
+      </div>
+      <!-- Security activity rows -->
+      <div style="display:flex; gap:3px; margin-bottom:3px; align-items:stretch;">
+        <div style="width:80px; flex-shrink:0; font-size:9px; font-weight:700; color:#7B2FBE; display:flex; align-items:center; padding-right:4px;">Threat<br>Modeling</div>
+        <div style="flex:1; background:#F3E8FF; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#6B21A8; text-align:center;">Data classification<br>PII/financial flows</div>
+        <div style="flex:1; background:#7B2FBE; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#fff; text-align:center; font-weight:700;">STRIDE threat<br>model required</div>
+        <div style="flex:1; background:#F3E8FF; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#6B21A8; text-align:center;">OWASP checklist<br>in review</div>
+        <div style="flex:1; background:#F3E8FF; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#6B21A8; text-align:center;">Security finding<br>review in PR</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+      </div>
+      <div style="display:flex; gap:3px; margin-bottom:3px; align-items:stretch;">
+        <div style="width:80px; flex-shrink:0; font-size:9px; font-weight:700; color:#C62828; display:flex; align-items:center; padding-right:4px;">SAST<br>(Snyk)</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#C62828; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#fff; text-align:center; font-weight:700;">Every commit<br>⛔ BLOCKING</div>
+        <div style="flex:1; background:#C62828; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#fff; text-align:center; font-weight:700;">PR gate<br>⛔ BLOCKING</div>
+        <div style="flex:1; background:#FDECEA; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#C62828; text-align:center;">Regression<br>scan</div>
+        <div style="flex:1; background:#FDECEA; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#C62828; text-align:center;">Pre-deploy<br>check</div>
+        <div style="flex:1; background:#FDECEA; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#C62828; text-align:center;">Clean scan<br>required</div>
+        <div style="flex:1; background:#FDECEA; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#C62828; text-align:center;">Daily dep.<br>scan</div>
+      </div>
+      <div style="display:flex; gap:3px; margin-bottom:3px; align-items:stretch;">
+        <div style="width:80px; flex-shrink:0; font-size:9px; font-weight:700; color:#B45309; display:flex; align-items:center; padding-right:4px;">DAST<br>(StackHawk)</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#FEF3C7; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#92400E; text-align:center;">QA env<br>DAST run</div>
+        <div style="flex:1; background:#B45309; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#fff; text-align:center; font-weight:700;">UAT env<br>⛔ BLOCKING</div>
+        <div style="flex:1; background:#FEF3C7; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#92400E; text-align:center;">Report<br>required</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+      </div>
+      <div style="display:flex; gap:3px; margin-bottom:3px; align-items:stretch;">
+        <div style="width:80px; flex-shrink:0; font-size:9px; font-weight:700; color:#A84800; display:flex; align-items:center; padding-right:4px;">Secrets<br>Scan</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#A84800; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#fff; text-align:center; font-weight:700;">Every commit<br>⛔ ZERO tolerance</div>
+        <div style="flex:1; background:#A84800; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#fff; text-align:center; font-weight:700;">PR gate<br>⛔ BLOCKING</div>
+        <div style="flex:1; background:#FFF0E0; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#A84800; text-align:center;">Repo scan</div>
+        <div style="flex:1; background:#FFF0E0; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#A84800; text-align:center;">Final check</div>
+        <div style="flex:1; background:#FFF0E0; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#A84800; text-align:center;">Confirmed</div>
+        <div style="flex:1; background:#FFF0E0; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#A84800; text-align:center;">Continuous</div>
+      </div>
+      <div style="display:flex; gap:3px; align-items:stretch;">
+        <div style="width:80px; flex-shrink:0; font-size:9px; font-weight:700; color:#0F766E; display:flex; align-items:center; padding-right:4px;">Pen Test<br>/ Audit</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#F8FAFC; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#CBD5E8; text-align:center;">—</div>
+        <div style="flex:1; background:#CCFBF1; border-radius:4px; padding:5px 4px; font-size:8.5px; color:#0F766E; text-align:center; font-weight:700;">Quarterly<br>pen test</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>10.2 Approved Security Toolchain</h3>
+  <table>
+    <tr><th>Tool</th><th>Type</th><th>Trigger</th><th>Blocking</th></tr>
+    <tr><td>Snyk</td><td>SAST + Dependency scanning</td><td>Every commit / PR</td><td>Yes — High/Critical</td></tr>
+    <tr><td>StackHawk</td><td>DAST</td><td>Pre-production deploy</td><td>Yes — High/Critical</td></tr>
+    <tr><td>Wiz</td><td>Cloud security posture / IaC scanning</td><td>IaC commits + continuous</td><td>Yes — Critical findings</td></tr>
+    <tr><td>Rapid7</td><td>Vulnerability management</td><td>Continuous; on-demand</td><td>No — remediation tracked</td></tr>
+    <tr><td>Git secret scanning</td><td>Secrets detection</td><td>Every commit</td><td>Yes — any finding</td></tr>
+  </table>
+
+  <h3>10.3 OWASP Compliance</h3>
+  <ul>
+    <li><strong>Full-Code / APIs:</strong> OWASP Top 10 — validated via SAST + DAST + code review checklist</li>
+    <li><strong>Mobile applications:</strong> OWASP Mobile Top 10 — addressed in design and validated in testing</li>
+    <li><strong>Infrastructure / Cloud:</strong> CIS Benchmarks + Cloud Security Alliance controls — enforced via Wiz guardrails</li>
+  </ul>
+
+  <h3>10.4 Secret &amp; Credential Management</h3>
+  <div class="rule-box">Zero secrets in code or configuration files committed to Git. All secrets, API keys, connection strings, and certificates must be stored in Azure Key Vault or equivalent approved secret management service. This is a zero-tolerance control — any detected secret in a repository triggers immediate rotation and root cause remediation.</div>
+  <ul>
+    <li>Application-level secrets: Azure Key Vault (or equivalent per platform)</li>
+    <li>IaC secrets: Terraform Cloud / pipeline secret variables — never in .tf files</li>
+    <li>Integration credentials (Boomi): Process extensions and connection definitions only</li>
+    <li>Secret rotation: Automated where supported; minimum quarterly manual rotation</li>
+    <li>Rotation log: SNOW ticket or ADO work item required for each rotation event</li>
+  </ul>
+
+  <h3>10.5 Threat Modeling</h3>
+  <p>STRIDE threat modeling is required for all new services, data stores, and external integrations. For incremental feature additions, a lightweight security impact assessment is sufficient. Threat models are stored in SharePoint and referenced in the FTA.</p>
+</div>
+
+<!-- ════════════════════════════════════════ S11 ENVIRONMENT MANAGEMENT -->
+<div class="section" id="s12">
+  <div class="section-header"><div class="section-num">12</div><h2>Environment Management &amp; Deployment</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.31</span><span class="tag tag-all">All Paradigms</span></div>
+
+  <h3>11.1 Environment Tiers</h3>
+  <div class="callout callout-iso">
+    <div class="callout-label">ISO A.8.31 — Mandatory Control</div>
+    Development, testing, and production environments must be separated and independently secured. This applies to all paradigms including SaaS and integration platforms (separate instances/tenants are required).
+  </div>
+  <table>
+    <tr><th>Environment</th><th>Purpose</th><th>Data</th><th>Developer Access</th><th>Promotion Authority</th></tr>
+    <tr><td><strong>DEV</strong></td><td>Active development and unit testing</td><td>Synthetic / mock only</td><td>Read + write</td><td>Auto on PR merge to develop</td></tr>
+    <tr><td><strong>QA</strong></td><td>Quality assurance testing; QA regression</td><td>Anonymized production-like</td><td>Read-only post-deploy</td><td>Technology Manager / Senior Dev</td></tr>
+    <tr><td><strong>UAT</strong></td><td>Business stakeholder validation</td><td>Production-like (masked)</td><td>Read-only</td><td>Technology Manager</td></tr>
+    <tr><td><strong>PROD</strong></td><td>Live environment</td><td>Live production data</td><td>Read-only (emergency access logged)</td><td>Technology Manager + CAB approval</td></tr>
+  </table>
+
+  <div class="callout callout-warn" style="margin-top:14px;">
+    <div class="callout-label">Environment Topology — Adapt to Your Platform</div>
+    The DEV / QA / UAT / PROD model is the standard baseline. Teams with more complex environments (for example, Oracle environments may include multiple development instances, sandbox tenants, conference room pilot environments, and staging) should document their specific topology in their child SDLC. The principle of separation — development work isolated from production — is non-negotiable. The exact number and naming of environments is team-specific.
+  </div>
+
+  <div class="callout callout-iso" style="margin-top:8px;">
+    <div class="callout-label">Low-Code / No-Code — Configuration Promotion, Not Code Deployment</div>
+    For low-code (Boomi, Logic Apps) and no-code (Power Apps) platforms, "deployment" means promoting a configuration or component from one environment to another — not compiling or packaging a build artifact. The same promotion gates apply: TM approval, DAST and testing confirmation, and CAB approval for production. Child SDLCs define the platform-specific promotion mechanism.
+  </div>
+
+  <h3>11.2 Deployment Pipeline Requirements</h3>
+  <div class="rule-box">No manual deployments. All deployments — to any environment — must be executed via automated CI/CD pipelines. Deploying from a local machine, IDE, or management console is prohibited except during a declared emergency with Technology Manager and Executive Sponsor authorization, and must be logged as a SNOW ticket within 24 hours.</div>
+
+  <div class="pipeline-flow">
+    <div class="pipe-step green">Feature PR Merged</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Build + Unit Tests</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step gate">Quality Gates</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step gate">SAST Scan</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Deploy → DEV</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step warn">TM Gate</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Deploy → QA</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step gate">DAST + Perf</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step warn">TM + QA Gate</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Deploy → UAT</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step warn">CAB + Stakeholder</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step green">Deploy → PROD</div>
+  </div>
+
+  <!-- ── DIAGRAM: ENVIRONMENT PROMOTION FLOW ── -->
+  <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:20px 16px; margin:16px 0; overflow-x:auto;">
+    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;">Environment Promotion — All promotions are gated, pipeline-driven, and authorized</div>
+    <div style="display:flex; align-items:flex-start; gap:0; min-width:780px;">
+
+      <!-- DEV -->
+      <div style="flex:1; text-align:center;">
+        <div style="background:#2548D4; border-radius:8px 8px 0 0; padding:10px 6px; color:#fff;">
+          <div style="font-size:18px;">🔧</div>
+          <div style="font-size:13px; font-weight:800; margin-top:3px;">DEV</div>
+        </div>
+        <div style="border:1px solid #CBD5E8; border-top:none; border-radius:0 0 8px 8px; padding:10px 6px; background:#fff; font-size:10px;">
+          <div style="color:#1B3DA8; font-weight:700; margin-bottom:4px;">Developer Access</div>
+          <div style="color:#5C6B84; line-height:1.6;">Read + Write<br>Synthetic data<br>Auto-deploy on PR</div>
+          <div style="background:#E8EEF7; border-radius:4px; padding:4px; margin-top:6px; font-size:9px; color:#2548D4; font-weight:700;">Unit Tests · Build<br>SAST Scan</div>
+        </div>
+      </div>
+
+      <!-- Gate 1 -->
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:18px; gap:4px; min-width:80px;">
+        <div style="font-size:18px; color:#1B3DA8;">→</div>
+        <div style="background:#1B3DA8; color:#fff; border-radius:6px; padding:6px 8px; text-align:center; font-size:9px; font-weight:800; line-height:1.4;">TM<br>GATE</div>
+        <div style="font-size:8.5px; color:#5C6B84; text-align:center; line-height:1.4;">Senior Dev<br>or TM</div>
+      </div>
+
+      <!-- QA -->
+      <div style="flex:1; text-align:center;">
+        <div style="background:#A84800; border-radius:8px 8px 0 0; padding:10px 6px; color:#fff;">
+          <div style="font-size:18px;">🧪</div>
+          <div style="font-size:13px; font-weight:800; margin-top:3px;">QA</div>
+        </div>
+        <div style="border:1px solid #CBD5E8; border-top:none; border-radius:0 0 8px 8px; padding:10px 6px; background:#fff; font-size:10px;">
+          <div style="color:#1B3DA8; font-weight:700; margin-bottom:4px;">QA Team Access</div>
+          <div style="color:#5C6B84; line-height:1.6;">Read-only (devs)<br>Anonymized data<br>Full QA regression</div>
+          <div style="background:#FFF0E0; border-radius:4px; padding:4px; margin-top:6px; font-size:9px; color:#A84800; font-weight:700;">Full Regression<br>DAST · Load Test</div>
+        </div>
+      </div>
+
+      <!-- Gate 2 -->
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:18px; gap:4px; min-width:80px;">
+        <div style="font-size:18px; color:#1B3DA8;">→</div>
+        <div style="background:#7B2FBE; color:#fff; border-radius:6px; padding:6px 8px; text-align:center; font-size:9px; font-weight:800; line-height:1.4;">TM + QA<br>GATE</div>
+        <div style="font-size:8.5px; color:#5C6B84; text-align:center; line-height:1.4;">QA Sign-off<br>Required</div>
+      </div>
+
+      <!-- UAT -->
+      <div style="flex:1; text-align:center;">
+        <div style="background:#B45309; border-radius:8px 8px 0 0; padding:10px 6px; color:#fff;">
+          <div style="font-size:18px;">✅</div>
+          <div style="font-size:13px; font-weight:800; margin-top:3px;">UAT</div>
+        </div>
+        <div style="border:1px solid #CBD5E8; border-top:none; border-radius:0 0 8px 8px; padding:10px 6px; background:#fff; font-size:10px;">
+          <div style="color:#1B3DA8; font-weight:700; margin-bottom:4px;">Stakeholder Access</div>
+          <div style="color:#5C6B84; line-height:1.6;">Read-only (devs)<br>Production-like<br>Stakeholder validation</div>
+          <div style="background:#FEF3C7; border-radius:4px; padding:4px; margin-top:6px; font-size:9px; color:#92400E; font-weight:700;">Business Validation<br>Stakeholder Sign-off</div>
+        </div>
+      </div>
+
+      <!-- Gate 3 -->
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:18px; gap:4px; min-width:80px;">
+        <div style="font-size:18px; color:#1B3DA8;">→</div>
+        <div style="background:#C62828; color:#fff; border-radius:6px; padding:6px 8px; text-align:center; font-size:9px; font-weight:800; line-height:1.4;">CAB + RFC<br>GATE</div>
+        <div style="font-size:8.5px; color:#5C6B84; text-align:center; line-height:1.4;">RFC Approved<br>Go/No-Go</div>
+      </div>
+
+      <!-- PROD -->
+      <div style="flex:1; text-align:center;">
+        <div style="background:#EF8933; border-radius:8px 8px 0 0; padding:10px 6px; color:#fff;">
+          <div style="font-size:18px;">🚀</div>
+          <div style="font-size:13px; font-weight:800; margin-top:3px;">PROD</div>
+        </div>
+        <div style="border:2px solid #EF8933; border-top:none; border-radius:0 0 8px 8px; padding:10px 6px; background:#FFF0E0; font-size:10px;">
+          <div style="color:#1B3DA8; font-weight:700; margin-bottom:4px;">TM Read + Deploy</div>
+          <div style="color:#5C6B84; line-height:1.6;">Live data<br>Blue-Green deploy<br>99.9% SLA</div>
+          <div style="background:#EF8933; border-radius:4px; padding:4px; margin-top:6px; font-size:9px; color:#fff; font-weight:700;">Zero-Downtime<br>Rollback Ready</div>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:12px; background:#FDECEA; border-radius:6px; padding:8px 14px; font-size:11px; color:#C62828; font-weight:700; text-align:center;">
+      ⛔ No manual deployments from local machines or IDEs — all promotions execute via automated CI/CD pipeline only
+    </div>
+  </div>
+
+  <h3>11.3 Blue-Green Deployment (Production)</h3>
+  <p>All production deployments use a blue-green strategy to achieve zero downtime and instant rollback capability:</p>
+  <ol>
+    <li>Deploy new version to inactive (green) environment slot</li>
+    <li>Run automated smoke tests against green slot</li>
+    <li>Monitor performance and error metrics for defined stabilization period</li>
+    <li>Switch traffic to green on QA production certification</li>
+    <li>Retain blue slot for 24-hour rollback window</li>
+  </ol>
+
+  <h3>11.4 Rollback Procedures</h3>
+  <ul>
+    <li><strong>Authority:</strong> Technology Manager or on-call engineer</li>
+    <li><strong>Trigger:</strong> P1 defect, data integrity issue, or security event post-deployment</li>
+    <li><strong>Method:</strong> Revert to blue environment (blue-green) or re-run previous pipeline release</li>
+    <li><strong>Communication:</strong> Immediate stakeholder notification via established channel</li>
+    <li><strong>Documentation:</strong> Rollback SNOW ticket + post-incident RCA within 24 hours</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════ S12 RELEASE & CHANGE MGMT -->
+<div class="section" id="s13">
+  <div class="section-header"><div class="section-num">13</div><h2>Release &amp; Change Management</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-all">All Paradigms</span><span class="tag tag-iso">ISO A.8.25</span></div>
+
+  <h3>12.1 Release Types</h3>
+  <table>
+    <tr><th>Type</th><th>Trigger</th><th>Cadence</th><th>Testing Required</th></tr>
+    <tr><td>Planned Release</td><td>Sprint roadmap</td><td>As defined by team (quarterly or faster)</td><td>Full QA + UAT cycle</td></tr>
+    <tr><td>Supplemental Release</td><td>Non-critical fix or enhancement</td><td>As needed</td><td>Targeted + regression</td></tr>
+    <tr><td>Hotfix</td><td>P1 production issue</td><td>Expedited (hours)</td><td>Expedited but must pass SAST + smoke tests</td></tr>
+    <tr><td>Emergency Change</td><td>Security incident, data integrity risk, or regulatory mandate</td><td>Immediate (within hours)</td><td>Minimum viable testing required; retrospective CAB review mandatory within 48 hours; post-change RCA within 72 hours</td></tr>
+    <tr><td>Break-Fix</td><td>Production defect causing business impact, not classified as a security event</td><td>Expedited (same or next business day)</td><td>Targeted fix testing plus regression on affected area; standard RFC/CAB unless urgency warrants fast-track CAB approval</td></tr>
+  </table>
+
+  <h3>12.2 CAB / RFC Process</h3>
+  <div class="rule-box">Every production deployment requires a Request for Change (RFC) submitted to and approved by the Change Advisory Board (CAB) before the deployment window. No exceptions except declared security emergencies (which require retrospective CAB review within 48 hours).</div>
+
+  <p>RFC Template: <code>templates/rfc-cab-template.html</code></p>
+  <table>
+    <tr><th>RFC Section</th><th>Required Content</th></tr>
+    <tr><td>Change description</td><td>What is being deployed; impacted systems and components</td></tr>
+    <tr><td>Business justification</td><td>Why this change is needed; urgency</td></tr>
+    <tr><td>Risk assessment</td><td>Impact if it fails; blast radius; data risk</td></tr>
+    <tr><td>Rollback plan</td><td>How to revert; time to rollback; rollback trigger criteria</td></tr>
+    <tr><td>Testing evidence</td><td>QA sign-off, QA report, SAST/DAST reports</td></tr>
+    <tr><td>Implementation runbook</td><td>Step-by-step deployment instructions; verification steps</td></tr>
+    <tr><td>Communication plan</td><td>Who is notified; maintenance window if applicable</td></tr>
+  </table>
+
+  <div class="callout callout-warn">
+    <div class="callout-label">Change Management Review Required Before Finalising</div>
+    Section 12.2 (CAB / RFC Process) should be reviewed with Ricardo Relego (Change Management) to confirm alignment with ABM's enterprise change management framework and ServiceNow RFC workflow before this document is published.
+  </div>
+
+  <h3>12.3 Release Criteria (Go / No-Go)</h3>
+  <ul>
+    <li>All P1 stories complete; QA regression passed with sign-off</li>
+    <li>QA exit criteria met; UAT stakeholder sign-off obtained</li>
+    <li>Security scans clean — zero unresolved High/Critical findings</li>
+    <li>Performance benchmarks met (load test results within thresholds)</li>
+    <li>Release notes generated from ADO / equivalent backlog system</li>
+    <li>Production runbook reviewed and approved by development team</li>
+    <li>RFC submitted and CAB approved</li>
+    <li>Go/No-Go decision recorded with stakeholder sign-off in ADO</li>
+  </ul>
+
+  <h3>12.4 Outsourced Development Controls</h3>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.30</span></div>
+  <p>When any ABM system component is developed or maintained by a third party:</p>
+  <ul>
+    <li>Contract must include security clauses requiring OWASP compliance, vulnerability disclosure, and SDLC adherence</li>
+    <li>Vendor must provide current SOC 2 Type 2 report or ISO 27001 certification annually</li>
+    <li>Any ABM customizations or extensions to third-party platforms must follow this SDLC (CAB, SAST, environment separation)</li>
+    <li>Code review of vendor-delivered code is required before production acceptance</li>
+    <li>Vendor access to ABM systems is governed by least-privilege and time-bound access policies</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════ S14 ACCESS CONTROL & SOD -->
+<div class="section" id="s14">
+  <div class="section-header"><div class="section-num">14</div><h2>Access Control &amp; Segregation of Duties</h2></div>
+  <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.4</span><span class="tag tag-iso">ISO A.8.26</span><span class="tag tag-all">All Paradigms</span></div>
+
+  <h3>14.1 Core Principle</h3>
+  <div class="rule-box">The person who builds a change is NEVER the person who approves it for production. Segregation of duties between developer, reviewer, and promoter is non-negotiable across all development paradigms.</div>
+
+  <h3>14.2 Access Request Process</h3>
+  <ol>
+    <li>Submit access request via ADO / ServiceNow with business justification</li>
+    <li>Technology Manager reviews and approves (or rejects with documented reason)</li>
+    <li>Access provisioned at minimum required permission level (least privilege)</li>
+    <li>Monthly access reviews by Technology Manager for all environments</li>
+    <li>Quarterly access reviews reported to the Executive Sponsor for audit evidence</li>
+    <li>Immediate revocation on role change, team transfer, or departure</li>
+  </ol>
+
+  <div class="callout callout-warn" style="margin-bottom:14px;">
+    <div class="callout-label">Access Complexity Varies by Platform</div>
+    The baseline role/environment matrix below applies to full-code and integration platforms. SaaS platforms such as Oracle (HCM, ERP) can have significantly more complex access topologies — Oracle environments may span multiple development instances, sandboxes, and pilot configurations, each with their own role hierarchy. Oracle-specific access controls are addressed in the Oracle SaaS/PaaS child SDLC (Landry Baggett / Anjali Taswani). Until that child SDLC is published, Oracle access provisioning requires Technology Manager approval for all environments and should be reviewed with the InfoSec team.
+  </div>
+
+  <h3>14.3 Role-Based Access by Environment</h3>
+  <table>
+    <tr><th>Role</th><th>DEV</th><th>QA</th><th>UAT</th><th>PROD</th></tr>
+    <tr><td>Developer</td><td>Read + Write</td><td>Read-only</td><td>No access</td><td>No access</td></tr>
+    <tr><td>QA Engineer</td><td>Read-only</td><td>Read + Execute tests</td><td>Read + Execute tests</td><td>No access</td></tr>
+    <tr><td>Technology Manager</td><td>Full</td><td>Full</td><td>Full</td><td>Read + Deploy (via pipeline)</td></tr>
+    <tr><td>Business Stakeholder</td><td>No access</td><td>No access</td><td>UAT-specific read</td><td>No access</td></tr>
+    <tr><td>Support Team</td><td>No access</td><td>No access</td><td>No access</td><td>Read-only + playbook access</td></tr>
+    <tr><td>Architect / Gatekeeper</td><td>Read-only</td><td>Read-only</td><td>Read-only</td><td>Read-only</td></tr>
+  </table>
+
+  <h3>14.4 Privileged Access</h3>
+  <ul>
+    <li>Privileged / admin access to production systems is strictly time-bound and requires explicit TM + Executive Sponsor authorization</li>
+    <li>All privileged access sessions must be logged; logs reviewed monthly</li>
+    <li>No standing admin access to production for any developer role</li>
+    <li>Emergency production access via break-glass process — SNOW ticket required</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════ S15 ISO 27001 MAPPING -->
+<div class="section" id="s15">
+  <div class="section-header"><div class="section-num">15</div><h2>ISO 27001 Compliance Mapping</h2></div>
+
+  <p>The following table maps each ISO 27001 control (A.8 Technological Controls) assigned to the Executive Sponsor to the specific SDLC sections and artifacts that provide evidence of compliance.</p>
+
+  <table>
+    <tr><th>Control</th><th>Title</th><th>SDLC Section(s)</th><th>Evidence Artifacts</th><th>Owner</th></tr>
+    <tr>
+      <td><strong>A.8.4</strong></td>
+      <td>Source code access</td>
+      <td>Section 9 (Git Workflow), Section 14 (Access Control)</td>
+      <td>GitHub/ADO audit logs; access policy; monthly access review records; repo access screenshots</td>
+      <td>Technology Managers</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.11</strong></td>
+      <td>Data masking</td>
+      <td>Section 8 (Data Security), Section 10.3 (Test Data), Section 14 (Access Control)</td>
+      <td>Data classification records; PII impact assessments; masking configuration screenshots; data flow inventory; test data handling policy; restricted view RBAC evidence</td>
+      <td>Technology Managers</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.25</strong></td>
+      <td>Secure development lifecycle</td>
+      <td>This entire document</td>
+      <td>This SDLC document; child SDLC documents; CI/CD pipeline scan reports; RFC examples; training records</td>
+      <td>Chief Architect (master); TMs (child)</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.26</strong></td>
+      <td>Application security requirements</td>
+      <td>Section 6 (Design/FTA), Section 11 (DevSecOps), Section 14 (Access)</td>
+      <td>FTA documents with security sections; RBAC screenshots; risk assessment docs; security architecture diagrams</td>
+      <td>Technology Managers</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.27</strong></td>
+      <td>Secure system architecture</td>
+      <td>Section 6 (Architecture), Section 11.3 (OWASP), Section 11.5 (Threat Modeling)</td>
+      <td>Approved FTA documents; architecture diagrams; STRIDE threat models; ADRs; architecture review minutes</td>
+      <td>Architects / TMs</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.28</strong></td>
+      <td>Secure coding</td>
+      <td>Section 7 (Dev Standards), Section 9.4 (PR gates), Section 11.2 (Security toolchain)</td>
+      <td>Secure coding standards doc; SAST reports (Snyk) per pipeline run; PR approval records with security findings; training logs</td>
+      <td>Technology Managers</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.29</strong></td>
+      <td>Security testing in development</td>
+      <td>Section 10 (Testing), Section 11 (DevSecOps)</td>
+      <td>Security test plans; Snyk + StackHawk reports; penetration test reports; UAT sign-off documentation; QA regression results</td>
+      <td>Technology Managers + QA</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.30</strong></td>
+      <td>Outsourced development</td>
+      <td>Section 13.4 (Outsourced)</td>
+      <td>Vendor contracts with security clauses; SOC 2 Type 2 reports; code review records for vendor-delivered code; CAB evidence for customizations</td>
+      <td>Technology Managers + Procurement</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.31</strong></td>
+      <td>Environment separation</td>
+      <td>Section 12 (Environment Management)</td>
+      <td>Azure resource group structure per env; network diagrams; access control lists; change logs; environment access policy</td>
+      <td>Technology Managers</td>
+    </tr>
+    <tr>
+      <td><strong>A.8.33</strong></td>
+      <td>Test data handling</td>
+      <td>Section 10.3 (Test Data)</td>
+      <td>Test data policy; data masking logs; confirmation no production data in non-prod; retention and disposal records</td>
+      <td>Technology Managers</td>
+    </tr>
+    <tr>
+      <td><strong>A.5.13</strong></td>
+      <td>Labelling of information</td>
+      <td>Section 11 (Security), Section 14 (Access)</td>
+      <td>Data classification table; labeling/tagging procedures; evidence of classification applied in cloud environments</td>
+      <td>Trilok Manchinila + InfoSec</td>
+    </tr>
+    <tr>
+      <td><strong>A.5.23</strong></td>
+      <td>Cloud services security</td>
+      <td>Section 11 (DevSecOps), Section 12 (Environments), Section 13.4 (Outsourced)</td>
+      <td>Cloud usage register; Wiz guardrail reports; resource lifecycle tracking; provider SOC 2 Type 2 reports; shared responsibility matrix</td>
+      <td>Trilok Manchinila + Cloud Security</td>
+    </tr>
+  </table>
+
+  <div class="card">
+    <div class="card-title">Evidence Retention Requirements</div>
+    <table>
+      <tr><th>Artifact Type</th><th>Retention Period</th><th>Storage Location</th></tr>
+      <tr><td>Code / PR history (audit logs)</td><td>7 years</td><td>Azure DevOps / GitHub</td></tr>
+      <tr><td>Deployment logs</td><td>2 years</td><td><a href="https://dev.azure.com/abm-ss/AIFoundations/" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">Azure DevOps pipeline history</a> / Log Analytics</td></tr>
+      <tr><td>Security scan results (SAST/DAST)</td><td>2 years</td><td>Snyk dashboard + pipeline artifacts</td></tr>
+      <tr><td>Access review records</td><td>2 years</td><td>SharePoint / ADO</td></tr>
+      <tr><td>FTA / design documents</td><td>Life of system + 3 years</td><td>SharePoint with version history</td></tr>
+      <tr><td>Penetration test reports</td><td>3 years</td><td>SharePoint (InfoSec folder)</td></tr>
+      <tr><td>Training completion records</td><td>3 years</td><td>HR system + TM SharePoint folder</td></tr>
+      <tr><td>Incident RCA reports</td><td>3 years</td><td>SharePoint + ADO work item</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ S16 GUARDRAILS & ENFORCEMENT -->
+<div class="section" id="s16">
+  <div class="section-header"><div class="section-num">16</div><h2>Guardrails &amp; Enforcement</h2></div>
+
+  <p>Controls in this SDLC are enforced at three layers. See <code>guardrails/sdlc-guardrails.html</code> for the full enforcement playbook.</p>
+
+  <table>
+    <tr><th>Layer</th><th>Mechanism</th><th>What It Enforces</th></tr>
+    <tr><td><strong>Pipeline</strong> (automated)</td><td>CI/CD branch protection + pipeline gates</td><td>Unit test coverage, SAST, secrets scan, complexity, build pass</td></tr>
+    <tr><td><strong>Process</strong> (human)</td><td>PR review requirements, CAB, Three Amigos, FTA approval</td><td>Peer reviews, TM approval, design sign-off, CAB for production</td></tr>
+    <tr><td><strong>Governance</strong> (structural)</td><td>Gatekeeper review, quarterly SDLC reviews, access reviews</td><td>Child SDLC compliance, access control, ISO evidence completeness</td></tr>
+  </table>
+
+  <h3>16.1 Non-Negotiable Controls (Zero-Tolerance)</h3>
+  <div class="callout callout-critical">
+    <div class="callout-label">Zero-Tolerance Controls</div>
+    The following controls admit no exceptions without documented approval from the Executive Sponsor:
+    <ul style="margin-top:8px;">
+      <li>No secrets / credentials committed to any Git repository</li>
+      <li>No direct commits to <code>main</code>, <code>uat</code>, or <code>qa</code> branches</li>
+      <li>No production deployments without CAB-approved RFC</li>
+      <li>No production data in non-production environments (unanonymized)</li>
+      <li>Builder ≠ promoter — segregation of duties enforced at all times</li>
+      <li>All deployments via pipeline — no manual deployments from local machines</li>
+    </ul>
+  </div>
+
+  <h3>16.2 Exception Process</h3>
+  <ol>
+    <li>Requester documents the exception: control being waived, business justification, compensating control, duration</li>
+    <li>Technology Manager endorses in writing</li>
+    <li>SDLC Gatekeeper (Srinivas Peri) reviews technical risk</li>
+    <li>Trilok Manchinila approves (required for any zero-tolerance control exception)</li>
+    <li>Exception logged in the exception register with expiry date</li>
+    <li>Exception reviewed at next quarterly SDLC review</li>
+  </ol>
+</div>
+
+<!-- ════════════════════════════════════════ S17 CHILD SDLC MODEL -->
+<div class="section" id="s17">
+  <div class="section-header"><div class="section-num">17</div><h2>Child SDLC Extension Model</h2></div>
+
+  <h3>17.1 How to Create a Child SDLC</h3>
+  <ol>
+    <li>Fork or branch <a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>abm-it/sdlc-standards</code></a> under your team's directory</li>
+    <li>Start from the Child SDLC Template (<code>templates/child-sdlc-attestation.html</code>)</li>
+    <li>For each section of this master: mark as "Adopted as-is", "Extended — [describe additions]", or "Not Applicable — [justified reason]"</li>
+    <li>Add team-specific sections (technology stack, tools, ceremonies, naming conventions)</li>
+    <li>Submit PR to the <a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>sdlc-standards</code></a> repo for gatekeeper review</li>
+    <li>Gatekeeper approves → document published as the team's official child SDLC</li>
+  </ol>
+
+  <h3>17.2 What Child SDLCs May Add</h3>
+  <ul>
+    <li>Technology-specific tooling (e.g., Coverlet for .NET, test mode for Boomi)</li>
+    <li>Platform-specific release processes (e.g., MDM for mobile app deployment)</li>
+    <li>Additional ceremonies or artifacts relevant to the team</li>
+    <li>Stricter thresholds than the master (e.g., ≥80% test coverage instead of ≥70%)</li>
+    <li>Team-specific branching conventions within the universal model</li>
+  </ul>
+
+  <h3>17.3 What Child SDLCs May NOT Do</h3>
+  <ul>
+    <li>Remove, weaken, or override any control defined in this master</li>
+    <li>Lower thresholds below master minimums</li>
+    <li>Exempt any paradigm from the zero-tolerance controls</li>
+    <li>Skip the Three Amigos, FTA, CAB/RFC, or peer review requirements</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════ S15 TEMPLATES REFERENCE -->
+<div class="section" id="s18">
+  <div class="section-header"><div class="section-num">18</div><h2>Templates &amp; Artifacts Reference</h2></div>
+
+  <p>All templates are version-controlled in <a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>abm-it/sdlc-standards/templates/</code></a>. Use the current version from Git — do not copy from SharePoint unless it references the same Git version.</p>
+
+  <table>
+    <tr><th>Template</th><th>File</th><th>Required For</th><th>ISO Control</th></tr>
+    <tr><td>Feature Technology Approach (FTA)</td><td><a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards?path=/templates/fta-template.html" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>templates/fta-template.html</code></a></td><td>All significant features and changes</td><td>A.8.26, A.8.27</td></tr>
+    <tr><td>Functional Requirements Document (FRD)</td><td><a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards?path=/templates/frd-template.html" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>templates/frd-template.html</code></a></td><td>Full-code and integration features</td><td>A.8.26</td></tr>
+    <tr><td>Architecture Decision Record (ADR)</td><td><a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards?path=/templates/adr-template.html" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>templates/adr-template.html</code></a></td><td>Significant architectural decisions</td><td>A.8.27</td></tr>
+    <tr><td>RFC / CAB Change Request</td><td><a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards?path=/templates/rfc-cab-template.html" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>templates/rfc-cab-template.html</code></a></td><td>Every production deployment</td><td>A.8.25, A.8.29</td></tr>
+    <tr><td>Child SDLC Attestation</td><td><a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards?path=/templates/child-sdlc-attestation.html" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>templates/child-sdlc-attestation.html</code></a></td><td>All team child SDLC documents</td><td>A.8.25</td></tr>
+    <tr><td>Security Assessment</td><td><a href="https://dev.azure.com/abm-ss/AIFoundations/_git/sdlc-standards?path=/templates/security-assessment-template.html" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;"><code>templates/security-assessment-template.html</code></a></td><td>New services, data stores, integrations</td><td>A.8.26, A.8.27</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════ S16 APPENDIX -->
+<div class="section" id="s19">
+  <div class="section-header"><div class="section-num">19</div><h2>Appendix</h2></div>
+
+  <h3>A. Acronyms</h3>
+  <table>
+    <tr><th>Acronym</th><th>Definition</th></tr>
+    <tr><td>AC</td><td>Acceptance Criteria</td></tr>
+    <tr><td>ADR</td><td>Architecture Decision Record</td></tr>
+    <tr><td>APM</td><td>Application Performance Monitoring</td></tr>
+    <tr><td>BA</td><td>Business Analyst</td></tr>
+    <tr><td>CAB</td><td>Change Advisory Board</td></tr>
+    <tr><td>CRAP</td><td>Change Risk Anti-Patterns (complexity metric)</td></tr>
+    <tr><td>DAST</td><td>Dynamic Application Security Testing</td></tr>
+    <tr><td>DoD</td><td>Definition of Done</td></tr>
+    <tr><td>DoR</td><td>Definition of Ready</td></tr>
+    <tr><td>DRY</td><td>Don't Repeat Yourself</td></tr>
+    <tr><td>FRD</td><td>Functional Requirements Document</td></tr>
+    <tr><td>FTA</td><td>Feature Technology Approach</td></tr>
+    <tr><td>IaC</td><td>Infrastructure as Code</td></tr>
+    <tr><td>KISS</td><td>Keep It Simple, Stupid</td></tr>
+    <tr><td>MDM</td><td>Mobile Device Management</td></tr>
+    <tr><td>MTTR</td><td>Mean Time to Resolution</td></tr>
+    <tr><td>OWASP</td><td>Open Web Application Security Project</td></tr>
+    <tr><td>P1/P2</td><td>Priority 1 / Priority 2</td></tr>
+    <tr><td>PII</td><td>Personally Identifiable Information</td></tr>
+    <tr><td>PR</td><td>Pull Request</td></tr>
+    <tr><td>RCA</td><td>Root Cause Analysis</td></tr>
+    <tr><td>RFC</td><td>Request for Change</td></tr>
+    <tr><td>SAST</td><td>Static Application Security Testing</td></tr>
+    <tr><td>QA</td><td>Quality Assurance Testing</td></tr>
+    <tr><td>SNOW</td><td>ServiceNow</td></tr>
+    <tr><td>SoD</td><td>Segregation of Duties</td></tr>
+    <tr><td>SOLID</td><td>Single Responsibility, Open-Closed, Liskov Substitution, Interface Segregation, Dependency Inversion</td></tr>
+    <tr><td>SOP</td><td>Standard Operating Procedure</td></tr>
+    <tr><td>STRIDE</td><td>Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege (threat model)</td></tr>
+    <tr><td>TM</td><td>Technology Manager</td></tr>
+    <tr><td>UAT</td><td>User Acceptance Testing</td></tr>
+    <tr><td>YAGNI</td><td>You Aren't Gonna Need It</td></tr>
+  </table>
+
+  <h3>B. Document History</h3>
+  <table>
+    <tr><th>Version</th><th>Date</th><th>Author</th><th>Summary of Changes</th></tr>
+    <tr><td>0.901</td><td>April 2026</td><td>Chief Architect</td><td>Initial draft — incorporating Team Connect SOP, Boomi SDLC, ISO 27001 controls</td></tr>
+    <tr><td>0.902</td><td>April 2026</td><td>Chief Architect</td><td>ABM brand theme applied; renamed SIT → QA; ADO repo links added throughout</td></tr>
+    <tr><td>0.903</td><td>April 2026</td><td>Chief Architect</td><td>Section 21 template files linked to ADO absolute paths</td></tr>
+    <tr><td>0.905</td><td>April 2026</td><td>Chief Architect</td><td>Removed Section 13 (Operations &amp; Monitoring) — out of scope for v1; sections renumbered 13–18</td></tr>
+    <tr><td>0.906</td><td>April 2026</td><td>Chief Architect</td><td>Uday review session 2: inserted §8 Data Security &amp; Integration Standards (data classification, encryption standards, hub-and-spoke integration, Audatex, PII handling); child SDLC owners updated (Landry Baggett — Oracle SaaS, Anjali Taswani — Oracle PaaS &amp; Power Platform, Rashmi — Power BI); NFRs added to §5; security exception process expanded; Alpesh branching review note added; environment topology flexibility note; low-code config promotion note; Power BI scoping callout; Ricardo Relego change mgmt review flag; break-fix release type added; emergency change detail expanded; AI approved tools list updated; stale §15 reference removed; diagram labels updated; h3 numbering corrected; sections renumbered §8–§19</td></tr>
+    <tr><td>0.904</td><td>April 2026</td><td>Chief Architect</td><td>Uday Hebbar review: removed specific names → role-based references; Section 5 simplified (security gate, FRD, TDD, 3-way DoR); Sections 15–17 (AI Governance, Tech Debt, Knowledge Mgmt) deferred to future revision; sections renumbered 15–19; vendor MSA requirement added; Section 13 marked out of scope for v1; gatekeeper language updated</td></tr>
+  </table>
+
+  <h3>C. Document Approval</h3>
+  <table>
+    <tr><th>Role</th><th>Name</th><th>Date</th><th>Signature</th></tr>
+    <tr><td>Chief Architect / Gatekeeper</td><td>Srinivas Peri</td><td>April 2026</td><td>_________________________</td></tr>
+    <tr><td>Executive Sponsor</td><td>Trilok Manchinila, VP IT</td><td></td><td>_________________________</td></tr>
+    <tr><td>Sponsor</td><td>Uday Hebbar, Sr. Director</td><td></td><td>_________________________</td></tr>
+  </table>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// Highlight active TOC item on scroll
+const tocLinks = document.querySelectorAll('#toc a');
+const sections = document.querySelectorAll('.section');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 60) current = s.id;
+  });
+  tocLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+// Fix external links — works in direct browser AND SharePoint iframe
+document.querySelectorAll('a[href^="http"]').forEach(function(a) {
+  a.setAttribute('target', '_blank');
+  a.setAttribute('rel', 'noopener noreferrer');
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    // Try window.open first; if iframe sandbox blocks it, break out via top frame
+    var w = window.open(a.href, '_blank', 'noopener,noreferrer');
+    if (!w || w.closed || typeof w.closed === 'undefined') {
+      try { window.top.location.href = a.href; } catch(x) { window.location.href = a.href; }
+    }
+  });
+});
+
+// Smooth scroll
+tocLinks.forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (target) {
+      const top = target.getBoundingClientRect().top + window.pageYOffset - 24;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>

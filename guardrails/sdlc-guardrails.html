@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDLC Guardrails &amp; Enforcement Playbook – ABM Industries IT</title>
+<style>
+  :root {
+    --navy: #002B5C;
+    --green: #009A44;
+    --border: #CBD5E8;
+    --text: #1C2336;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #F4F6FB;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .banner {
+    background: var(--navy);
+    color: #fff;
+    padding: 36px 48px 28px;
+    border-bottom: 4px solid var(--green);
+  }
+  .banner .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #8BAAD4;
+    margin-bottom: 10px;
+  }
+  .banner .label code {
+    background: rgba(255,255,255,0.12);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .banner h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .banner .sub {
+    font-size: 13px;
+    color: #A8C4E0;
+    max-width: 800px;
+  }
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+  .section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .section-title {
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .num {
+    background: var(--green);
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-body {
+    padding: 20px 24px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  thead tr { background: var(--navy); color: #fff; }
+  thead th {
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:nth-child(even) { background: #F8FAFD; }
+  tbody tr:hover { background: #EEF2FB; }
+  tbody td {
+    padding: 9px 12px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .layer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .layer-card {
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .layer-card .lc-head {
+    padding: 10px 16px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .layer-card.pipeline .lc-head { background: var(--green); }
+  .layer-card.process .lc-head  { background: #005EB8; }
+  .layer-card.govern .lc-head   { background: #6F42C1; }
+  .layer-card .lc-body {
+    padding: 14px 16px;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .layer-card .lc-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+  .layer-card.pipeline .lc-badge { background: #D4EDDA; color: #155724; }
+  .layer-card.process .lc-badge  { background: #CCE5FF; color: #004085; }
+  .layer-card.govern .lc-badge   { background: #E2D9F3; color: #3D1A78; }
+  .layer-card .lc-body ul {
+    margin-left: 16px;
+    margin-top: 6px;
+  }
+  .layer-card .lc-body li {
+    font-size: 12px;
+    margin-bottom: 3px;
+    color: var(--text);
+  }
+  .branch-table td:first-child { font-weight: 600; color: var(--navy); white-space: nowrap; }
+  .check-yes { color: #155724; font-weight: 700; }
+  .check-no  { color: #721C24; font-weight: 700; }
+  .gate-tool {
+    display: inline-block;
+    background: #EEF2FB;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 7px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+  .failure-block { color: #721C24; font-weight: 600; font-size: 12px; }
+  .pass-criteria { color: #155724; font-size: 12px; font-weight: 600; }
+  pre.pr-template {
+    background: #0D1117;
+    color: #C9D1D9;
+    border-radius: 6px;
+    padding: 20px 24px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    tab-size: 2;
+    white-space: pre;
+    border: 1px solid #30363D;
+  }
+  pre.pr-template .comment { color: #8B949E; }
+  pre.pr-template .heading { color: #58A6FF; font-weight: 700; }
+  pre.pr-template .checkbox { color: #56D364; }
+  .zero-tol td:first-child { font-weight: 700; color: #721C24; }
+  .enforce-pipeline { color: #155724; font-weight: 600; font-size: 11px; background: #D4EDDA; padding: 2px 7px; border-radius: 3px; display: inline-block; }
+  .enforce-process  { color: #004085; font-weight: 600; font-size: 11px; background: #CCE5FF; padding: 2px 7px; border-radius: 3px; display: inline-block; }
+  .enforce-govern   { color: #3D1A78; font-weight: 600; font-size: 11px; background: #E2D9F3; padding: 2px 7px; border-radius: 3px; display: inline-block; }
+  .exception-steps {
+    counter-reset: step;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .exception-steps li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .exception-steps li:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .exception-steps li .step-num {
+    background: var(--navy);
+    color: #fff;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .exception-steps li .step-content strong {
+    display: block;
+    color: var(--navy);
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+  .exception-steps li .step-content p {
+    font-size: 12.5px;
+    color: #4A5568;
+  }
+  .exception-form {
+    background: #F8FAFD;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+  .exception-form h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--navy);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-field label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6B7A99;
+    margin-bottom: 4px;
+  }
+  .form-field .fv {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 6px 10px;
+    background: #fff;
+    min-height: 32px;
+    font-size: 12.5px;
+    color: #9BA5B4;
+    font-style: italic;
+  }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field.full .fv { min-height: 60px; }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .kpi-card .kc-head {
+    background: var(--navy);
+    color: #fff;
+    padding: 8px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    line-height: 1.3;
+  }
+  .kpi-card .kc-body {
+    padding: 12px 10px;
+  }
+  .kpi-card .kc-target {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .kpi-card .kc-desc {
+    font-size: 11px;
+    color: #6B7A99;
+    line-height: 1.4;
+  }
+  .audit-iso {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+  .subsection-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6B7A99;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .subsection-label:first-child { margin-top: 0; }
+  .iso-tag { font-size: 10px; font-weight: 400; opacity: 0.75; margin-left: 8px; }
+  .footer {
+    background: var(--navy);
+    color: #8BAAD4;
+    font-size: 11px;
+    padding: 14px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    letter-spacing: 0.3px;
+  }
+  @media (max-width: 760px) {
+    .banner { padding: 24px 20px 18px; }
+    .container { padding: 16px 12px 40px; }
+    .layer-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .form-fields { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; gap: 4px; padding: 12px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div class="label">ABM Industries IT · Guardrails v1.0 · <code>guardrails/sdlc-guardrails.html</code></div>
+  <h1>ABM IT SDLC Guardrails &amp; Enforcement Playbook</h1>
+  <div class="sub">Defines how SDLC controls are enforced at pipeline, process, and governance layers. Reference this when configuring CI/CD pipelines and branch protection.</div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: THREE ENFORCEMENT LAYERS -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> Three Enforcement Layers</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:18px;">
+        Every SDLC control is enforced through one or more of three layers. Automated pipeline gates are the first line — they cannot be bypassed without explicit approval. Human process gates add judgment for complex decisions. Governance provides structural accountability and course correction.
+      </p>
+      <div class="layer-grid">
+        <div class="layer-card pipeline">
+          <div class="lc-head">Layer 1 — Pipeline</div>
+          <div class="lc-body">
+            <span class="lc-badge">Automated · Blocks Merges</span>
+            <p>Automated checks run in CI/CD on every pull request and commit. Failures <strong>block promotion</strong> — no human can override without an approved exception on record.</p>
+            <ul>
+              <li>Build compilation checks</li>
+              <li>Unit test pass + coverage gate</li>
+              <li>SAST (Snyk Code / SonarQube)</li>
+              <li>SCA — dependency CVE scan</li>
+              <li>Secrets scan (Gitleaks)</li>
+              <li>Code complexity check</li>
+              <li>DAST (pre-prod stage)</li>
+              <li>Performance regression gate</li>
+            </ul>
+          </div>
+        </div>
+        <div class="layer-card process">
+          <div class="lc-head">Layer 2 — Process</div>
+          <div class="lc-body">
+            <span class="lc-badge">Human Gates · Blocks Promotion</span>
+            <p>Human checkpoints that require deliberate review before a change moves to the next environment. Enforced via branch protection rules and required approvals.</p>
+            <ul>
+              <li>PR review (2 approvers + TM)</li>
+              <li>Security Assessment sign-off</li>
+              <li>ADR review for arch decisions</li>
+              <li>UAT sign-off by product owner</li>
+              <li>Production approval gate (TM)</li>
+              <li>Change ticket linked to PR</li>
+              <li>Rollback plan documented</li>
+            </ul>
+          </div>
+        </div>
+        <div class="layer-card govern">
+          <div class="lc-head">Layer 3 — Governance</div>
+          <div class="lc-body">
+            <span class="lc-badge">Structural · Periodic Reviews</span>
+            <p>Structural controls and periodic audits that ensure the SDLC remains effective and compliant over time. Run by SDLC Gatekeeper and TMs quarterly.</p>
+            <ul>
+              <li>Child SDLC attestation (annual)</li>
+              <li>SDLC health metrics review (quarterly)</li>
+              <li>Audit evidence collection (ISO)</li>
+              <li>Exception log review (monthly)</li>
+              <li>Pipeline gate effectiveness review</li>
+              <li>Tech debt ratio tracking</li>
+              <li>Post-incident SDLC review</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: BRANCH PROTECTION -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> Branch Protection Configuration Guide</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        Apply these settings in Azure DevOps (Branch Policies) or GitHub (Branch Protection Rules). Settings marked <strong>Required</strong> are zero-tolerance — teams may not disable them. Settings marked <em>Recommended</em> may be adjusted with TM approval and documented justification.
+      </p>
+      <table class="branch-table">
+        <thead>
+          <tr>
+            <th style="width:200px;">Branch</th>
+            <th style="width:260px;">Protection Setting</th>
+            <th style="width:100px;">Requirement</th>
+            <th>Configuration Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="6" style="background:#F4F6FB;vertical-align:middle;text-align:center;">
+              <span style="display:inline-block;background:var(--navy);color:#fff;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:700;">main</span><br>
+              <span style="font-size:10px;color:#6B7A99;">(Production)</span>
+            </td>
+            <td>Require pull request before merging</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>No direct commits to main. All changes via PR.</td>
+          </tr>
+          <tr>
+            <td>Minimum required approvers</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Minimum 2 peer approvers + Technology Manager sign-off required.</td>
+          </tr>
+          <tr>
+            <td>Require all CI pipeline checks to pass</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>All status checks (build, test, SAST, secrets, coverage) must be green. No merge on partial pass.</td>
+          </tr>
+          <tr>
+            <td>Prevent force pushes</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Enabled for all users including administrators. History is immutable.</td>
+          </tr>
+          <tr>
+            <td>Require linear history (no merge commits)</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Squash or rebase merge only. Keeps history auditable.</td>
+          </tr>
+          <tr>
+            <td>Restrict who can push</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Only the CI/CD service principal can push post-merge. No direct human push.</td>
+          </tr>
+
+          <tr>
+            <td rowspan="5" style="background:#F4F6FB;vertical-align:middle;text-align:center;">
+              <span style="display:inline-block;background:#005EB8;color:#fff;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:700;">uat</span><br>
+              <span style="font-size:10px;color:#6B7A99;">(UAT / Pre-prod)</span>
+            </td>
+            <td>Require pull request before merging</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>No direct commits. All changes via PR from qa or feature branches.</td>
+          </tr>
+          <tr>
+            <td>Minimum required approvers</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Minimum 2 approvers including TM or designated deputy.</td>
+          </tr>
+          <tr>
+            <td>Require CI checks to pass</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Full CI gate including DAST must pass before UAT promotion.</td>
+          </tr>
+          <tr>
+            <td>Prevent force pushes</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Enabled.</td>
+          </tr>
+          <tr>
+            <td>Require linear history</td>
+            <td>Recommended</td>
+            <td>Enabled by default. Teams may adjust with TM approval.</td>
+          </tr>
+
+          <tr>
+            <td rowspan="4" style="background:#F4F6FB;vertical-align:middle;text-align:center;">
+              <span style="display:inline-block;background:#6F42C1;color:#fff;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:700;">qa</span><br>
+              <span style="font-size:10px;color:#6B7A99;">(System Integration Test)</span>
+            </td>
+            <td>Require pull request before merging</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>PR required from develop or feature branches.</td>
+          </tr>
+          <tr>
+            <td>Minimum required approvers</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Minimum 1 peer approver. TM approval required for high-risk changes.</td>
+          </tr>
+          <tr>
+            <td>Require CI checks to pass</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Build, unit tests, SAST, secrets scan must pass.</td>
+          </tr>
+          <tr>
+            <td>Prevent force pushes</td>
+            <td>Recommended</td>
+            <td>Strongly recommended. Exception requires TM approval.</td>
+          </tr>
+
+          <tr>
+            <td rowspan="3" style="background:#F4F6FB;vertical-align:middle;text-align:center;">
+              <span style="display:inline-block;background:#495057;color:#fff;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:700;">develop</span><br>
+              <span style="font-size:10px;color:#6B7A99;">(Integration Branch)</span>
+            </td>
+            <td>Require pull request before merging</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>All feature branches merged via PR to develop. No direct commits.</td>
+          </tr>
+          <tr>
+            <td>Minimum required approvers</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Minimum 1 peer approver (author cannot approve own PR).</td>
+          </tr>
+          <tr>
+            <td>Require CI checks (build + tests)</td>
+            <td><span class="check-yes">Required</span></td>
+            <td>Build and unit tests must pass. SAST scan required.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 3: CI/CD PIPELINE GATES -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> CI/CD Pipeline Gates Specification</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        Every gate listed as <strong>Required</strong> must be present in all team CI/CD pipelines. Gates may not be skipped or soft-failed without an approved exception on record. Configure failure actions exactly as specified.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:130px;">Gate Name</th>
+            <th>What It Checks</th>
+            <th style="width:90px;">Required?</th>
+            <th style="width:130px;">Tool</th>
+            <th>Failure Action</th>
+            <th>Configuration Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Build Gate</strong></td>
+            <td>Compiles cleanly with no errors or unresolved warnings set to error-level</td>
+            <td><span class="check-yes">Required</span></td>
+            <td><span class="gate-tool">GitHub Actions / ADO</span></td>
+            <td class="failure-block">Block merge. Build must be green before any other gate runs.</td>
+            <td>Treat warnings as errors (warningsAsErrors=true). Fail-fast on first build error.</td>
+          </tr>
+          <tr>
+            <td><strong>Unit Tests</strong></td>
+            <td>100% of unit tests pass. Code coverage ≥ 70% on new/changed code</td>
+            <td><span class="check-yes">Required</span></td>
+            <td><span class="gate-tool">xUnit / Jest / pytest</span></td>
+            <td class="failure-block">Block merge. Coverage drop below 70% on changed lines is a build break.</td>
+            <td>Coverage measured on changed files only (delta coverage). Configure coverage threshold in pipeline YAML. Report published as PR comment.</td>
+          </tr>
+          <tr>
+            <td><strong>SAST Gate</strong></td>
+            <td>Static analysis for security vulnerabilities and code quality in source code</td>
+            <td><span class="check-yes">Required</span></td>
+            <td><span class="gate-tool">Snyk Code</span> / <span class="gate-tool">SonarQube</span></td>
+            <td class="failure-block">Zero High or Critical findings permitted. Block merge.</td>
+            <td>Medium findings create a warning comment but do not block. All Critical/High findings must be remediated or have an accepted exception before merge.</td>
+          </tr>
+          <tr>
+            <td><strong>SCA Gate</strong></td>
+            <td>Third-party dependency CVE scan. Identifies vulnerable packages</td>
+            <td><span class="check-yes">Required</span></td>
+            <td><span class="gate-tool">Snyk Open Source</span></td>
+            <td class="failure-block">Zero Critical or High CVEs in direct dependencies. Block merge.</td>
+            <td>Run on every PR. Snyk monitor enabled for continuous monitoring. Automated PR created when fix available. Critical CVEs in transitive deps reviewed within 5 days.</td>
+          </tr>
+          <tr>
+            <td><strong>Secrets Scan</strong></td>
+            <td>Detects hardcoded credentials, API keys, tokens, connection strings in source and commit history</td>
+            <td><span class="check-yes">Required</span></td>
+            <td><span class="gate-tool">Gitleaks</span> / <span class="gate-tool">TruffleHog</span></td>
+            <td class="failure-block">Zero tolerance. Single finding blocks merge. Treat as a security incident.</td>
+            <td>Scan full commit history on first run. Scan delta on subsequent PRs. Pre-commit hook also recommended for local dev. Any historical finding must be rotated immediately.</td>
+          </tr>
+          <tr>
+            <td><strong>Complexity Check</strong></td>
+            <td>Cyclomatic complexity per function / method must not exceed threshold</td>
+            <td><span class="check-yes">Required</span></td>
+            <td><span class="gate-tool">SonarQube</span> / <span class="gate-tool">ESLint</span></td>
+            <td class="failure-block">Cyclomatic complexity &gt;10 per function blocks merge. New functions only.</td>
+            <td>Apply to new and modified functions. Legacy code exempted but flagged as tech debt in backlog. Set SonarQube Quality Gate threshold = 10.</td>
+          </tr>
+          <tr>
+            <td><strong>DAST Gate</strong></td>
+            <td>Dynamic security scan of running application — auth, injection, OWASP Top 10</td>
+            <td><span class="check-yes">Required</span></td>
+            <td><span class="gate-tool">StackHawk</span></td>
+            <td class="failure-block">Zero Critical or High findings block UAT promotion. Runs at pre-prod stage.</td>
+            <td>Run against deployed QA or UAT environment. Not on feature branches. Configure StackHawk with app-specific auth flow. Results reviewed by Security/TM before UAT sign-off.</td>
+          </tr>
+          <tr>
+            <td><strong>Performance Gate</strong></td>
+            <td>Load and performance regression vs. baseline. Validates response time SLAs under expected concurrency</td>
+            <td>Recommended</td>
+            <td><span class="gate-tool">k6</span> / <span class="gate-tool">Azure Load Testing</span></td>
+            <td>P95 response time regression &gt;20% over baseline blocks UAT promotion.</td>
+            <td>Required for APIs handling &gt;100 concurrent users or processing sensitive transactions. Baseline established at first deployment and versioned. TM may waive with documented justification.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 4: PR TEMPLATE -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> PR Template Requirements</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        Every team must configure the following PR template. Place this file at <code style="background:#EEF2FB;padding:2px 6px;border-radius:3px;font-size:12px;">.github/pull_request_template.md</code> (GitHub) or equivalent in Azure DevOps. The template is mandatory — PRs without all checklist sections completed will be returned to the author.
+      </p>
+<pre class="pr-template"><span class="comment">&lt;!-- ABM Industries IT · PR Template v1.0
+     Required for all repositories under abm-it/
+     Do not remove sections. Complete all checkboxes before requesting review. --&gt;</span>
+
+<span class="heading">## Linked Story / Ticket</span>
+
+&lt;!-- Required: Link the Jira/ADO work item this PR addresses --&gt;
+- **Ticket:** [PROJ-####](https://abm.atlassian.net/browse/PROJ-####)
+- **Type:** Feature | Bug Fix | Refactor | Hotfix | Chore
+
+<span class="heading">## Change Summary</span>
+
+&lt;!-- Describe WHAT changed and WHY. Be specific — reviewers should not need to read every line of code to understand the intent. --&gt;
+
+**What was changed:**
+
+
+**Why this change is needed:**
+
+
+**Approach / design decisions:**
+
+
+<span class="heading">## Testing Done</span>
+
+&lt;!-- Describe the tests you ran. Reviewers will verify pipeline gate results. --&gt;
+
+- [ ] Unit tests written / updated and passing locally
+- [ ] Integration tests run (if applicable)
+- [ ] Manual testing performed in Dev/local environment
+- [ ] Edge cases and error paths tested
+- [ ] No regressions observed in related functionality
+
+**Test evidence / screenshots (if applicable):**
+
+
+<span class="heading">## Security Checklist</span>
+
+&lt;!-- Complete honestly. Do not skip. If unsure, consult your TM before submitting the PR. --&gt;
+
+- [ ] No secrets, credentials, API keys, or tokens in code or commit history
+- [ ] Authentication or authorization logic was NOT changed in this PR
+  - If changed: Security Assessment updated and linked here: ___
+- [ ] This PR does NOT introduce new data collection, storage, or transmission of PII/sensitive data
+  - If it does: Data classification reviewed and Security Assessment updated: ___
+- [ ] No new third-party dependencies introduced
+  - If added: Snyk scan reviewed, no Critical/High CVEs confirmed: ___
+- [ ] No new external network endpoints or integrations introduced
+  - If added: Architecture Decision Record linked: ___
+
+<span class="heading">## Rollback Plan</span>
+
+&lt;!-- Required for all changes to QA, UAT, and Production. Describe how to undo this change if an issue is discovered post-deployment. --&gt;
+
+**Rollback approach:**
+
+
+**Estimated rollback time:**
+
+
+**Database migration reversible?** Yes | No | N/A
+- If No: explain why and what manual remediation is required:
+
+<span class="heading">## Reviewer Checklist</span>
+
+&lt;!-- For reviewers to complete. Do not approve until all items are confirmed. --&gt;
+
+- [ ] Code change matches ticket intent and acceptance criteria
+- [ ] Logic is correct, readable, and maintainable
+- [ ] No obvious security issues (injection, auth gaps, data exposure)
+- [ ] Tests are meaningful and cover key paths (not just coverage theatre)
+- [ ] No hardcoded values, magic numbers, or commented-out dead code
+- [ ] Error handling is appropriate and does not leak internal details
+- [ ] Logging is appropriate (no PII logged, no sensitive data in traces)
+- [ ] Naming is clear and consistent with codebase conventions
+- [ ] Breaking changes are documented and communicated</pre>
+    </div>
+  </div>
+
+  <!-- SECTION 5: ZERO-TOLERANCE CONTROLS -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> Zero-Tolerance Control Matrix</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        The following six controls admit no exceptions without an approved, time-bound exception on record signed by the SDLC Gatekeeper. Violations are treated as security incidents.
+      </p>
+      <table class="zero-tol">
+        <thead>
+          <tr>
+            <th style="width:180px;">Control</th>
+            <th style="width:160px;">Enforcement Layer(s)</th>
+            <th>What Constitutes a Violation</th>
+            <th>Consequence of Violation</th>
+            <th style="width:150px;">Who Resolves</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>No hardcoded secrets in source code</td>
+            <td>
+              <span class="enforce-pipeline">Pipeline — Gitleaks</span><br>
+              <span style="margin-top:3px;display:inline-block;" class="enforce-process">Process — PR Checklist</span>
+            </td>
+            <td>Any credential, token, API key, password, or connection string found in source code or commit history.</td>
+            <td>Immediate PR block. Secret must be rotated immediately. Security incident raised. Retroactive scan of full commit history required.</td>
+            <td>TM + InfoSec within 4 hours</td>
+          </tr>
+          <tr>
+            <td>Zero Critical / High CVEs in production dependencies</td>
+            <td>
+              <span class="enforce-pipeline">Pipeline — Snyk</span>
+            </td>
+            <td>A Critical or High CVE in any direct dependency merged to main without an accepted exception on file.</td>
+            <td>Deployment blocked. Fix or accepted exception with mitigating control required within 48 hours for Critical, 7 days for High.</td>
+            <td>TM + Snyk owner</td>
+          </tr>
+          <tr>
+            <td>No direct commits to main or uat</td>
+            <td>
+              <span class="enforce-pipeline">Pipeline — Branch Protection</span><br>
+              <span style="margin-top:3px;display:inline-block;" class="enforce-govern">Governance — Audit log</span>
+            </td>
+            <td>Any commit pushed directly to main or uat branch bypassing the PR process.</td>
+            <td>Immediate escalation to TM and SDLC Gatekeeper. Change must be reviewed retrospectively. Repeat violations result in access revocation review.</td>
+            <td>TM + SDLC Gatekeeper</td>
+          </tr>
+          <tr>
+            <td>All PRs require peer review (no self-merge)</td>
+            <td>
+              <span class="enforce-pipeline">Pipeline — Branch Protection</span><br>
+              <span class="enforce-process" style="margin-top:3px;display:inline-block;">Process — PR Rules</span>
+            </td>
+            <td>Author approves and merges their own PR. PR merged with fewer than the required number of approvers.</td>
+            <td>PR reverted. TM notified. Exception process required for emergency merges with retroactive review within 24 hours.</td>
+            <td>TM within 24 hours</td>
+          </tr>
+          <tr>
+            <td>All production deployments require an approved change ticket</td>
+            <td>
+              <span class="enforce-process">Process — Change Mgmt</span><br>
+              <span class="enforce-govern" style="margin-top:3px;display:inline-block;">Governance — Audit trail</span>
+            </td>
+            <td>Production deployment initiated without a linked, approved change management ticket in Jira / ADO.</td>
+            <td>Deployment rolled back if discovered. Post-incident review required. Repeat violations escalate to VP IT.</td>
+            <td>TM within 1 business day</td>
+          </tr>
+          <tr>
+            <td>Security Assessment required for sensitive features</td>
+            <td>
+              <span class="enforce-process">Process — PR Gate</span><br>
+              <span class="enforce-govern" style="margin-top:3px;display:inline-block;">Governance — Review</span>
+            </td>
+            <td>A feature handling PII, financial data, or external integrations deployed to production without a completed and signed Security Assessment.</td>
+            <td>Feature disabled or rolled back. Security Assessment completed retroactively. Incident reviewed by SDLC Gatekeeper.</td>
+            <td>TM + InfoSec + SDLC Gatekeeper</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 6: EXCEPTION PROCESS -->
+  <div class="section">
+    <div class="section-title"><span class="num">6</span> Exception Process</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:20px;">
+        All exceptions to SDLC controls must be formally requested and approved. Verbal approvals are not valid. Exceptions are time-bound and must be reviewed at expiry. Zero-tolerance control exceptions require SDLC Gatekeeper sign-off.
+      </p>
+      <ol class="exception-steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify the Control to Be Excepted</strong>
+            <p>Document which specific SDLC control or pipeline gate requires an exception, including the control ID or section reference from the master SDLC or this guardrails document.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Document Business Justification</strong>
+            <p>Complete the Exception Request Form below. The justification must explain why compliance is not feasible, what the business impact of non-compliance is, and what compensating controls are in place during the exception period.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Technology Manager Approval</strong>
+            <p>The TM reviews the request and either approves (with conditions), rejects, or escalates. TM approval is required for all exceptions. TM cannot approve exceptions to zero-tolerance controls — those require Gatekeeper approval.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>SDLC Gatekeeper Approval (for Zero-Tolerance Controls)</strong>
+            <p>Exceptions to zero-tolerance controls must be reviewed and approved by Srini Peri. The Gatekeeper may add conditions, require additional compensating controls, or reject the exception entirely.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Log and Track the Exception</strong>
+            <p>The approved exception is logged in the team's exception register in the SDLC repository. Exception ID assigned. Expiry date set (maximum 90 days). Reminder added to team calendar.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <strong>Review at Expiry</strong>
+            <p>At the expiry date: either remediate (control implemented and exception closed), renew (re-submit with updated justification), or escalate (if systemic issue, escalate to SDLC Gatekeeper for structural remedy).</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="exception-form">
+        <h4>Exception Request Form — Fields Required</h4>
+        <div class="form-fields">
+          <div class="form-field">
+            <label>Exception ID (assigned by Gatekeeper)</label>
+            <div class="fv">EXC-YYYY-###</div>
+          </div>
+          <div class="form-field">
+            <label>Request Date</label>
+            <div class="fv">YYYY-MM-DD</div>
+          </div>
+          <div class="form-field">
+            <label>Requesting Team</label>
+            <div class="fv">Team name</div>
+          </div>
+          <div class="form-field">
+            <label>Requestor Name</label>
+            <div class="fv">Full name + title</div>
+          </div>
+          <div class="form-field full">
+            <label>Control Being Excepted (Section Reference)</label>
+            <div class="fv">e.g. SDLC §11 — Security Assessment / Pipeline Gate: DAST / Guardrail: Zero-tolerance #2</div>
+          </div>
+          <div class="form-field full">
+            <label>Business Justification (Why compliance is not feasible now)</label>
+            <div class="fv">Detailed justification required. "We don't have time" is not a valid justification.</div>
+          </div>
+          <div class="form-field full">
+            <label>Compensating Controls in Place During Exception Period</label>
+            <div class="fv">What alternative controls reduce the risk during the exception window?</div>
+          </div>
+          <div class="form-field">
+            <label>Requested Exception Duration</label>
+            <div class="fv">Maximum 90 days. State end date.</div>
+          </div>
+          <div class="form-field">
+            <label>Remediation Plan (How will you comply after exception expires?)</label>
+            <div class="fv">Concrete remediation steps with target dates</div>
+          </div>
+          <div class="form-field">
+            <label>TM Approval + Date</label>
+            <div class="fv">Name + YYYY-MM-DD</div>
+          </div>
+          <div class="form-field">
+            <label>Gatekeeper Approval + Date (Zero-Tolerance only)</label>
+            <div class="fv">Srini Peri + YYYY-MM-DD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: AUDIT EVIDENCE -->
+  <div class="section">
+    <div class="section-title"><span class="num">7</span> Audit Evidence Collection Guide</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        For ISO 27001 audit readiness, the following artifacts must be collected, stored, and retrievable per ISO control. Evidence must be retained for a minimum of 3 years.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:100px;">ISO Control</th>
+            <th style="width:180px;">Control Description</th>
+            <th>Artifacts to Collect</th>
+            <th style="width:170px;">Where They Live</th>
+            <th>How to Export for Auditors</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="audit-iso">A.8.4</span></td>
+            <td>Access to Source Code</td>
+            <td>
+              • Branch protection configuration screenshots<br>
+              • RBAC/access control list for repositories<br>
+              • PR history showing all merges required approval<br>
+              • Access review logs (quarterly)
+            </td>
+            <td>GitHub/ADO audit log. Repository settings screenshot. IAM export.</td>
+            <td>GitHub: Settings → Audit Log → Export CSV. ADO: Organization Settings → Audit. Access review: Export from Entra ID.</td>
+          </tr>
+          <tr>
+            <td><span class="audit-iso">A.8.25</span></td>
+            <td>Secure Development Lifecycle</td>
+            <td>
+              • Signed Child SDLC Attestation (current year)<br>
+              • Master SDLC document version in Git<br>
+              • Evidence of team training / attestation review<br>
+              • SDLC health metrics report (quarterly)
+            </td>
+            <td>Git: abm-it/sdlc-standards/. Child attestations in team repos.</td>
+            <td>Export attestation HTML as PDF. Pull Git history showing version-controlled changes. Export metrics dashboard screenshot.</td>
+          </tr>
+          <tr>
+            <td><span class="audit-iso">A.8.26</span></td>
+            <td>Application Security Requirements</td>
+            <td>
+              • Security Assessment for each in-scope system<br>
+              • OWASP checklist completion evidence<br>
+              • Data classification records<br>
+              • Risk register with disposition
+            </td>
+            <td>Security Assessments in team repo /docs/security/. Risk register in Jira.</td>
+            <td>Export Security Assessment HTML as PDF. Jira risk register export. Pull Git history showing review dates.</td>
+          </tr>
+          <tr>
+            <td><span class="audit-iso">A.8.27</span></td>
+            <td>Secure System Architecture</td>
+            <td>
+              • All ADRs for architecture decisions (signed, accepted)<br>
+              • STRIDE threat model per system<br>
+              • Architecture diagrams with trust boundaries<br>
+              • ADR review dates confirming annual review
+            </td>
+            <td>ADRs in /docs/adr/. Threat models in /docs/security/. Diagrams in Confluence/SharePoint.</td>
+            <td>Export ADR HTML as PDF. Pull Git log for ADR commit history. Export architecture diagram from Confluence/Lucidchart.</td>
+          </tr>
+          <tr>
+            <td><span class="audit-iso">A.8.28</span></td>
+            <td>Secure Coding</td>
+            <td>
+              • SAST scan reports (Snyk Code / SonarQube) — per release<br>
+              • SCA scan reports — last 12 months<br>
+              • Secrets scan results — last 12 months<br>
+              • DAST scan reports (StackHawk) — per prod deployment<br>
+              • Code review completion evidence (PR audit log)
+            </td>
+            <td>CI/CD artifact storage. Snyk dashboard. SonarQube project page. StackHawk dashboard.</td>
+            <td>Snyk: Reports → Export PDF. SonarQube: Project → Activity → Export. StackHawk: Scans → Export PDF. GitHub/ADO: PR audit export.</td>
+          </tr>
+          <tr>
+            <td><span class="audit-iso">A.8.29</span></td>
+            <td>Security Testing in Development</td>
+            <td>
+              • Test plans with security test cases documented<br>
+              • Test execution results (pass/fail)<br>
+              • Pen test report (annual)<br>
+              • Defect log showing security findings remediated
+            </td>
+            <td>Test plans in ADO/Jira. Pen test report in SharePoint (restricted access). Defect history in Jira.</td>
+            <td>Export Jira test execution reports. Export pen test summary (redact sensitive findings for external auditors). Pull defect closure evidence from Jira.</td>
+          </tr>
+          <tr>
+            <td><span class="audit-iso">A.8.31</span></td>
+            <td>Separation of Development, Test, Production Environments</td>
+            <td>
+              • Environment topology documentation<br>
+              • Evidence no production data in Dev/QA/UAT<br>
+              • Access control matrix (who can deploy to prod)<br>
+              • Production deployment approval audit trail
+            </td>
+            <td>Environment docs in /docs/infrastructure/. Access matrix in Entra ID. Deployment approvals in GitHub/ADO.</td>
+            <td>Export environment diagram. Entra ID access export. GitHub/ADO deployment approval log.</td>
+          </tr>
+          <tr>
+            <td><span class="audit-iso">A.8.33</span></td>
+            <td>Test Information Protection</td>
+            <td>
+              • Confirmation that synthetic/masked data is used in non-prod<br>
+              • Data masking tool configuration<br>
+              • Evidence of data masking testing<br>
+              • Process for requesting test data (no prod data request allowed)
+            </td>
+            <td>Data masking configuration in Azure SQL / Key Vault policy. Process documented in team wiki.</td>
+            <td>Export Azure SQL Dynamic Data Masking policy. Screenshot of data masking configuration. Pull test data request log.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 8: SDLC HEALTH METRICS -->
+  <div class="section">
+    <div class="section-title"><span class="num">8</span> SDLC Health Metrics — KPI Dashboard</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:20px;">
+        Technology Managers must track and report these KPIs quarterly to the SDLC Gatekeeper. Metrics are reviewed in the quarterly SDLC governance meeting. Significant negative trends must have a documented remediation plan.
+      </p>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kc-head">Sprint Completion Rate</div>
+          <div class="kc-body">
+            <div class="kc-target">≥ 80%</div>
+            <div class="kc-desc">% of committed story points delivered per sprint. Target: 80%+. Trend more important than single quarter.</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kc-head">Test Coverage Trend</div>
+          <div class="kc-body">
+            <div class="kc-target">≥ 70%</div>
+            <div class="kc-desc">Unit test coverage on changed/new code. Must not decline quarter-over-quarter. Source: SonarQube.</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kc-head">SAST Finding Trend</div>
+          <div class="kc-body">
+            <div class="kc-target">0 Critical/High</div>
+            <div class="kc-desc">Open Critical and High SAST findings at end of quarter. Target: zero. Trending down required. Source: Snyk/SonarQube.</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kc-head">Deployment Frequency</div>
+          <div class="kc-body">
+            <div class="kc-target">≥ 2×/month</div>
+            <div class="kc-desc">Deployments to production per month. DORA metric. High-performing = multiple per day. Track trend. Source: CI/CD logs.</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kc-head">P1 Incident Rate</div>
+          <div class="kc-body">
+            <div class="kc-target">≤ 1/quarter</div>
+            <div class="kc-desc">P1 production incidents per quarter. Target: &lt;1. Each P1 must have a completed RCA. Source: Incident management system.</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kc-head">MTTR (Mean Time to Recover)</div>
+          <div class="kc-body">
+            <div class="kc-target">&lt; 4 hours</div>
+            <div class="kc-desc">Average time from incident detection to service restoration for P1/P2 incidents. DORA metric. Source: Incident log.</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kc-head">Tech Debt Ratio</div>
+          <div class="kc-body">
+            <div class="kc-target">≤ 5%</div>
+            <div class="kc-desc">SonarQube tech debt ratio (remediation effort vs. total code cost). Must not grow QoQ without documented plan. Source: SonarQube.</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kc-head">PR Cycle Time</div>
+          <div class="kc-body">
+            <div class="kc-target">&lt; 24 hours</div>
+            <div class="kc-desc">Average time from PR opened to merged (excluding intentional hold). High cycle time indicates bottlenecks in review process. Source: GitHub/ADO.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection-label">Quarterly Reporting Requirements</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:200px;">Metric</th>
+            <th style="width:120px;">Reporting Period</th>
+            <th style="width:150px;">Data Source</th>
+            <th style="width:140px;">Report To</th>
+            <th>Action Required If Below Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>All 8 KPIs above</td>
+            <td>Quarterly</td>
+            <td>SonarQube, Snyk, CI/CD, Incident system</td>
+            <td>SDLC Gatekeeper (Srini Peri)</td>
+            <td>Remediation plan with target date submitted within 2 weeks of quarter close. Tracked in subsequent quarter.</td>
+          </tr>
+          <tr>
+            <td>Zero-tolerance violation log</td>
+            <td>Monthly</td>
+            <td>Exception register in Git repo</td>
+            <td>TM self-report to Gatekeeper</td>
+            <td>Any violation in the period requires root cause analysis and documented corrective action.</td>
+          </tr>
+          <tr>
+            <td>Open security findings (SAST+SCA)</td>
+            <td>Monthly</td>
+            <td>Snyk dashboard, SonarQube</td>
+            <td>TM reviews; escalates Critical to Gatekeeper immediately</td>
+            <td>Critical: immediate. High: remediation within 7 days. Medium: backlog sprint within 30 days.</td>
+          </tr>
+          <tr>
+            <td>Exception register review</td>
+            <td>Monthly</td>
+            <td>Team exception register</td>
+            <td>TM + SDLC Gatekeeper</td>
+            <td>Expired exceptions without renewal are escalated to VP IT as compliance gaps.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>ABM Industries IT · SDLC Guardrails &amp; Enforcement Playbook v1.0</span>
+  <span>Controlled in Git: abm-it/sdlc-standards/guardrails/sdlc-guardrails.html</span>
+</div>
+
+</body>
+</html>

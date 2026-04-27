@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Assessment &amp; Threat Model – ABM Industries IT</title>
+<style>
+  :root {
+    --navy: #002B5C;
+    --green: #009A44;
+    --border: #CBD5E8;
+    --text: #1C2336;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #F4F6FB;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .banner {
+    background: var(--navy);
+    color: #fff;
+    padding: 36px 48px 28px;
+    border-bottom: 4px solid var(--green);
+  }
+  .banner .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #8BAAD4;
+    margin-bottom: 10px;
+  }
+  .banner .label code {
+    background: rgba(255,255,255,0.12);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .banner h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .banner .sub {
+    font-size: 13px;
+    color: #A8C4E0;
+  }
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+  .section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .section-title {
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .num {
+    background: var(--green);
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-body {
+    padding: 20px 24px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: 16px;
+  }
+  .meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meta-field label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6B7A99;
+  }
+  .meta-field .value {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    background: #F8FAFD;
+    min-height: 34px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .write-area {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: #F8FAFD;
+    resize: vertical;
+  }
+  .write-area:focus { outline: 2px solid var(--green); }
+  .data-class {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .data-class label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: #F8FAFD;
+    transition: background 0.15s;
+  }
+  .data-class label:hover { background: #EEF2FB; }
+  .data-class label input { width: 13px; height: 13px; }
+  .data-class label.pii { border-color: #DC3545; color: #721C24; }
+  .data-class label.fin { border-color: #F0A500; color: #7A5200; }
+  .data-class label.emp { border-color: #007BFF; color: #004085; }
+  .data-class label.cust { border-color: #6F42C1; color: #3D1A78; }
+  .data-class label.none { border-color: #28A745; color: #155724; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  thead tr { background: var(--navy); color: #fff; }
+  thead th {
+    padding: 9px 10px;
+    text-align: left;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:nth-child(even) { background: #F8FAFD; }
+  tbody tr:hover { background: #EEF2FB; }
+  tbody td {
+    padding: 9px 10px;
+    vertical-align: top;
+  }
+  tbody td textarea {
+    width: 100%;
+    min-height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 4px 6px;
+    font-family: inherit;
+    font-size: 12px;
+    background: transparent;
+    resize: vertical;
+  }
+  select.inline {
+    width: 100%;
+    padding: 5px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 11.5px;
+    background: #fff;
+  }
+  .stride-header td {
+    background: var(--navy) !important;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 8px 10px !important;
+    letter-spacing: 0.5px;
+  }
+  .stride-S  { border-left: 4px solid #DC3545; }
+  .stride-T  { border-left: 4px solid #F0A500; }
+  .stride-R  { border-left: 4px solid #6F42C1; }
+  .stride-I  { border-left: 4px solid #007BFF; }
+  .stride-D  { border-left: 4px solid #FF6B35; }
+  .stride-E  { border-left: 4px solid #DC3545; }
+  .threat-label {
+    font-weight: 700;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .owasp-section { margin-bottom: 20px; }
+  .owasp-section h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6B7A99;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .checklist-row td { vertical-align: middle; }
+  .check-cell input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+  }
+  .risk-critical { color: #721C24; font-weight: 700; }
+  .risk-high     { color: #856404; font-weight: 600; }
+  .risk-medium   { color: #004085; font-weight: 600; }
+  .risk-low      { color: #155724; font-weight: 600; }
+  .subsection-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6B7A99;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .subsection-label:first-child { margin-top: 0; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .sub-card {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .sub-card .sc-head {
+    background: #F4F6FB;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--navy);
+    border-bottom: 1px solid var(--border);
+  }
+  .sub-card .sc-body {
+    padding: 12px;
+  }
+  .iso-tag { font-size: 10px; font-weight: 400; opacity: 0.75; margin-left: 8px; }
+  .footer {
+    background: var(--navy);
+    color: #8BAAD4;
+    font-size: 11px;
+    padding: 14px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    letter-spacing: 0.3px;
+  }
+  @media (max-width: 700px) {
+    .banner { padding: 24px 20px 18px; }
+    .container { padding: 16px 12px 40px; }
+    .two-col { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; gap: 4px; padding: 12px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div class="label">ABM Industries IT · Template v1.0 · <code>templates/security-assessment-template.html</code></div>
+  <h1>Security Assessment &amp; Threat Model</h1>
+  <div class="sub">Required for new services, data stores, external integrations, and significant features handling sensitive data. ISO A.8.26 | A.8.27 | A.8.28</div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: META -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> Assessment Metadata</div>
+    <div class="section-body">
+      <div class="meta-grid">
+        <div class="meta-field">
+          <label>Assessment ID</label>
+          <div class="value">SA-____</div>
+        </div>
+        <div class="meta-field">
+          <label>Feature / System Name</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Date</label>
+          <div class="value">YYYY-MM-DD</div>
+        </div>
+        <div class="meta-field">
+          <label>Assessor</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Team</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Development Paradigm</label>
+          <div class="value">&nbsp;</div>
+        </div>
+      </div>
+      <div style="margin-top:18px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:8px;">Data Classification — Select All That Apply</label>
+        <div class="data-class">
+          <label class="pii"><input type="checkbox"> PII — Personally Identifiable Information</label>
+          <label class="fin"><input type="checkbox"> Financial Data</label>
+          <label class="emp"><input type="checkbox"> Employee Data</label>
+          <label class="cust"><input type="checkbox"> Customer Data</label>
+          <label class="none"><input type="checkbox"> No Sensitive Data</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: SCOPE -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> Scope &amp; System Overview <span class="iso-tag">ISO A.8.26</span></div>
+    <div class="section-body">
+      <div style="margin-bottom:14px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">What Is Being Assessed</label>
+        <textarea class="write-area" placeholder="Describe the system, feature, or integration being assessed. Include service names, endpoints, APIs, and data stores in scope."></textarea>
+      </div>
+      <div class="two-col">
+        <div>
+          <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">System Components</label>
+          <textarea class="write-area" style="min-height:70px;" placeholder="• Frontend / UI&#10;• Backend API(s)&#10;• Database(s)&#10;• Message queues&#10;• External integrations"></textarea>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Trust Boundaries &amp; Data Flows</label>
+          <textarea class="write-area" style="min-height:70px;" placeholder="Describe where data crosses trust boundaries (e.g. internet → WAF → API, API → database, service → external vendor API).&#10;&#10;Attach architecture diagram reference if available."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: STRIDE THREAT MODEL -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> STRIDE Threat Model <span class="iso-tag">ISO A.8.27</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        For each STRIDE category, identify specific attack vectors relevant to this system, assess likelihood and impact, and document mitigations. Every row must be completed or marked N/A with justification.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:110px;">Threat Category</th>
+            <th>Attack Vector</th>
+            <th style="width:90px;">Likelihood</th>
+            <th style="width:80px;">Impact</th>
+            <th>Mitigation Controls</th>
+            <th style="width:100px;">Residual Risk</th>
+            <th style="width:90px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="stride-S">
+            <td><span class="threat-label" style="color:#DC3545;">S — Spoofing</span><br><small style="color:#6B7A99;">Identity forgery</small></td>
+            <td><textarea placeholder="e.g. Attacker forges JWT token to impersonate privileged user..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><textarea placeholder="e.g. Short-lived JWTs, Azure AD validation, MFA required..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><select class="inline"><option>Open</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+          <tr class="stride-T">
+            <td><span class="threat-label" style="color:#F0A500;">T — Tampering</span><br><small style="color:#6B7A99;">Data modification</small></td>
+            <td><textarea placeholder="e.g. MITM attack modifies data in transit between services..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><textarea placeholder="e.g. TLS 1.2+ enforced on all channels, message signing for async events..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><select class="inline"><option>Open</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+          <tr class="stride-R">
+            <td><span class="threat-label" style="color:#6F42C1;">R — Repudiation</span><br><small style="color:#6B7A99;">Deny actions</small></td>
+            <td><textarea placeholder="e.g. User denies performing a financial transaction; no audit trail exists..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><textarea placeholder="e.g. Immutable audit log in Azure Monitor, correlation IDs on all transactions..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><select class="inline"><option>Open</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+          <tr class="stride-I">
+            <td><span class="threat-label" style="color:#007BFF;">I — Info Disclosure</span><br><small style="color:#6B7A99;">Data exposure</small></td>
+            <td><textarea placeholder="e.g. API returns sensitive PII fields not required by calling service..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><textarea placeholder="e.g. Response field filtering, data masking in non-prod, least-privilege API scopes..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><select class="inline"><option>Open</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+          <tr class="stride-D">
+            <td><span class="threat-label" style="color:#FF6B35;">D — Denial of Service</span><br><small style="color:#6B7A99;">Availability attack</small></td>
+            <td><textarea placeholder="e.g. Unauthenticated endpoint hit with high-volume requests causing service unavailability..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><textarea placeholder="e.g. Azure DDoS Protection, API Gateway rate limiting (100 req/min per client), auto-scaling..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><select class="inline"><option>Open</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+          <tr class="stride-E">
+            <td><span class="threat-label" style="color:#DC3545;">E — Elevation of Privilege</span><br><small style="color:#6B7A99;">Privilege escalation</small></td>
+            <td><textarea placeholder="e.g. Standard user exploits broken object-level authorization to access admin endpoints..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><textarea placeholder="e.g. RBAC enforced at API layer, server-side authorization validation on every request, BOLA testing in DAST..."></textarea></td>
+            <td><select class="inline"><option>Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><select class="inline"><option>Open</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 4: OWASP COMPLIANCE CHECKLIST -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> OWASP Compliance Checklist <span class="iso-tag">ISO A.8.28</span></div>
+    <div class="section-body">
+
+      <div class="owasp-section">
+        <h4>OWASP Top 10 (Web / API)</h4>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px;text-align:center;">N/A?</th>
+              <th style="width:220px;">Control</th>
+              <th style="width:80px;">Applicable</th>
+              <th>How Addressed</th>
+              <th style="width:150px;">Evidence / Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A01</strong> — Broken Access Control</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. RBAC enforced at API gateway and service layer, BOLA tests in DAST suite..."></textarea></td>
+              <td><textarea placeholder="e.g. StackHawk scan report, PR #123"></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A02</strong> — Cryptographic Failures</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. TLS 1.2+ enforced, AES-256 at rest, no MD5/SHA1, key rotation via Key Vault..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A03</strong> — Injection</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Parameterized queries only (ORM enforced), input validation framework, Snyk SAST checks..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A04</strong> — Insecure Design</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. STRIDE threat model completed (this document), security design review in sprint planning..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A05</strong> — Security Misconfiguration</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. IaC security scanning (tfsec/Checkov), default creds disallowed, error messages sanitized..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A06</strong> — Vulnerable &amp; Outdated Components</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Snyk SCA in CI gate, zero Critical/High CVE policy, automated PR on dependency updates..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A07</strong> — Identification &amp; Authentication Failures</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Azure AD / Entra ID, MFA enforced, short-lived tokens, no credential stuffing surface..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A08</strong> — Software &amp; Data Integrity Failures</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Signed commits, SBOM generated, pipeline integrity (no unreviewed code to prod)..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A09</strong> — Security Logging &amp; Monitoring Failures</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Centralized logging to Azure Monitor, security events alerted, log retention 90 days+..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox" title="Mark N/A"></td>
+              <td><strong>A10</strong> — Server-Side Request Forgery (SSRF)</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Allowlist for outbound requests, no user-controlled URLs passed to server-side HTTP clients..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="owasp-section">
+        <h4>OWASP Mobile Top 10 (Complete only if mobile surface is in scope)</h4>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px;text-align:center;">N/A?</th>
+              <th style="width:220px;">Control</th>
+              <th style="width:80px;">Applicable</th>
+              <th>How Addressed</th>
+              <th style="width:150px;">Evidence / Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M1</strong> — Improper Credential Usage</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. No hardcoded credentials, secrets via secure enclaves / MDM..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M2</strong> — Inadequate Supply Chain Security</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. NuGet/npm SCA scan, approved SDK versions only..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M3</strong> — Insecure Authentication / Authorization</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Biometric + Azure AD auth, server-side authorization validation..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M4</strong> — Insufficient Input / Output Validation</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Input sanitized client and server side, output encoding enforced..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M5</strong> — Insecure Communication</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Certificate pinning implemented, TLS 1.2+ enforced, no plain HTTP..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M6</strong> — Inadequate Privacy Controls</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Minimal data collected, PII not in logs, CCPA/GDPR controls..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M7</strong> — Insufficient Binary Protections</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Code obfuscation, debug symbols stripped from release builds..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M8</strong> — Security Misconfiguration</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Prod builds disable debug, no test endpoints in prod binary..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M9</strong> — Insecure Data Storage</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. No PII in shared preferences/local storage, iOS Keychain for secrets, Android Keystore..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+            <tr class="checklist-row">
+              <td class="check-cell" style="text-align:center;"><input type="checkbox"></td>
+              <td><strong>M10</strong> — Insufficient Cryptography</td>
+              <td><select class="inline"><option>Y</option><option>N</option></select></td>
+              <td><textarea placeholder="e.g. Platform-native crypto APIs only, AES-256, no custom crypto..."></textarea></td>
+              <td><textarea placeholder="Evidence reference..."></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: AUTH & AUTHZ -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> Authentication &amp; Authorization</div>
+    <div class="section-body">
+      <div class="two-col" style="margin-bottom:14px;">
+        <div>
+          <div class="subsection-label" style="margin-top:0;">Authentication Mechanism</div>
+          <textarea class="write-area" style="min-height:70px;" placeholder="e.g. Azure AD / Entra ID with MSAL, OAuth 2.0 + PKCE, MFA required for all users, service-to-service uses Managed Identity..."></textarea>
+        </div>
+        <div>
+          <div class="subsection-label" style="margin-top:0;">RBAC Roles Defined</div>
+          <textarea class="write-area" style="min-height:70px;" placeholder="List all roles defined in the system:&#10;• Admin — full access&#10;• Operator — read/write&#10;• Viewer — read-only&#10;• Service Account — scoped to specific APIs"></textarea>
+        </div>
+      </div>
+      <div class="subsection-label">Least Privilege Validation</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Permitted Actions</th>
+            <th>Restricted Actions</th>
+            <th style="width:120px;">Validation Method</th>
+            <th style="width:90px;">Validated?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><textarea placeholder="Role name"></textarea></td>
+            <td><textarea placeholder="What this role can do"></textarea></td>
+            <td><textarea placeholder="What this role cannot do"></textarea></td>
+            <td><textarea placeholder="e.g. DAST test, unit test, manual review"></textarea></td>
+            <td><select class="inline"><option>Yes</option><option>No</option><option>Pending</option></select></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="Role name"></textarea></td>
+            <td><textarea placeholder="What this role can do"></textarea></td>
+            <td><textarea placeholder="What this role cannot do"></textarea></td>
+            <td><textarea placeholder="e.g. DAST test, unit test, manual review"></textarea></td>
+            <td><select class="inline"><option>Yes</option><option>No</option><option>Pending</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 6: DATA PROTECTION -->
+  <div class="section">
+    <div class="section-title"><span class="num">6</span> Data Protection <span class="iso-tag">ISO A.8.26</span></div>
+    <div class="section-body">
+      <div class="two-col">
+        <div class="sub-card">
+          <div class="sc-head">Encryption at Rest</div>
+          <div class="sc-body">
+            <textarea class="write-area" style="min-height:70px;border:none;background:transparent;" placeholder="e.g. Azure SQL TDE enabled (AES-256), Blob Storage with Microsoft-managed keys, Key Vault for customer-managed keys where required..."></textarea>
+          </div>
+        </div>
+        <div class="sub-card">
+          <div class="sc-head">Encryption in Transit</div>
+          <div class="sc-body">
+            <textarea class="write-area" style="min-height:70px;border:none;background:transparent;" placeholder="e.g. TLS 1.2 minimum enforced (TLS 1.0/1.1 disabled), mutual TLS for service-to-service, HSTS headers set..."></textarea>
+          </div>
+        </div>
+        <div class="sub-card">
+          <div class="sc-head">Key Management</div>
+          <div class="sc-body">
+            <textarea class="write-area" style="min-height:70px;border:none;background:transparent;" placeholder="e.g. All keys stored in Azure Key Vault, 90-day rotation schedule, access policy follows least privilege, key versioning enabled..."></textarea>
+          </div>
+        </div>
+        <div class="sub-card">
+          <div class="sc-head">Data Masking in Non-Prod</div>
+          <div class="sc-body">
+            <textarea class="write-area" style="min-height:70px;border:none;background:transparent;" placeholder="e.g. Production PII data never copied to Dev/QA/UAT. Synthetic data used. Azure SQL Dynamic Data Masking applied for support access..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="subsection-label">Data Retention Policy</div>
+      <textarea class="write-area" style="min-height:60px;" placeholder="Document data retention periods per data type. e.g. Transaction logs: 7 years (SOX). PII: deleted 30 days after account closure. Audit logs: 90 days hot, 3 years cold storage."></textarea>
+    </div>
+  </div>
+
+  <!-- SECTION 7: SECRET MANAGEMENT -->
+  <div class="section">
+    <div class="section-title"><span class="num">7</span> Secret Management</div>
+    <div class="section-body">
+      <table style="margin-bottom:16px;">
+        <thead>
+          <tr>
+            <th style="width:280px;">Control</th>
+            <th style="width:80px;">Compliant?</th>
+            <th>Evidence / Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>All secrets stored in Azure Key Vault</td>
+            <td><select class="inline"><option>Yes</option><option>No</option><option>Partial</option></select></td>
+            <td><textarea placeholder="Key Vault name(s), access policy configuration..."></textarea></td>
+          </tr>
+          <tr>
+            <td>No hardcoded credentials in source code</td>
+            <td><select class="inline"><option>Yes</option><option>No</option><option>Partial</option></select></td>
+            <td><textarea placeholder="Gitleaks/TruffleHog scan results, CI gate configuration..."></textarea></td>
+          </tr>
+          <tr>
+            <td>Secrets scan in CI pipeline (zero findings gate)</td>
+            <td><select class="inline"><option>Yes</option><option>No</option><option>Partial</option></select></td>
+            <td><textarea placeholder="Tool used, pipeline reference, last scan date..."></textarea></td>
+          </tr>
+          <tr>
+            <td>Secret rotation schedule documented and implemented</td>
+            <td><select class="inline"><option>Yes</option><option>No</option><option>Partial</option></select></td>
+            <td><textarea placeholder="Rotation frequency per secret type, automated or manual..."></textarea></td>
+          </tr>
+          <tr>
+            <td>Service-to-service auth uses Managed Identity (no shared secrets)</td>
+            <td><select class="inline"><option>Yes</option><option>No</option><option>N/A</option></select></td>
+            <td><textarea placeholder="List services using Managed Identity..."></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 8: THIRD-PARTY / DEPENDENCIES -->
+  <div class="section">
+    <div class="section-title"><span class="num">8</span> Third-Party &amp; Dependency Security</div>
+    <div class="section-body">
+      <div class="two-col" style="margin-bottom:16px;">
+        <div class="meta-field">
+          <label>Snyk Scan Date</label>
+          <div class="value">YYYY-MM-DD</div>
+        </div>
+        <div class="meta-field">
+          <label>Scan Result Summary</label>
+          <div class="value">&nbsp;</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Dependency / CVE ID</th>
+            <th style="width:90px;">Severity</th>
+            <th style="width:140px;">Affected Component</th>
+            <th>Remediation Plan</th>
+            <th style="width:120px;">Target Fix Date</th>
+            <th style="width:90px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><textarea placeholder="e.g. CVE-2024-XXXXX or package@version"></textarea></td>
+            <td>
+              <select class="inline">
+                <option>Critical</option>
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+              </select>
+            </td>
+            <td><textarea placeholder="Component name"></textarea></td>
+            <td><textarea placeholder="Upgrade to version X.X.X, apply patch, or mitigating control..."></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Open</option><option>In Progress</option><option>Resolved</option><option>Accepted</option></select></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="e.g. CVE-2024-XXXXX or package@version"></textarea></td>
+            <td>
+              <select class="inline">
+                <option>Critical</option>
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+              </select>
+            </td>
+            <td><textarea placeholder="Component name"></textarea></td>
+            <td><textarea placeholder="Upgrade to version X.X.X, apply patch, or mitigating control..."></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Open</option><option>In Progress</option><option>Resolved</option><option>Accepted</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 9: SECURITY TESTING PLAN -->
+  <div class="section">
+    <div class="section-title"><span class="num">9</span> Security Testing Plan <span class="iso-tag">ISO A.8.29</span></div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:130px;">Test Type</th>
+            <th style="width:150px;">Tool</th>
+            <th>What Is Tested</th>
+            <th style="width:140px;">Schedule / Trigger</th>
+            <th style="width:110px;">Pass Criteria</th>
+            <th style="width:90px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SAST</strong><br><small>Static Analysis</small></td>
+            <td><textarea placeholder="e.g. Snyk Code, SonarQube"></textarea></td>
+            <td><textarea placeholder="Source code scan for security vulnerabilities, code quality gates"></textarea></td>
+            <td><textarea placeholder="Every PR, every commit to develop"></textarea></td>
+            <td><textarea placeholder="Zero Critical / High findings">Zero Critical / High</textarea></td>
+            <td><select class="inline"><option>Planned</option><option>Active</option><option>Complete</option></select></td>
+          </tr>
+          <tr>
+            <td><strong>SCA</strong><br><small>Dependency Scan</small></td>
+            <td><textarea placeholder="e.g. Snyk Open Source, OWASP Dependency Check"></textarea></td>
+            <td><textarea placeholder="Third-party dependency CVE scanning"></textarea></td>
+            <td><textarea placeholder="Daily scheduled + every PR"></textarea></td>
+            <td><textarea placeholder="Zero Critical / High CVEs">Zero Critical / High</textarea></td>
+            <td><select class="inline"><option>Planned</option><option>Active</option><option>Complete</option></select></td>
+          </tr>
+          <tr>
+            <td><strong>Secrets Scan</strong></td>
+            <td><textarea placeholder="e.g. Gitleaks, TruffleHog"></textarea></td>
+            <td><textarea placeholder="Hardcoded secrets, credentials, API keys in source and commit history"></textarea></td>
+            <td><textarea placeholder="Every PR, pre-commit hook"></textarea></td>
+            <td><textarea placeholder="Zero findings">Zero findings</textarea></td>
+            <td><select class="inline"><option>Planned</option><option>Active</option><option>Complete</option></select></td>
+          </tr>
+          <tr>
+            <td><strong>DAST</strong><br><small>Dynamic Analysis</small></td>
+            <td><textarea placeholder="e.g. StackHawk, OWASP ZAP"></textarea></td>
+            <td><textarea placeholder="Running application — auth, injection, misconfig, OWASP Top 10"></textarea></td>
+            <td><textarea placeholder="Pre-prod promotion gate (UAT stage)"></textarea></td>
+            <td><textarea placeholder="Zero Critical / High findings">Zero Critical / High</textarea></td>
+            <td><select class="inline"><option>Planned</option><option>Active</option><option>Complete</option></select></td>
+          </tr>
+          <tr>
+            <td><strong>Penetration Test</strong></td>
+            <td><textarea placeholder="e.g. Internal Red Team / Third-party vendor"></textarea></td>
+            <td><textarea placeholder="Full external and internal attack simulation"></textarea></td>
+            <td><textarea placeholder="Annual, or on major release"></textarea></td>
+            <td><textarea placeholder="All critical findings remediated before go-live"></textarea></td>
+            <td><select class="inline"><option>Planned</option><option>Active</option><option>Complete</option></select></td>
+          </tr>
+          <tr>
+            <td><strong>Security Code Review</strong></td>
+            <td><textarea placeholder="e.g. Manual review checklist (PR gate)"></textarea></td>
+            <td><textarea placeholder="Auth changes, new data flows, new external integrations, privilege changes"></textarea></td>
+            <td><textarea placeholder="Required PR checklist item on security-impacting changes"></textarea></td>
+            <td><textarea placeholder="Security checklist signed off by reviewer">Checklist signed off</textarea></td>
+            <td><select class="inline"><option>Planned</option><option>Active</option><option>Complete</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 10: RISK REGISTER -->
+  <div class="section">
+    <div class="section-title"><span class="num">10</span> Security Risk Register</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        Document all open security risks. Risks that are Accepted must have written justification and TM sign-off. Critical and High risks may not be accepted without CISO/InfoSec approval.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:80px;">Risk ID</th>
+            <th>Description</th>
+            <th style="width:90px;">Likelihood</th>
+            <th style="width:80px;">Impact</th>
+            <th style="width:120px;">Risk Owner</th>
+            <th style="width:120px;">Target Date</th>
+            <th style="width:90px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SEC-001</td>
+            <td><textarea placeholder="Describe the security risk in plain language..."></textarea></td>
+            <td><select class="inline"><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><textarea placeholder="Name / Role"></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Open</option><option>In Progress</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+          <tr>
+            <td>SEC-002</td>
+            <td><textarea placeholder="Describe the security risk in plain language..."></textarea></td>
+            <td><select class="inline"><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><textarea placeholder="Name / Role"></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Open</option><option>In Progress</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+          <tr>
+            <td>SEC-003</td>
+            <td><textarea placeholder="Describe the security risk in plain language..."></textarea></td>
+            <td><select class="inline"><option>Low</option><option>Medium</option><option>High</option></select></td>
+            <td><select class="inline"><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></td>
+            <td><textarea placeholder="Name / Role"></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Open</option><option>In Progress</option><option>Mitigated</option><option>Accepted</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 11: SIGN-OFF -->
+  <div class="section">
+    <div class="section-title"><span class="num">11</span> Sign-Off &amp; Approval</div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Name</th>
+            <th style="width:140px;">Date</th>
+            <th style="width:120px;">Decision</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:600;">Assessor / Author</td>
+            <td><textarea placeholder="Name"></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Approved</option><option>Approved with Conditions</option><option>Rejected</option></select></td>
+            <td><textarea placeholder="Comments..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">Technology Manager</td>
+            <td><textarea placeholder="Name"></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Approved</option><option>Approved with Conditions</option><option>Rejected</option></select></td>
+            <td><textarea placeholder="Comments..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">Security / InfoSec Representative</td>
+            <td><textarea placeholder="Name"></textarea></td>
+            <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+            <td><select class="inline"><option>Approved</option><option>Approved with Conditions</option><option>Rejected</option></select></td>
+            <td><textarea placeholder="Comments..."></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>ABM Industries IT · Security Assessment &amp; Threat Model Template v1.0</span>
+  <span>Controlled in Git: abm-it/sdlc-standards/templates/security-assessment-template.html</span>
+</div>
+
+</body>
+</html>
