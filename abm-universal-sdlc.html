@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ABM Universal SDLC | v0.906</title>
+<title>ABM Universal SDLC | v0.907</title>
 <style>
 :root {
   --navy: #1B3DA8;
@@ -235,7 +235,7 @@ tr:hover td { background: #EDF2F9; }
   <h1>ABM Universal SDLC</h1>
   <div class="doc-sub">Master Standard Operating Procedure · All Development Paradigms · ISO 27001 Aligned</div>
   <div id="doc-meta">
-    <div class="meta-item"><div class="meta-label">Document Version</div><div class="meta-val">0.906</div></div>
+    <div class="meta-item"><div class="meta-label">Document Version</div><div class="meta-val">0.907</div></div>
     <div class="meta-item"><div class="meta-label">Effective Date</div><div class="meta-val">April 2026</div></div>
     <div class="meta-item"><div class="meta-label">Review Cycle</div><div class="meta-val">Quarterly</div></div>
     <div class="meta-item"><div class="meta-label">Chief Architect</div><div class="meta-val">Srinivas Peri</div></div>
@@ -250,9 +250,7 @@ tr:hover td { background: #EDF2F9; }
 <div class="section" id="s1">
   <div class="section-header"><div class="section-num">1</div><h2>Executive Summary</h2></div>
 
-  <p>ABM Industries operates a diverse technology estate spanning custom-coded applications, integration platforms, low-code and no-code tooling, SaaS solutions, and cloud infrastructure. Each engineering team has historically defined its own delivery practices — creating inconsistency in quality, security posture, audit readiness, and risk exposure.</p>
-
-  <p>This document establishes the <strong>ABM Universal SDLC</strong>: a single master standard that every IT team adopts as a floor. It covers the complete software delivery lifecycle — from idea to production — across all development paradigms. Teams extend it for their specific technology stack; they never reduce it.</p>
+  <p>This document is the <strong>ABM Universal SDLC</strong> — the single mandatory standard governing how all ABM IT teams build, test, and release software. It applies to every development paradigm: full code, low-code, no-code, and SaaS/PaaS configuration. Teams extend it for their specific stack; they never reduce it.</p>
 
   <div class="card">
     <div class="card-title">What This Document Establishes</div>
@@ -382,10 +380,10 @@ tr:hover td { background: #EDF2F9; }
   <div class="section-header"><div class="section-num">2</div><h2>Purpose &amp; Scope</h2></div>
 
   <h3>2.1 Purpose</h3>
-  <p>To define the standardized, enterprise-wide processes, controls, and practices governing software development across all of ABM IT — ensuring consistent quality, security by design, regulatory compliance, and operational reliability regardless of the technology platform or development paradigm in use.</p>
+  <p>To define the mandatory processes, controls, and practices governing software delivery across all of ABM IT — ensuring consistent quality, security, compliance, and audit readiness regardless of platform or paradigm.</p>
 
   <h3>2.2 Scope</h3>
-  <p>This standard applies to <strong>all ABM IT development activity</strong>, including:</p>
+  <p>Applies to <strong>all ABM IT development activity</strong>:</p>
   <div style="display:flex; gap:10px; flex-wrap:wrap; margin:12px 0;">
     <span class="tag tag-code">Full-Code (Python, .NET, Java, Node)</span>
     <span class="tag tag-lowcode">Low-Code (Boomi, Power Automate)</span>
@@ -396,7 +394,7 @@ tr:hover td { background: #EDF2F9; }
     <div class="callout-label">Power BI — Scoping Note</div>
     Power BI is a reporting and analytics platform (no-code paradigm). Governance principles in this master apply; however, Power BI-specific controls (workspace governance, dataset certification, row-level security, report deployment pipelines) are being defined by Reshmi Chakraborty's data team in a separate child SDLC. Until that child SDLC is published, Power BI changes require: ADO change record, peer review, and Technology Manager approval.
   </div>
-  <p>It applies to all team members involved in delivering software: developers, integrators, architects, QA engineers, business analysts, product owners, and technology managers.</p>
+  <p>Applies to all roles involved in delivery: developers, integrators, architects, QA engineers, business analysts, product owners, and technology managers.</p>
   <div class="callout callout-warn">
     <div class="callout-label">Infrastructure — Coordinating Separately</div>
     Cloud infrastructure provisioning (Terraform, Bicep, ARM templates, CloudFormation) is managed by Adam Houdashell's infrastructure team and is being addressed under a separate workstream. This SDLC governs <strong>application delivery</strong>. Infrastructure SDLC alignment will be incorporated in a future revision once that team's practices are reviewed.
@@ -632,7 +630,7 @@ tr:hover td { background: #EDF2F9; }
   </div>
 
   <h3>Requirements Artifacts</h3>
-  <p>Development cannot begin without a documented requirement that has been formally accepted by all parties. Think of it this way: a painter cannot start until they know exactly what to paint, which colour, and where. The requirement artifacts provide that clarity.</p>
+  <p>Development cannot begin without a documented, formally accepted requirement. The type of artifact depends on the paradigm:</p>
 
   <table>
     <tr><th>Artifact</th><th>Purpose</th><th>Required For</th><th>Storage</th></tr>
@@ -656,7 +654,7 @@ tr:hover td { background: #EDF2F9; }
   </table>
 
   <h3>Technical Design Document (TDD)</h3>
-  <p>Once the FRD is accepted, the development team produces a <strong>Technical Design Document</strong> before any code is written. The TDD answers: <em>How are we going to build this?</em></p>
+  <p>Once the FRD is accepted, the team produces a <strong>Technical Design Document (TDD)</strong> before any code is written. The TDD must address:</p>
   <ul>
     <li>Integration architecture — API, file-based, messaging, or hybrid approach</li>
     <li>Authentication and authorisation controls</li>
@@ -665,10 +663,10 @@ tr:hover td { background: #EDF2F9; }
     <li>Encryption requirements (at rest and in transit)</li>
     <li>DRY validation — confirm no existing component or service is being duplicated</li>
   </ul>
-  <p>The TDD, together with the integration architecture diagram, is reviewed with the Security team prior to development start.</p>
+
 
   <h3>Security Review Gate</h3>
-  <p>Before any development begins, the team walks the Security team through:</p>
+  <p>Before development begins, the team must walk Security through:</p>
   <ul>
     <li>What is being built and why</li>
     <li>Authentication and authorisation design</li>
@@ -698,7 +696,7 @@ tr:hover td { background: #EDF2F9; }
   </ul>
 
   <h3>Iterative Delivery</h3>
-  <p>Teams deliver work iteratively, keeping work items small and shippable. Teams should balance feature delivery with platform health work (tech debt, security remediation, dependency updates). Delivery model (sprint-based, kanban, or hybrid) is at the team's discretion — the requirements and security gates above apply regardless of delivery model.</p>
+  <p>Teams keep work items small and shippable. Balance feature delivery with platform health (tech debt, security updates, dependency patching). Delivery model (sprint, kanban, or hybrid) is the team's choice — the gates above apply regardless.</p>
 </div>
 
 <!-- ════════════════════════════════════════ S6 ARCHITECTURE & DESIGN -->
@@ -707,7 +705,7 @@ tr:hover td { background: #EDF2F9; }
   <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.27</span><span class="tag tag-iso">ISO A.8.26</span><span class="tag tag-all">All Paradigms</span></div>
 
   <h3>6.1 Feature Technology Approach (FTA)</h3>
-  <p>The FTA is the primary design artifact for any significant feature, integration, or infrastructure change. It must be completed and approved <em>before</em> development begins. Template: <code>templates/fta-template.html</code></p>
+  <p>Required before development begins for any significant feature, integration, or configuration change. Template: <code>templates/fta-template.html</code></p>
 
   <div class="card">
     <div class="card-title">Required FTA Sections</div>
@@ -732,14 +730,15 @@ tr:hover td { background: #EDF2F9; }
   </table>
 
   <h3>6.3 Architecture Principles</h3>
-  <ul>
-    <li><strong>Clean Architecture:</strong> Separation of concerns; domain logic independent of frameworks and UI</li>
-    <li><strong>SOLID:</strong> Mandatory for all object-oriented code</li>
-    <li><strong>Offline-first:</strong> Required for any mobile or field-facing application (assume connectivity loss)</li>
-    <li><strong>API-first:</strong> All service boundaries defined via versioned, self-documenting OpenAPI specs</li>
-    <li><strong>Secure by default:</strong> Deny all, allow specifically; zero secrets in code or config files committed to Git</li>
-    <li><strong>Immutable infrastructure:</strong> For cloud resources, prefer replace-over-patch; IaC defines desired state</li>
-  </ul>
+  <table>
+    <tr><th>Principle</th><th>Requirement</th></tr>
+    <tr><td><strong>Clean Architecture</strong></td><td>Domain logic must be independent of frameworks, UI, and infrastructure</td></tr>
+    <tr><td><strong>SOLID</strong></td><td>Mandatory for all object-oriented code</td></tr>
+    <tr><td><strong>Offline-first</strong></td><td>Required for all mobile and field-facing applications</td></tr>
+    <tr><td><strong>API-first</strong></td><td>All service boundaries must have versioned OpenAPI specifications</td></tr>
+    <tr><td><strong>Secure by default</strong></td><td>Deny all, allow specifically. Zero secrets in code or config files.</td></tr>
+    <tr><td><strong>Immutable infrastructure</strong></td><td>Replace over patch for cloud resources; IaC defines desired state</td></tr>
+  </table>
 
   <h3>6.4 Required Design Artifacts</h3>
   <ul>
@@ -763,7 +762,7 @@ tr:hover td { background: #EDF2F9; }
   <div class="rule-box">All third-party and vendor development work must be executed under an ABM-approved vendor relationship with a valid Master Service Agreement (MSA). No vendor may access ABM systems, repositories, or data without an active MSA on file.</div>
 
   <h3>7.1 Universal Coding Standards</h3>
-  <p>These standards apply regardless of programming language or platform. Team-specific coding standards are defined in child SDLC documents.</p>
+  <p>Apply to all programming languages and platforms. Team-specific additions are defined in child SDLC documents.</p>
 
   <div class="card">
     <div class="card-title">SOLID Principles (Mandatory for all object-oriented code)</div>
@@ -789,8 +788,8 @@ tr:hover td { background: #EDF2F9; }
     <tr><td>High/Critical SAST findings</td><td>Zero tolerance</td><td>Snyk</td><td>Pipeline blocks on finding</td></tr>
   </table>
 
-  <h3>7.3 Definition of Done (Universal)</h3>
-  <p>A work item is complete only when ALL of the following are satisfied:</p>
+  <h3>7.3 Definition of Done</h3>
+  <p>A work item is only complete when ALL of the following are true:</p>
   <ul>
     <li>Code complete and checked into feature branch following branching strategy</li>
     <li>Unit tests written with ≥70% coverage; 100% of tests pass</li>
@@ -804,8 +803,8 @@ tr:hover td { background: #EDF2F9; }
     <li>Demo completed (P1 features require stakeholder demo)</li>
   </ul>
 
-  <h3>7.4 AI-Assisted Development Standards</h3>
-  <p>AI tools may be used to accelerate development. All AI-assisted output is subject to the same quality and security review gates as human-authored code — the tool that generated the code does not change the review obligation.</p>
+  <h3>7.4 AI-Assisted Development</h3>
+  <p>AI tools may be used to accelerate development. AI-generated output is subject to the same review gates as human-authored code — the generating tool does not change the review obligation.</p>
   <ul>
     <li>AI output is a <strong>draft</strong> — engineer review and accountability is mandatory before any AI-generated code is committed</li>
     <li>Approved tools: Claude Code (code generation and review), CodeRabbit (automated PR review), Microsoft Copilot (documentation and code completion). Additional tools require Chief Architect approval before use.</li>
@@ -892,7 +891,7 @@ tr:hover td { background: #EDF2F9; }
   <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.4</span><span class="tag tag-all">All Paradigms</span></div>
 
   <h3>8.1 Universal Git Requirements</h3>
-  <div class="rule-box">All ABM IT artifacts — source code, integration processes, IaC, configuration templates, and SDLC documents — MUST be stored in a version-controlled Git repository. Storing artifacts solely on local machines, network shares, or zip files is prohibited.</div>
+  <div class="rule-box">All ABM IT artifacts — source code, integration exports, configuration templates, and SDLC documents — must be in a version-controlled Git repository. Local machine storage, network shares, and zip files are not acceptable as the system of record.</div>
 
   <h3>8.2 Standard Branching Strategy</h3>
   <p>All repositories follow this branching model. Child SDLCs may define additional branch types but may not remove these protected branches:</p>
@@ -1023,7 +1022,7 @@ tr:hover td { background: #EDF2F9; }
     <tr><td>Architect / Gatekeeper</td><td>Read + review; admin on SDLC repo</td><td>—</td></tr>
   </table>
 
-  <div class="rule-box">Developers own the feature branch. Only the Technology Manager (or designated senior) promotes code from develop → QA → UAT → main. This enforces segregation of duties and is non-negotiable across all paradigms.</div>
+  <div class="rule-box">Developers own the feature branch. Only the Technology Manager (or designated senior) promotes code from develop → QA → UAT → main. Segregation of duties is non-negotiable.</div>
 
   <h3>8.6 Access Review</h3>
   <ul>
@@ -1197,7 +1196,7 @@ tr:hover td { background: #EDF2F9; }
   </ul>
 
   <h3>10.4 Secret &amp; Credential Management</h3>
-  <div class="rule-box">Zero secrets in code or configuration files committed to Git. All secrets, API keys, connection strings, and certificates must be stored in Azure Key Vault or equivalent approved secret management service. This is a zero-tolerance control — any detected secret in a repository triggers immediate rotation and root cause remediation.</div>
+  <div class="rule-box">Zero secrets in code or config files. All secrets, API keys, connection strings, and certificates must be in Azure Key Vault or approved equivalent. Any detected secret triggers immediate rotation and root cause analysis — no exceptions.</div>
   <ul>
     <li>Application-level secrets: Azure Key Vault (or equivalent per platform)</li>
     <li>IaC secrets: Terraform Cloud / pipeline secret variables — never in .tf files</li>
@@ -1239,7 +1238,7 @@ tr:hover td { background: #EDF2F9; }
   </div>
 
   <h3>11.2 Deployment Pipeline Requirements</h3>
-  <div class="rule-box">No manual deployments. All deployments — to any environment — must be executed via automated CI/CD pipelines. Deploying from a local machine, IDE, or management console is prohibited except during a declared emergency with Technology Manager and Executive Sponsor authorization, and must be logged as a SNOW ticket within 24 hours.</div>
+  <div class="rule-box">No manual deployments. All environment promotions must go through the CI/CD pipeline. Direct deployment from a local machine or IDE is prohibited. Emergency exceptions require Technology Manager and Executive Sponsor authorization, logged as a SNOW ticket within 24 hours.</div>
 
   <div class="pipeline-flow">
     <div class="pipe-step green">Feature PR Merged</div><div class="pipe-arrow">→</div>
@@ -1376,7 +1375,7 @@ tr:hover td { background: #EDF2F9; }
   </table>
 
   <h3>12.2 CAB / RFC Process</h3>
-  <div class="rule-box">Every production deployment requires a Request for Change (RFC) submitted to and approved by the Change Advisory Board (CAB) before the deployment window. No exceptions except declared security emergencies (which require retrospective CAB review within 48 hours).</div>
+  <div class="rule-box">Every production deployment requires a CAB-approved RFC before the deployment window. No exceptions. Security emergencies require retrospective CAB review within 48 hours and RCA within 72 hours.</div>
 
   <p>RFC Template: <code>templates/rfc-cab-template.html</code></p>
   <table>
@@ -1585,28 +1584,59 @@ tr:hover td { background: #EDF2F9; }
     <tr><td><strong>Governance</strong> (structural)</td><td>Gatekeeper review, quarterly SDLC reviews, access reviews</td><td>Child SDLC compliance, access control, ISO evidence completeness</td></tr>
   </table>
 
-  <h3>16.1 Non-Negotiable Controls (Zero-Tolerance)</h3>
-  <div class="callout callout-critical">
-    <div class="callout-label">Zero-Tolerance Controls</div>
-    The following controls admit no exceptions without documented approval from the Executive Sponsor:
-    <ul style="margin-top:8px;">
-      <li>No secrets / credentials committed to any Git repository</li>
-      <li>No direct commits to <code>main</code>, <code>uat</code>, or <code>qa</code> branches</li>
-      <li>No production deployments without CAB-approved RFC</li>
-      <li>No production data in non-production environments (unanonymized)</li>
-      <li>Builder ≠ promoter — segregation of duties enforced at all times</li>
-      <li>All deployments via pipeline — no manual deployments from local machines</li>
-    </ul>
+  <h3>16.1 Non-Negotiable Controls</h3>
+  <p style="font-size:13px; margin-bottom:14px;">The controls below admit no exceptions without written approval from the Executive Sponsor. Each control maps to one or more ISO 27001 A.8 requirements. Auditors: evidence artifacts are listed in Section 15.</p>
+
+  <div style="background:#FDECEA; border:1.5px solid #C62828; border-radius:8px; overflow:hidden; margin-bottom:16px;">
+    <div style="background:#C62828; color:#fff; padding:10px 18px; font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;">Source Control &amp; Code Quality</div>
+    <table style="margin:0;">
+      <tr><th style="width:4%">#</th><th style="width:46%">Control</th><th style="width:30%">Why it matters</th><th style="width:20%">ISO Control</th></tr>
+      <tr><td>1</td><td>No secrets, passwords, API keys, or connection strings committed to any Git repository</td><td>Exposed credentials are the leading cause of cloud breaches; automated scanning enforces this at every commit</td><td>A.8.28</td></tr>
+      <tr><td>2</td><td>No direct commits to <code>main</code>, <code>uat</code>, or <code>qa</code> branches — pull request required</td><td>Protects production-bound code from unreviewed changes; enforces peer accountability</td><td>A.8.4, A.8.28</td></tr>
+      <tr><td>3</td><td>Every code change must be peer-reviewed by a minimum of 2 peers and approved by the Technology Manager before merge</td><td>Four-eyes principle; required ISO evidence that changes are reviewed before they reach production</td><td>A.8.25, A.8.28</td></tr>
+      <tr><td>4</td><td>SAST scan must pass — zero High or Critical findings — before any merge to <code>qa</code>, <code>uat</code>, or <code>main</code></td><td>Prevents known security vulnerabilities from entering production code</td><td>A.8.29</td></tr>
+      <tr><td>5</td><td>All ABM IT source code, integration exports, and configuration templates must be in a version-controlled Git repository — local machine or network share storage is not acceptable as the system of record</td><td>Audit trail, rollback capability, and access control require Git as the single source of truth</td><td>A.8.4</td></tr>
+    </table>
+  </div>
+
+  <div style="background:#FDECEA; border:1.5px solid #C62828; border-radius:8px; overflow:hidden; margin-bottom:16px;">
+    <div style="background:#C62828; color:#fff; padding:10px 18px; font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;">Security Gates</div>
+    <table style="margin:0;">
+      <tr><th style="width:4%">#</th><th style="width:46%">Control</th><th style="width:30%">Why it matters</th><th style="width:20%">ISO Control</th></tr>
+      <tr><td>6</td><td>Security team review and sign-off is required before any development work begins</td><td>Security requirements must be designed in — retrofitting security after build is costly and incomplete</td><td>A.8.25, A.8.26</td></tr>
+      <tr><td>7</td><td>An approved Feature Technology Approach (FTA) is required before development begins on any significant feature, integration, or configuration change</td><td>Ensures architecture and security decisions are reviewed and documented before work starts</td><td>A.8.27</td></tr>
+      <tr><td>8</td><td>No vendor or third-party access to ABM systems, repositories, or data without an active Master Service Agreement (MSA) on file</td><td>Legal and security obligation; vendors without MSAs have no binding security or confidentiality controls</td><td>A.8.30</td></tr>
+    </table>
+  </div>
+
+  <div style="background:#FDECEA; border:1.5px solid #C62828; border-radius:8px; overflow:hidden; margin-bottom:16px;">
+    <div style="background:#C62828; color:#fff; padding:10px 18px; font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;">Deployment &amp; Change</div>
+    <table style="margin:0;">
+      <tr><th style="width:4%">#</th><th style="width:46%">Control</th><th style="width:30%">Why it matters</th><th style="width:20%">ISO Control</th></tr>
+      <tr><td>9</td><td>Every production deployment requires a CAB-approved RFC — no exceptions (security emergencies require retrospective CAB within 48 hours)</td><td>Change control is the primary safeguard against unplanned production incidents; mandatory ISO evidence artifact</td><td>A.8.25</td></tr>
+      <tr><td>10</td><td>All environment promotions must execute through the CI/CD pipeline — no manual deployments from local machines or IDEs</td><td>Ensures every deployment is logged, repeatable, and reversible; eliminates undocumented changes</td><td>A.8.25, A.8.31</td></tr>
+      <tr><td>11</td><td>Builder ≠ promoter — the person who builds a change cannot be the person who approves it for production (Segregation of Duties)</td><td>Core SoD control; prevents a single individual from introducing and self-approving a malicious or erroneous change</td><td>A.8.25</td></tr>
+    </table>
+  </div>
+
+  <div style="background:#FDECEA; border:1.5px solid #C62828; border-radius:8px; overflow:hidden; margin-bottom:16px;">
+    <div style="background:#C62828; color:#fff; padding:10px 18px; font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;">Data &amp; Access</div>
+    <table style="margin:0;">
+      <tr><th style="width:4%">#</th><th style="width:46%">Control</th><th style="width:30%">Why it matters</th><th style="width:20%">ISO Control</th></tr>
+      <tr><td>12</td><td>No production data in non-production environments unless fully anonymised or masked</td><td>PII and financial data in test environments creates direct data breach and compliance risk</td><td>A.8.33</td></tr>
+      <tr><td>13</td><td>All PII or employee data transmitted externally must be registered with InfoSec and security-approved before go-live</td><td>Unregistered external PII flows are invisible to auditors and create GDPR / compliance exposure</td><td>A.8.11, A.8.26</td></tr>
+      <tr><td>14</td><td>Repository and environment access reviewed monthly by the Technology Manager; access revoked immediately on departure or role change</td><td>Stale access is the most common source of privilege-related findings in ISO audits</td><td>A.8.4</td></tr>
+      <tr><td>15</td><td>Any exception to the controls above requires written approval from the Executive Sponsor, is time-bound (maximum 6 months), and is logged in the exception register</td><td>Exceptions without documentation and expiry become permanent workarounds; exception register is reviewed by auditors</td><td>A.8.25</td></tr>
+    </table>
   </div>
 
   <h3>16.2 Exception Process</h3>
   <ol>
-    <li>Requester documents the exception: control being waived, business justification, compensating control, duration</li>
-    <li>Technology Manager endorses in writing</li>
-    <li>SDLC Gatekeeper (Srinivas Peri) reviews technical risk</li>
-    <li>Trilok Manchinila approves (required for any zero-tolerance control exception)</li>
-    <li>Exception logged in the exception register with expiry date</li>
-    <li>Exception reviewed at next quarterly SDLC review</li>
+    <li>Technology Manager documents the exception: control being waived, business justification, compensating control, and requested duration</li>
+    <li>SDLC Gatekeeper (Srinivas Peri) reviews technical risk and compensating controls</li>
+    <li>Executive Sponsor approves in writing — required for all zero-tolerance control exceptions</li>
+    <li>Exception logged in the exception register with expiry date (maximum 6 months)</li>
+    <li>Exception reviewed at the next quarterly SDLC review; must be remediated or formally renewed at expiry</li>
   </ol>
 </div>
 
@@ -1707,6 +1737,7 @@ tr:hover td { background: #EDF2F9; }
     <tr><td>0.902</td><td>April 2026</td><td>Chief Architect</td><td>ABM brand theme applied; renamed SIT → QA; ADO repo links added throughout</td></tr>
     <tr><td>0.903</td><td>April 2026</td><td>Chief Architect</td><td>Section 21 template files linked to ADO absolute paths</td></tr>
     <tr><td>0.905</td><td>April 2026</td><td>Chief Architect</td><td>Removed Section 13 (Operations &amp; Monitoring) — out of scope for v1; sections renumbered 13–18</td></tr>
+    <tr><td>0.907</td><td>April 2026</td><td>Chief Architect</td><td>Non-negotiable controls expanded from 6 to 15 (4 categories: Source Control, Security Gates, Deployment &amp; Change, Data &amp; Access) with ISO control mapping and rationale; language simplified and made more direct throughout for ISO audit readability; verbose prose replaced with direct imperatives; architecture principles converted to table format</td></tr>
     <tr><td>0.906</td><td>April 2026</td><td>Chief Architect</td><td>Uday review session 2: inserted §8 Data Security &amp; Integration Standards (data classification, encryption standards, hub-and-spoke integration, Audatex, PII handling); child SDLC owners updated (Landry Baggett — Oracle SaaS, Anjeli Daswani — Oracle PaaS &amp; Power Platform, Reshmi Chakraborty — Power BI); NFRs added to §5; security exception process expanded; Alpesh branching review note added; environment topology flexibility note; low-code config promotion note; Power BI scoping callout; Ricardo Relego change mgmt review flag; break-fix release type added; emergency change detail expanded; AI approved tools list updated; stale §15 reference removed; diagram labels updated; h3 numbering corrected; sections renumbered §8–§19</td></tr>
     <tr><td>0.904</td><td>April 2026</td><td>Chief Architect</td><td>Uday Hebbar review: removed specific names → role-based references; Section 5 simplified (security gate, FRD, TDD, 3-way DoR); Sections 15–17 (AI Governance, Tech Debt, Knowledge Mgmt) deferred to future revision; sections renumbered 15–19; vendor MSA requirement added; Section 13 marked out of scope for v1; gatekeeper language updated</td></tr>
   </table>
