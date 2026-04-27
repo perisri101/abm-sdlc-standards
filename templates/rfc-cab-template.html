@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RFC / CAB Change Request Template | ABM IT</title>
+<style>
+:root { --navy:#002B5C; --green:#009A44; --border:#CBD5E8; --text:#1C2336; --warn:#FFF3CD; --warn-border:#FFAB00; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',Arial,sans-serif; background:#F4F6F9; color:var(--text); font-size:14px; line-height:1.6; }
+.page { max-width:900px; margin:40px auto; background:#fff; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.banner { background:var(--navy); padding:28px 36px; color:#fff; }
+.banner .label { font-size:10px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; }
+.banner h1 { font-size:22px; font-weight:800; }
+.banner .sub { font-size:13px; color:rgba(255,255,255,0.65); margin-top:4px; }
+.body { padding:32px 36px; }
+.warn-box { background:var(--warn); border-left:4px solid var(--warn-border); padding:12px 16px; border-radius:0 4px 4px 0; margin-bottom:24px; font-size:13px; }
+.warn-box strong { color:#7A4F00; }
+.meta-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:28px; background:#F8FAFC; border:1px solid var(--border); border-radius:6px; padding:16px; }
+.meta-item .meta-label { font-size:10px; color:#5C6B84; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
+.meta-item input, .meta-item select { width:100%; border:none; background:transparent; font-size:13px; font-weight:600; color:var(--text); border-bottom:1px solid var(--border); padding:2px 0; outline:none; }
+.section { margin-bottom:24px; }
+.section-title { background:var(--navy); color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:8px 14px; border-radius:4px; margin-bottom:14px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:700; color:#5C6B84; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:4px; }
+.field textarea { width:100%; border:1px solid var(--border); border-radius:4px; padding:10px; font-size:13px; font-family:inherit; resize:vertical; min-height:72px; }
+.field input[type=text], .field input[type=datetime-local] { width:100%; border:1px solid var(--border); border-radius:4px; padding:8px 10px; font-size:13px; font-family:inherit; }
+table { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:12px; }
+th { background:var(--navy); color:#fff; padding:9px 12px; text-align:left; font-size:11px; }
+td { padding:8px 12px; border-bottom:1px solid var(--border); }
+td input { width:100%; border:none; background:transparent; font-size:13px; }
+.risk-high { color:#C62828; font-weight:700; }
+.risk-med { color:#FFAB00; font-weight:700; }
+.risk-low { color:#009A44; font-weight:700; }
+.checklist { list-style:none; padding:0; }
+.checklist li { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:13px; }
+.checklist input { width:16px; height:16px; }
+.approval-section { background:#F8FAFC; border:1px solid var(--border); border-radius:6px; padding:20px; margin-top:24px; }
+.cab-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; }
+.cab-card { border:1px solid var(--border); border-radius:6px; padding:14px; }
+.cab-card .role { font-size:10px; color:#5C6B84; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.cab-card .decision { display:flex; gap:16px; margin:10px 0; font-size:13px; }
+.cab-card .decision label { display:flex; align-items:center; gap:6px; cursor:pointer; }
+.sig-line { border-bottom:1px solid var(--border); height:28px; margin:8px 0 4px; }
+.sig-label { font-size:10px; color:#5C6B84; }
+.footer { background:var(--navy); padding:12px 36px; font-size:11px; color:rgba(255,255,255,0.5); display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="banner">
+  <div class="label">ABM Industries IT · Template v1.0 · <code>templates/rfc-cab-template.html</code></div>
+  <h1>Request for Change (RFC) — CAB Approval</h1>
+  <div class="sub">Required for every production deployment. Submit minimum 48 hours before planned deployment window. ISO A.8.25 | A.8.29</div>
+</div>
+<div class="body">
+
+  <div class="warn-box"><strong>Zero-Tolerance Control:</strong> No production deployment proceeds without a CAB-approved RFC. Emergency changes require retrospective CAB review within 48 hours.</div>
+
+  <!-- META -->
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">RFC Number</div><input type="text" placeholder="RFC-2026-###"></div>
+    <div class="meta-item"><div class="meta-label">Change Title</div><input type="text" placeholder="Brief description"></div>
+    <div class="meta-item"><div class="meta-label">Change Type</div><select><option>Standard (Planned Release)</option><option>Supplemental (Minor Fix)</option><option>Hotfix (P1)</option><option>Emergency</option></select></div>
+    <div class="meta-item"><div class="meta-label">Requestor</div><input type="text" placeholder="Name, Team"></div>
+    <div class="meta-item"><div class="meta-label">Technology Manager</div><input type="text" placeholder="Approving TM"></div>
+    <div class="meta-item"><div class="meta-label">Target Deployment Window</div><input type="datetime-local"></div>
+    <div class="meta-item"><div class="meta-label">Affected Systems</div><input type="text" placeholder="e.g. Team Connect, Boomi, Oracle"></div>
+    <div class="meta-item"><div class="meta-label">ADO Release / Story IDs</div><input type="text" placeholder="e.g. Sprint 14 Release, TC-1234"></div>
+    <div class="meta-item"><div class="meta-label">RFC Date Submitted</div><input type="date"></div>
+  </div>
+
+  <!-- S1: DESCRIPTION -->
+  <div class="section">
+    <div class="section-title">1 — Change Description</div>
+    <div class="field"><label>What is being deployed?</label><textarea placeholder="List all components, services, database changes, configuration changes, IaC updates, and APK/app versions included in this release."></textarea></div>
+    <div class="field"><label>Business Justification</label><textarea placeholder="Why is this change needed? What business value or risk does it address?"></textarea></div>
+    <div class="field"><label>Systems &amp; Components Impacted</label>
+      <table>
+        <tr><th>System / Component</th><th>Type of Change</th><th>Environment</th></tr>
+        <tr><td><input type="text" placeholder="e.g. Team Connect API"></td><td><input type="text" placeholder="Deploy / Config / Schema"></td><td><input type="text" placeholder="PROD"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2: RISK -->
+  <div class="section">
+    <div class="section-title">2 — Risk Assessment</div>
+    <div class="field"><label>Overall Change Risk</label><select style="border:1px solid var(--border); padding:6px; border-radius:4px; font-size:13px; width:200px;"><option>Low — Minimal risk, fully automated</option><option>Medium — Some manual steps; tested in UAT</option><option>High — Complex change; escalated oversight required</option></select></div>
+    <div class="field"><label>Risk Detail &amp; Blast Radius</label>
+      <table>
+        <tr><th>Risk Scenario</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
+        <tr><td><input type="text" placeholder="e.g. Deployment failure"></td><td><input type="text" placeholder="Low"></td><td><input type="text" placeholder="High"></td><td><input type="text" placeholder="Blue-green rollback"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+    </div>
+    <div class="field"><label>Data Impact</label><textarea placeholder="Will any database schemas change? Will data be migrated? What is the data rollback strategy?" style="min-height:50px;"></textarea></div>
+    <div class="field"><label>User Impact &amp; Communication</label><textarea placeholder="Who will be impacted? Will there be downtime? Has the site coordination / user communication team been notified?" style="min-height:50px;"></textarea></div>
+  </div>
+
+  <!-- S3: ROLLBACK -->
+  <div class="section">
+    <div class="section-title">3 — Rollback Plan</div>
+    <div class="field"><label>Rollback Trigger Criteria</label><textarea placeholder="What specific conditions will trigger a rollback? (e.g. error rate &gt;5%, P1 defect discovered, smoke test failure)" style="min-height:50px;"></textarea></div>
+    <div class="field"><label>Rollback Steps</label><textarea placeholder="Step-by-step: How do we revert? Is it blue-green swap, pipeline re-run of previous version, config revert? Include estimated time to complete rollback."></textarea></div>
+    <div class="field"><label>Rollback Authority</label><input type="text" placeholder="Who is authorized to call a rollback? (Name + role)"></div>
+    <div class="field"><label>Estimated Rollback Time</label><input type="text" placeholder="e.g. 15 minutes for blue-green swap"></div>
+  </div>
+
+  <!-- S4: EVIDENCE -->
+  <div class="section">
+    <div class="section-title">4 — Testing &amp; Evidence</div>
+    <ul class="checklist">
+      <li><input type="checkbox"> QA regression testing passed — QA sign-off attached</li>
+      <li><input type="checkbox"> QA exit criteria met — report available</li>
+      <li><input type="checkbox"> UAT stakeholder sign-off obtained</li>
+      <li><input type="checkbox"> SAST scan clean — zero High/Critical findings (Snyk report attached)</li>
+      <li><input type="checkbox"> DAST scan clean — StackHawk report attached</li>
+      <li><input type="checkbox"> Performance testing within thresholds — load test results attached</li>
+      <li><input type="checkbox"> No secrets detected in repository (secrets scan passed)</li>
+      <li><input type="checkbox"> FTA approved by Technology Manager for all included features</li>
+      <li><input type="checkbox"> Release notes generated from ADO and reviewed</li>
+      <li><input type="checkbox"> Production runbook reviewed by development team</li>
+    </ul>
+    <div class="field" style="margin-top:14px;"><label>Evidence Links (SharePoint / ADO)</label><textarea placeholder="Paste links to: QA sign-off, SAST report, DAST report, load test results, UAT sign-off, runbook" style="min-height:60px;"></textarea></div>
+  </div>
+
+  <!-- S5: RUNBOOK SUMMARY -->
+  <div class="section">
+    <div class="section-title">5 — Implementation Runbook Summary</div>
+    <div class="field"><label>Pre-Deployment Steps</label><textarea placeholder="Steps required BEFORE running the deployment pipeline (e.g. notify stakeholders, freeze feature branches, confirm MDM readiness)"></textarea></div>
+    <div class="field"><label>Deployment Steps</label><textarea placeholder="Step-by-step: Pipeline name(s) to execute; order of operations; any manual steps; verification checks after each step."></textarea></div>
+    <div class="field"><label>Post-Deployment Verification</label><textarea placeholder="How will we confirm the deployment was successful? Smoke tests, health checks, key business scenario validation."></textarea></div>
+    <div class="field"><label>Runbook Full Reference</label><input type="text" placeholder="SharePoint link to full runbook document"></div>
+  </div>
+
+  <!-- S6: COMMUNICATION -->
+  <div class="section">
+    <div class="section-title">6 — Communication Plan</div>
+    <div class="field"><label>Stakeholder Notifications</label><textarea placeholder="Who is notified before, during, and after deployment? Channel (email, Teams)? Timing?" style="min-height:50px;"></textarea></div>
+    <div class="field"><label>Maintenance Window?</label><select style="border:1px solid var(--border); padding:6px; border-radius:4px; font-size:13px;"><option>No — zero-downtime deployment</option><option>Yes — window defined below</option></select></div>
+    <div class="field"><label>Maintenance Window (if applicable)</label><input type="text" placeholder="Start time – End time (timezone); user-facing message"></div>
+  </div>
+
+  <!-- CAB APPROVAL -->
+  <div class="approval-section">
+    <div style="font-size:14px; font-weight:700; color:var(--navy);">CAB Approval — Required Before Production Deployment</div>
+    <div style="font-size:12px; color:#5C6B84; margin:6px 0 14px;">CAB reviews: completeness of RFC, risk assessment adequacy, rollback plan viability, evidence quality.</div>
+    <div class="cab-grid">
+      <div class="cab-card">
+        <div class="role">Technology Manager</div>
+        <div style="font-size:13px; font-weight:600; margin:4px 0;">___________________________</div>
+        <div class="decision">
+          <label><input type="radio" name="tm-dec"> ✅ Approved</label>
+          <label><input type="radio" name="tm-dec"> ❌ Rejected</label>
+          <label><input type="radio" name="tm-dec"> 🔄 Deferred</label>
+        </div>
+        <div class="sig-line"></div><div class="sig-label">Signature / Date</div>
+      </div>
+      <div class="cab-card">
+        <div class="role">CAB Chair / IT Operations</div>
+        <div style="font-size:13px; font-weight:600; margin:4px 0;">___________________________</div>
+        <div class="decision">
+          <label><input type="radio" name="cab-dec"> ✅ Approved</label>
+          <label><input type="radio" name="cab-dec"> ❌ Rejected</label>
+          <label><input type="radio" name="cab-dec"> 🔄 Deferred</label>
+        </div>
+        <div class="sig-line"></div><div class="sig-label">Signature / Date</div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px;"><label>CAB Notes / Conditions</label><textarea placeholder="Any conditions placed on the approval, required pre-deployment actions, or rejection reasons." style="min-height:50px;"></textarea></div>
+  </div>
+
+</div>
+<div class="footer">
+  <span>ABM Industries IT · RFC / CAB Change Request Template v1.0</span>
+  <span>Controlled in Git: abm-it/sdlc-standards/templates/rfc-cab-template.html</span>
+</div>
+</div>
+</body>
+</html>

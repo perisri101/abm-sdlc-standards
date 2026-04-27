@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FTA Template – Feature Technology Approach | ABM IT</title>
+<style>
+:root { --navy:#002B5C; --green:#009A44; --bg:#F4F6F9; --border:#CBD5E8; --text:#1C2336; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.6; }
+.page { max-width:900px; margin:40px auto; background:#fff; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.banner { background:var(--navy); padding:28px 36px; color:#fff; }
+.banner .label { font-size:10px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; }
+.banner h1 { font-size:22px; font-weight:800; }
+.banner .sub { font-size:13px; color:rgba(255,255,255,0.65); margin-top:4px; }
+.body { padding:32px 36px; }
+.meta-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:28px; background:#F8FAFC; border:1px solid var(--border); border-radius:6px; padding:16px; }
+.meta-item .meta-label { font-size:10px; color:#5C6B84; text-transform:uppercase; letter-spacing:1px; }
+.meta-item input, .meta-item select { width:100%; border:none; background:transparent; font-size:13px; font-weight:600; color:var(--text); border-bottom:1px solid var(--border); padding:2px 0; outline:none; }
+.section { margin-bottom:28px; }
+.section-title { background:var(--navy); color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:8px 14px; border-radius:4px; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.section-title .iso { background:var(--green); font-size:10px; padding:2px 8px; border-radius:3px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:700; color:#5C6B84; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:4px; }
+.field textarea { width:100%; border:1px solid var(--border); border-radius:4px; padding:10px; font-size:13px; font-family:inherit; resize:vertical; min-height:80px; }
+.field textarea:focus { outline:2px solid var(--navy); border-color:var(--navy); }
+.rule { background:#F0F4FF; border-left:4px solid var(--navy); padding:10px 14px; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:14px; border-radius:0 4px 4px 0; }
+table { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:12px; }
+th { background:var(--navy); color:#fff; padding:9px 12px; text-align:left; font-size:11px; }
+td { padding:8px 12px; border-bottom:1px solid var(--border); }
+td input[type=text] { width:100%; border:none; background:transparent; font-size:13px; padding:0; }
+.checkbox-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:13px; }
+.checkbox-row input { width:16px; height:16px; }
+.approval-box { background:#F8FAFC; border:1px solid var(--border); border-radius:6px; padding:16px; margin-top:20px; }
+.approval-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:12px; }
+.approver { border:1px solid var(--border); border-radius:4px; padding:12px; }
+.approver .role { font-size:10px; color:#5C6B84; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.approver .name { font-weight:700; margin-bottom:20px; }
+.approver .sig-line { border-bottom:1px solid var(--border); margin-bottom:4px; }
+.approver .sig-label { font-size:10px; color:#5C6B84; }
+.footer { background:var(--navy); padding:12px 36px; font-size:11px; color:rgba(255,255,255,0.5); display:flex; justify-content:space-between; }
+@media print { body { background:#fff; } .page { border:none; box-shadow:none; margin:0; } }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="banner">
+  <div class="label">ABM Industries IT · Template v1.0 · <code>templates/fta-template.html</code></div>
+  <h1>Feature Technology Approach (FTA)</h1>
+  <div class="sub">Complete before development begins. Approved FTA is required for sprint entry. ISO A.8.26 | A.8.27</div>
+</div>
+<div class="body">
+
+  <!-- META -->
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Feature / Story ID</div><input type="text" placeholder="e.g. TC-1234"></div>
+    <div class="meta-item"><div class="meta-label">Feature Title</div><input type="text" placeholder="Short descriptive title"></div>
+    <div class="meta-item"><div class="meta-label">Date</div><input type="date"></div>
+    <div class="meta-item"><div class="meta-label">Author</div><input type="text" placeholder="Name, Role"></div>
+    <div class="meta-item"><div class="meta-label">Team</div><input type="text" placeholder="Team Connect / Boomi / etc."></div>
+    <div class="meta-item"><div class="meta-label">Target Sprint</div><input type="text" placeholder="Sprint 14"></div>
+    <div class="meta-item"><div class="meta-label">Priority</div><select><option>P1 – Committed</option><option>P2 – Platform Health</option></select></div>
+    <div class="meta-item"><div class="meta-label">Development Paradigm</div><select><option>Full-Code</option><option>Low-Code (Boomi)</option><option>No-Code (Power Apps)</option><option>SaaS/PaaS Config</option><option>IaC / Cloud</option></select></div>
+    <div class="meta-item"><div class="meta-label">FTA Version</div><input type="text" placeholder="1.0"></div>
+  </div>
+
+  <!-- S1: OVERVIEW -->
+  <div class="section">
+    <div class="section-title">1 — Feature Overview</div>
+    <div class="field"><label>Business Requirement Summary</label><textarea placeholder="What is the business problem or opportunity this feature addresses? Reference FRD section if applicable."></textarea></div>
+    <div class="field"><label>Technical Scope &amp; Boundaries</label><textarea placeholder="What is IN scope (systems, services, data) and what is explicitly OUT of scope?"></textarea></div>
+    <div class="field"><label>Success Criteria</label><textarea placeholder="How will we know this feature is successfully delivered? (measurable outcomes)"></textarea></div>
+    <div class="field"><label>FRD / Requirements Reference</label><textarea placeholder="SharePoint link to FRD; Figma link (if UI change); ADO story numbers" style="min-height:50px;"></textarea></div>
+  </div>
+
+  <!-- S2: KISS -->
+  <div class="section">
+    <div class="section-title">2 — KISS Assessment <span class="iso">A.8.27</span></div>
+    <div class="rule">KISS (Keep It Simple) must be justified. The simplest viable solution wins. Complexity must earn its place.</div>
+    <div class="field"><label>Proposed Approach (Plain English)</label><textarea placeholder="Describe the approach in 2–3 sentences as you would explain it to a non-engineer."></textarea></div>
+    <div class="field"><label>Alternatives Considered</label><textarea placeholder="What other approaches were evaluated and why were they rejected?"></textarea></div>
+    <div class="field"><label>Complexity Justification</label><textarea placeholder="If the solution introduces significant complexity (new services, new patterns, new dependencies), justify why simpler alternatives were insufficient."></textarea></div>
+    <div class="field"><label>DRY Validation</label><textarea placeholder="Is any existing component, service, or utility being duplicated? If yes, why can't the existing one be reused?"></textarea></div>
+  </div>
+
+  <!-- S3: ARCHITECTURE -->
+  <div class="section">
+    <div class="section-title">3 — Architecture &amp; Design <span class="iso">A.8.27</span></div>
+    <div class="field"><label>Component / Service Changes</label><textarea placeholder="List each component, service, or integration being created or modified. Include Azure resources, APIs, databases, function apps."></textarea></div>
+    <div class="field"><label>Data Flow Description</label><textarea placeholder="How does data move through this feature? Entry points → transformations → storage → outputs. Attach DFD diagram link if available."></textarea></div>
+    <div class="field"><label>Design Patterns Applied</label><textarea placeholder="e.g. Repository Pattern, MVVM, Factory, Clean Architecture, STRIDE, etc. Explain how each is applied." style="min-height:60px;"></textarea></div>
+    <div class="field"><label>Architecture Diagram Link</label><textarea placeholder="Link to diagram (Visio, Draw.io, Mermaid in Wiki, Figma, etc.)" style="min-height:40px;"></textarea></div>
+    <div class="field"><label>New Azure / Cloud Resources</label>
+      <table>
+        <tr><th>Resource Type</th><th>Name</th><th>Environment</th><th>Justification</th></tr>
+        <tr><td><input type="text" placeholder="e.g. Function App"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S4: SECURITY -->
+  <div class="section">
+    <div class="section-title">4 — Security Analysis <span class="iso">A.8.26</span></div>
+    <div class="rule">Security is analyzed before code is written. Skip this section only for purely cosmetic UI changes with no data, API, or auth surface.</div>
+    <div class="field"><label>Data Classification</label>
+      <div class="checkbox-row"><input type="checkbox"> <span>PII (Personally Identifiable Information)</span></div>
+      <div class="checkbox-row"><input type="checkbox"> <span>Financial / Payroll data</span></div>
+      <div class="checkbox-row"><input type="checkbox"> <span>Employee records</span></div>
+      <div class="checkbox-row"><input type="checkbox"> <span>Customer / client data</span></div>
+      <div class="checkbox-row"><input type="checkbox"> <span>No sensitive data involved</span></div>
+    </div>
+    <div class="field"><label>STRIDE Threat Summary</label>
+      <table>
+        <tr><th>Threat</th><th>Applicable?</th><th>Mitigation</th></tr>
+        <tr><td>Spoofing</td><td><input type="text" placeholder="Yes / No"></td><td><input type="text" placeholder="How mitigated"></td></tr>
+        <tr><td>Tampering</td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td>Repudiation</td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td>Information Disclosure</td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td>Denial of Service</td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td>Elevation of Privilege</td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+    </div>
+    <div class="field"><label>OWASP Risks Addressed</label><textarea placeholder="List any OWASP Top 10 or OWASP Mobile Top 10 risks applicable to this feature and how they are mitigated."></textarea></div>
+    <div class="field"><label>Authentication &amp; Authorization Changes</label><textarea placeholder="Any changes to auth/authz? New roles, permission levels, RBAC changes?" style="min-height:50px;"></textarea></div>
+    <div class="field"><label>Secret / Credential Handling</label><textarea placeholder="Are any new secrets, API keys, or credentials needed? Confirm they will be stored in Azure Key Vault / approved secret store — NEVER in code or config files." style="min-height:50px;"></textarea></div>
+  </div>
+
+  <!-- S5: RISK -->
+  <div class="section">
+    <div class="section-title">5 — Risk Assessment &amp; Rollback</div>
+    <div class="field"><label>Technical Risks</label>
+      <table>
+        <tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
+        <tr><td><input type="text" placeholder="e.g. API rate limit"></td><td><input type="text" placeholder="Low/Med/High"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+    </div>
+    <div class="field"><label>Rollback Plan</label><textarea placeholder="If this feature needs to be rolled back post-deployment, what are the steps? How long does rollback take? What is the data impact?"></textarea></div>
+    <div class="field"><label>Performance Impact</label><textarea placeholder="Will this change affect API response times, database query load, memory usage, or concurrent users? How was this assessed?" style="min-height:50px;"></textarea></div>
+  </div>
+
+  <!-- S6: IMPLEMENTATION -->
+  <div class="section">
+    <div class="section-title">6 — Implementation Strategy</div>
+    <div class="field"><label>Development Approach</label><textarea placeholder="How will development be structured? Any phased delivery, feature flags, or incremental rollout?"></textarea></div>
+    <div class="field"><label>YAGNI Validation</label><textarea placeholder="Are all planned components required for THIS sprint's scope? Call out anything that could be deferred." style="min-height:50px;"></textarea></div>
+    <div class="field"><label>Testing Strategy</label><textarea placeholder="Unit test approach (coverage target), integration test scenarios, any special QA considerations."></textarea></div>
+    <div class="field"><label>Definition of Done (Feature-Specific Additions)</label><textarea placeholder="Any additional DoD criteria beyond the universal ones in the master SDLC? (e.g. specific demo required, specific monitoring alert configured)" style="min-height:50px;"></textarea></div>
+  </div>
+
+  <!-- S7: DEPENDENCIES -->
+  <div class="section">
+    <div class="section-title">7 — Dependencies</div>
+    <div class="field"><label>Internal Dependencies</label>
+      <table>
+        <tr><th>Team / System</th><th>What is needed</th><th>By When</th><th>Status</th></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text" placeholder="Confirmed / Pending"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+    </div>
+    <div class="field"><label>External / Third-Party Dependencies</label><textarea placeholder="Any vendor, external API, or third-party service involved? How is their reliability handled?" style="min-height:50px;"></textarea></div>
+  </div>
+
+  <!-- APPROVAL -->
+  <div class="approval-box">
+    <div style="font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px;">FTA Approval — Required Before Development Begins</div>
+    <div style="font-size:12px; color:#5C6B84; margin-bottom:14px;">All three approvals must be recorded. Store this completed FTA in SharePoint and link in the ADO story.</div>
+    <div class="approval-grid">
+      <div class="approver">
+        <div class="role">Architect / Senior Developer</div>
+        <div class="name">________________________</div>
+        <div class="sig-line"></div><div class="sig-label">Signature / Date</div>
+      </div>
+      <div class="approver">
+        <div class="role">Technology Manager</div>
+        <div class="name">________________________</div>
+        <div class="sig-line"></div><div class="sig-label">Signature / Date</div>
+      </div>
+      <div class="approver">
+        <div class="role">Product Owner</div>
+        <div class="name">________________________</div>
+        <div class="sig-line"></div><div class="sig-label">Signature / Date</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="footer">
+  <span>ABM Industries IT · Feature Technology Approach Template v1.0</span>
+  <span>Controlled in Git: abm-it/sdlc-standards/templates/fta-template.html</span>
+</div>
+</div>
+</body>
+</html>

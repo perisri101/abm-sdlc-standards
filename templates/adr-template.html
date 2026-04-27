@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture Decision Record (ADR) – ABM Industries IT</title>
+<style>
+  :root {
+    --navy: #002B5C;
+    --green: #009A44;
+    --border: #CBD5E8;
+    --text: #1C2336;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #F4F6FB;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .banner {
+    background: var(--navy);
+    color: #fff;
+    padding: 36px 48px 28px;
+    border-bottom: 4px solid var(--green);
+  }
+  .banner .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #8BAAD4;
+    margin-bottom: 10px;
+  }
+  .banner .label code {
+    background: rgba(255,255,255,0.12);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .banner h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .banner .sub {
+    font-size: 13px;
+    color: #A8C4E0;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+  .section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .section-title {
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .num {
+    background: var(--green);
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-body {
+    padding: 20px 24px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meta-field label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6B7A99;
+  }
+  .meta-field .value {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    background: #F8FAFD;
+    min-height: 34px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .status-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .status-badge.proposed  { background: #FFF3CD; color: #7A5200; border: 1px solid #F5C842; }
+  .status-badge.accepted  { background: #D4EDDA; color: #155724; border: 1px solid #28A745; }
+  .status-badge.deprecated{ background: #F8D7DA; color: #721C24; border: 1px solid #DC3545; }
+  .status-badge.superseded{ background: #E2E3E5; color: #383D41; border: 1px solid #C6C8CA; }
+  .status-badge input[type="radio"] { width: 13px; height: 13px; }
+  .prose {
+    color: var(--text);
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .prose p {
+    margin-bottom: 10px;
+  }
+  .write-area {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: #F8FAFD;
+    resize: vertical;
+  }
+  .write-area:focus { outline: 2px solid var(--green); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead tr {
+    background: var(--navy);
+    color: #fff;
+  }
+  thead th {
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #F4F6FB; }
+  tbody td {
+    padding: 10px 12px;
+    vertical-align: top;
+  }
+  tbody td textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 5px 7px;
+    font-family: inherit;
+    font-size: 12px;
+    background: #F8FAFD;
+    resize: vertical;
+    min-height: 40px;
+  }
+  .info-box {
+    background: #EBF4FF;
+    border-left: 4px solid var(--navy);
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .security-box {
+    background: #FFF8E6;
+    border-left: 4px solid #F0A500;
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .security-box strong { color: #7A5200; }
+  .principle-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .tag {
+    background: var(--navy);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .tag.green { background: var(--green); }
+  .consequences-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .consequence-box {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .consequence-box .cb-title {
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .consequence-box.pos .cb-title { background: #D4EDDA; color: #155724; }
+  .consequence-box.neg .cb-title { background: #F8D7DA; color: #721C24; }
+  .consequence-box .cb-body {
+    padding: 10px 12px;
+    min-height: 70px;
+    font-size: 13px;
+  }
+  .review-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .footer {
+    background: var(--navy);
+    color: #8BAAD4;
+    font-size: 11px;
+    padding: 14px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    letter-spacing: 0.3px;
+  }
+  @media (max-width: 640px) {
+    .banner { padding: 24px 20px 18px; }
+    .container { padding: 16px 12px 40px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+    .consequences-grid { grid-template-columns: 1fr; }
+    .review-grid { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; gap: 4px; padding: 12px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div class="label">ABM Industries IT · Template v1.0 · <code>templates/adr-template.html</code></div>
+  <h1>Architecture Decision Record (ADR)</h1>
+  <div class="sub">Document significant architectural decisions. One ADR per decision. ISO A.8.27</div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: META -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> ADR Metadata</div>
+    <div class="section-body">
+      <div class="meta-grid">
+        <div class="meta-field">
+          <label>ADR Number</label>
+          <div class="value">ADR-____</div>
+        </div>
+        <div class="meta-field">
+          <label>Title</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Date</label>
+          <div class="value">YYYY-MM-DD</div>
+        </div>
+        <div class="meta-field">
+          <label>Author</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Team / Product</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Supersedes ADR(s)</label>
+          <div class="value">N/A</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:8px;">Status — Select One</label>
+        <div class="status-row">
+          <label class="status-badge proposed">
+            <input type="radio" name="adr-status" value="proposed"> Proposed
+          </label>
+          <label class="status-badge accepted">
+            <input type="radio" name="adr-status" value="accepted"> Accepted
+          </label>
+          <label class="status-badge deprecated">
+            <input type="radio" name="adr-status" value="deprecated"> Deprecated
+          </label>
+          <label class="status-badge superseded">
+            <input type="radio" name="adr-status" value="superseded"> Superseded
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: CONTEXT -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> Context</div>
+    <div class="section-body">
+      <div class="info-box">
+        Describe the situation or problem that forced a decision. Include relevant constraints (technical, organizational, time, cost, regulatory). Be objective — this section records facts, not opinions.
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Problem Statement / Situation</label>
+        <textarea class="write-area" placeholder="What problem or situation requires a decision?&#10;What constraints must the solution satisfy?&#10;What assumptions are we making?"></textarea>
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Driving Forces &amp; Constraints</label>
+        <textarea class="write-area" style="min-height:70px;" placeholder="• Regulatory requirement (e.g. SOX, HIPAA)&#10;• Performance requirement&#10;• Team capability constraints&#10;• Time-to-market pressure&#10;• Budget constraints"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: DECISION -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> Decision</div>
+    <div class="section-body">
+      <div class="info-box">
+        State the decision clearly and directly. Use active voice: "We will use X because Y." Avoid hedging language.
+      </div>
+      <textarea class="write-area" style="min-height:90px;" placeholder="We will [action] [technology/approach] for [purpose].&#10;&#10;Example: We will use Azure Service Bus as our asynchronous messaging backbone for all inter-service events because it provides enterprise-grade reliability, native Azure AD integration, and dead-letter queue support required by our audit trail standards."></textarea>
+    </div>
+  </div>
+
+  <!-- SECTION 4: RATIONALE -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> Rationale</div>
+    <div class="section-body">
+      <div class="info-box">
+        Explain why this option was chosen. Reference engineering principles, team standards, and non-functional requirements where applicable.
+      </div>
+      <textarea class="write-area" style="min-height:100px;" placeholder="Explain the reasoning behind this decision. Reference applicable principles below..."></textarea>
+      <div style="margin-top:12px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Applicable Engineering Principles (check all that apply)</label>
+        <div class="principle-tags">
+          <span class="tag">KISS – Keep It Simple</span>
+          <span class="tag">DRY – Don't Repeat Yourself</span>
+          <span class="tag">SOLID Principles</span>
+          <span class="tag green">Security by Design</span>
+          <span class="tag green">Performance</span>
+          <span class="tag">Scalability</span>
+          <span class="tag">Maintainability</span>
+          <span class="tag">Testability</span>
+          <span class="tag green">Observability</span>
+          <span class="tag">Cost Optimization</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: ALTERNATIVES CONSIDERED -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> Alternatives Considered</div>
+    <div class="section-body">
+      <div class="info-box">
+        Document every option that was evaluated. The depth of this table demonstrates the rigor of the decision-making process.
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%;">Option</th>
+            <th style="width:25%;">Pros</th>
+            <th style="width:25%;">Cons</th>
+            <th style="width:32%;">Reason Rejected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Option A</strong><br><small style="color:#6B7A99;">(Chosen — state here)</small></td>
+            <td><textarea placeholder="List advantages..."></textarea></td>
+            <td><textarea placeholder="List disadvantages..."></textarea></td>
+            <td style="color:var(--green);font-style:italic;font-size:12px;">Selected option — not rejected</td>
+          </tr>
+          <tr>
+            <td><strong>Option B</strong></td>
+            <td><textarea placeholder="List advantages..."></textarea></td>
+            <td><textarea placeholder="List disadvantages..."></textarea></td>
+            <td><textarea placeholder="Specific reason this option was not chosen..."></textarea></td>
+          </tr>
+          <tr>
+            <td><strong>Option C</strong></td>
+            <td><textarea placeholder="List advantages..."></textarea></td>
+            <td><textarea placeholder="List disadvantages..."></textarea></td>
+            <td><textarea placeholder="Specific reason this option was not chosen..."></textarea></td>
+          </tr>
+          <tr>
+            <td><strong>Option D</strong></td>
+            <td><textarea placeholder="List advantages..."></textarea></td>
+            <td><textarea placeholder="List disadvantages..."></textarea></td>
+            <td><textarea placeholder="Specific reason this option was not chosen..."></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 6: CONSEQUENCES -->
+  <div class="section">
+    <div class="section-title"><span class="num">6</span> Consequences</div>
+    <div class="section-body">
+      <div class="consequences-grid">
+        <div class="consequence-box pos">
+          <div class="cb-title">What Becomes Easier</div>
+          <div class="cb-body">
+            <textarea class="write-area" style="border:none;background:transparent;min-height:80px;" placeholder="• List capabilities or tasks that are simplified by this decision...&#10;• ..."></textarea>
+          </div>
+        </div>
+        <div class="consequence-box neg">
+          <div class="cb-title">What Becomes Harder / Trade-offs</div>
+          <div class="cb-body">
+            <textarea class="write-area" style="border:none;background:transparent;min-height:80px;" placeholder="• List capabilities or tasks that become more complex or costly...&#10;• ..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Technical Debt Introduced</label>
+        <textarea class="write-area" style="min-height:70px;" placeholder="Describe any technical debt this decision knowingly introduces. If none, write 'None identified.'"></textarea>
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Required Follow-up Work / Action Items</label>
+        <table>
+          <thead>
+            <tr>
+              <th>Action Item</th>
+              <th style="width:140px;">Owner</th>
+              <th style="width:130px;">Target Date</th>
+              <th style="width:110px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><textarea placeholder="Describe follow-up task..."></textarea></td>
+              <td><textarea placeholder="Name"></textarea></td>
+              <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+              <td><textarea placeholder="Open / Done"></textarea></td>
+            </tr>
+            <tr>
+              <td><textarea placeholder="Describe follow-up task..."></textarea></td>
+              <td><textarea placeholder="Name"></textarea></td>
+              <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+              <td><textarea placeholder="Open / Done"></textarea></td>
+            </tr>
+            <tr>
+              <td><textarea placeholder="Describe follow-up task..."></textarea></td>
+              <td><textarea placeholder="Name"></textarea></td>
+              <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+              <td><textarea placeholder="Open / Done"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: SECURITY IMPLICATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="num">7</span> Security Implications <span style="font-size:10px;font-weight:400;opacity:0.8;margin-left:8px;">ISO A.8.27 — Secure System Architecture</span></div>
+    <div class="section-body">
+      <div class="security-box">
+        <strong>ISO A.8.27 Hook:</strong> Every ADR must assess security impact. If this decision has no security implications, document that assessment here with justification. "N/A" without justification is not acceptable.
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Security Impact Assessment</label>
+        <textarea class="write-area" style="min-height:90px;" placeholder="Describe any security impact from this decision. Consider:&#10;• Authentication / Authorization changes&#10;• New attack surface introduced&#10;• Data exposure risk (new data flows, storage, APIs)&#10;• Network boundary changes&#10;• Compliance implications (SOX, HIPAA, PCI)&#10;• Dependency / supply chain risk"></textarea>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Security Concern</th>
+            <th style="width:100px;">Risk Level</th>
+            <th>Mitigation / Control</th>
+            <th style="width:110px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><textarea placeholder="Describe security concern..."></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+              </select>
+            </td>
+            <td><textarea placeholder="How is this mitigated?"></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Mitigated</option>
+                <option>Accepted</option>
+                <option>Open</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="Describe security concern..."></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+              </select>
+            </td>
+            <td><textarea placeholder="How is this mitigated?"></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Mitigated</option>
+                <option>Accepted</option>
+                <option>Open</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 8: REVIEW -->
+  <div class="section">
+    <div class="section-title"><span class="num">8</span> Review &amp; Sign-off</div>
+    <div class="section-body">
+      <div style="margin-bottom:20px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:10px;">Reviewers</label>
+        <table>
+          <thead>
+            <tr>
+              <th>Reviewer Name</th>
+              <th style="width:160px;">Role / Team</th>
+              <th style="width:130px;">Date Reviewed</th>
+              <th style="width:110px;">Decision</th>
+              <th>Comments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><textarea placeholder="Full name"></textarea></td>
+              <td><textarea placeholder="e.g. Technology Manager"></textarea></td>
+              <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+              <td>
+                <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                  <option>Approved</option>
+                  <option>Approved with Comments</option>
+                  <option>Rejected</option>
+                  <option>Abstain</option>
+                </select>
+              </td>
+              <td><textarea placeholder="Optional comments..."></textarea></td>
+            </tr>
+            <tr>
+              <td><textarea placeholder="Full name"></textarea></td>
+              <td><textarea placeholder="e.g. Senior Engineer"></textarea></td>
+              <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+              <td>
+                <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                  <option>Approved</option>
+                  <option>Approved with Comments</option>
+                  <option>Rejected</option>
+                  <option>Abstain</option>
+                </select>
+              </td>
+              <td><textarea placeholder="Optional comments..."></textarea></td>
+            </tr>
+            <tr>
+              <td><textarea placeholder="Full name"></textarea></td>
+              <td><textarea placeholder="e.g. Security / InfoSec"></textarea></td>
+              <td><textarea placeholder="YYYY-MM-DD"></textarea></td>
+              <td>
+                <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                  <option>Approved</option>
+                  <option>Approved with Comments</option>
+                  <option>Rejected</option>
+                  <option>Abstain</option>
+                </select>
+              </td>
+              <td><textarea placeholder="Optional comments..."></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="review-grid">
+        <div class="meta-field">
+          <label>ADR Accepted Date</label>
+          <div class="value">YYYY-MM-DD</div>
+        </div>
+        <div class="meta-field">
+          <label>Next Review Date</label>
+          <div class="value">YYYY-MM-DD (12 months)</div>
+        </div>
+        <div class="meta-field">
+          <label>Git Commit / PR Reference</label>
+          <div class="value">#PR-____</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>ABM Industries IT · Architecture Decision Record (ADR) Template v1.0</span>
+  <span>Controlled in Git: abm-it/sdlc-standards/templates/adr-template.html</span>
+</div>
+
+</body>
+</html>

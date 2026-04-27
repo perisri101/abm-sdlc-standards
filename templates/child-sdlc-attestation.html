@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Child SDLC Attestation &amp; Extension Document – ABM Industries IT</title>
+<style>
+  :root {
+    --navy: #002B5C;
+    --green: #009A44;
+    --border: #CBD5E8;
+    --text: #1C2336;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #F4F6FB;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .banner {
+    background: var(--navy);
+    color: #fff;
+    padding: 36px 48px 28px;
+    border-bottom: 4px solid var(--green);
+  }
+  .banner .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #8BAAD4;
+    margin-bottom: 10px;
+  }
+  .banner .label code {
+    background: rgba(255,255,255,0.12);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .banner h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .banner .sub {
+    font-size: 13px;
+    color: #A8C4E0;
+  }
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+  .section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .section-title {
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .num {
+    background: var(--green);
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-body {
+    padding: 20px 24px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meta-field label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6B7A99;
+  }
+  .meta-field .value {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    background: #F8FAFD;
+    min-height: 34px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .warning-box {
+    background: #FFF3CD;
+    border: 2px solid #F0A500;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .warning-box .icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .warning-box .wb-content strong {
+    display: block;
+    color: #7A5200;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 5px;
+  }
+  .warning-box .wb-content p {
+    color: #5A3D00;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .warning-box .wb-content .gatekeeper {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead tr {
+    background: var(--navy);
+    color: #fff;
+  }
+  thead th {
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:nth-child(even) { background: #F8FAFD; }
+  tbody tr:hover { background: #EEF2FB; }
+  tbody td {
+    padding: 9px 12px;
+    vertical-align: middle;
+  }
+  tbody td.section-ref {
+    font-weight: 700;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+  .status-cell select {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 11px;
+    background: #fff;
+    color: var(--text);
+  }
+  .status-adopted { color: #155724; font-weight: 600; font-size: 11px; }
+  .status-extended { color: #004085; font-weight: 600; font-size: 11px; }
+  .status-na { color: #721C24; font-weight: 600; font-size: 11px; }
+  .notes-cell textarea {
+    width: 100%;
+    min-height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 4px 7px;
+    font-family: inherit;
+    font-size: 12px;
+    background: transparent;
+    resize: vertical;
+  }
+  .write-area {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: #F8FAFD;
+    resize: vertical;
+  }
+  .write-area:focus { outline: 2px solid var(--green); }
+  .subsection-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6B7A99;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .subsection-label:first-child { margin-top: 0; }
+  .signoff-box {
+    border: 2px solid var(--navy);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .signoff-box .sb-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .signoff-box .sb-body {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .signoff-box .sb-body.gatekeeper-sign { border-top: 3px solid var(--green); }
+  .approval-badge {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .approval-badge label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid;
+  }
+  .approval-badge label.yes { background: #D4EDDA; color: #155724; border-color: #28A745; }
+  .approval-badge label.no  { background: #F8D7DA; color: #721C24; border-color: #DC3545; }
+  .history-table thead th { white-space: nowrap; }
+  .footer {
+    background: var(--navy);
+    color: #8BAAD4;
+    font-size: 11px;
+    padding: 14px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    letter-spacing: 0.3px;
+  }
+  .iso-tag {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.75;
+    margin-left: 8px;
+  }
+  @media (max-width: 640px) {
+    .banner { padding: 24px 20px 18px; }
+    .container { padding: 16px 12px 40px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+    .signoff-box .sb-body { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; gap: 4px; padding: 12px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div class="label">ABM Industries IT · Template v1.0 · <code>templates/child-sdlc-attestation.html</code></div>
+  <h1>Child SDLC Attestation &amp; Extension Document</h1>
+  <div class="sub">Every ABM IT team must complete this attestation referencing the master SDLC. Teams ADD — never subtract. ISO A.8.25</div>
+</div>
+
+<div class="container">
+
+  <!-- WARNING BOX -->
+  <div class="warning-box">
+    <div class="icon">&#9888;</div>
+    <div class="wb-content">
+      <strong>Mandatory Compliance Notice</strong>
+      <p>This document extends — never reduces — the ABM Universal IT SDLC. Any section marked N/A must include written justification approved by the SDLC Gatekeeper. Teams may add platform-specific requirements, tooling, and processes on top of the master standard. No section of the master SDLC may be waived without explicit written gatekeeper approval.</p>
+      <span class="gatekeeper">SDLC Gatekeeper: Srini Peri · perisri101@gmail.com</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1: META -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> Document Metadata</div>
+    <div class="section-body">
+      <div class="meta-grid">
+        <div class="meta-field">
+          <label>Team Name</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Product / System</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Technology Manager (TM)</label>
+          <div class="value">&nbsp;</div>
+        </div>
+        <div class="meta-field">
+          <label>Master SDLC Version Referenced</label>
+          <div class="value">v1.0</div>
+        </div>
+        <div class="meta-field">
+          <label>Child Doc Version</label>
+          <div class="value">v1.0</div>
+        </div>
+        <div class="meta-field">
+          <label>Effective Date</label>
+          <div class="value">YYYY-MM-DD</div>
+        </div>
+        <div class="meta-field">
+          <label>Next Review Date</label>
+          <div class="value">YYYY-MM-DD</div>
+        </div>
+        <div class="meta-field">
+          <label>Document Owner</label>
+          <div class="value">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: MASTER SDLC COMPLIANCE ATTESTATION -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> Master SDLC Compliance Attestation <span class="iso-tag">ISO A.8.25</span></div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        For each section of the ABM Universal IT SDLC v1.0, select the compliance status and document any team-specific extensions or N/A justifications. All 22 sections must have an entry.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:80px;">Section #</th>
+            <th style="width:220px;">Section Title</th>
+            <th style="width:200px;">Status</th>
+            <th>Team-Specific Extensions / Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="section-ref">§1</td>
+            <td>Purpose &amp; Scope</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§2</td>
+            <td>Guiding Principles</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§3</td>
+            <td>Roles &amp; Responsibilities</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: Mobile Platform Engineer role for Team Connect"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§4</td>
+            <td>Planning &amp; Intake</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§5</td>
+            <td>Architecture &amp; Design</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. ADR required for all cross-service integrations"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§6</td>
+            <td>Development Standards</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: .NET MAUI coding standards, mobile-specific linting rules"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§7</td>
+            <td>Source Control &amp; Branching</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§8</td>
+            <td>Code Review</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§9</td>
+            <td>Testing Strategy</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: Device matrix testing (iOS/Android), Appium automation framework"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§10</td>
+            <td>CI/CD Pipeline</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: App Store / Play Store publish stage, MDM distribution step"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§11</td>
+            <td>Security Requirements</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: OWASP Mobile Top 10 requirements, certificate pinning standard"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§12</td>
+            <td>Secret Management</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§13</td>
+            <td>Environments &amp; Promotion</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§14</td>
+            <td>Dependency Management</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: NuGet package whitelist, mobile SDK version pinning policy"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§15</td>
+            <td>Database &amp; Data Management</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§16</td>
+            <td>Observability &amp; Monitoring</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: Mobile crash reporting via App Center, push notification monitoring"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§17</td>
+            <td>Incident Management</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§18</td>
+            <td>Change Management</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§19</td>
+            <td>Documentation Standards</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§20</td>
+            <td>Vendor / Third-Party Management</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="e.g. Added: Boomi partner connectors review process"></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§21</td>
+            <td>Compliance &amp; Audit</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+          <tr>
+            <td class="section-ref">§22</td>
+            <td>SDLC Review &amp; Continuous Improvement</td>
+            <td class="status-cell">
+              <select>
+                <option>Adopted as-is</option>
+                <option>Extended — see notes</option>
+                <option>N/A — justified (gatekeeper approved)</option>
+              </select>
+            </td>
+            <td class="notes-cell"><textarea placeholder="Notes or extensions for this section..."></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 3: TEAM-SPECIFIC ADDITIONS -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> Team-Specific Additions &amp; Platform Requirements</div>
+    <div class="section-body">
+      <p style="font-size:13px;color:#6B7A99;margin-bottom:16px;">
+        Document platform-specific sections, standards, and requirements that extend the master SDLC. Examples: Team Connect adds .NET MAUI specifics, MDM deployment, mobile-specific testing. Boomi adds process building standards, connector management, test mode protocols.
+      </p>
+
+      <div class="subsection-label">3a. Platform-Specific Sections (add rows as needed)</div>
+      <table style="margin-bottom:20px;">
+        <thead>
+          <tr>
+            <th style="width:100px;">Section ID</th>
+            <th style="width:200px;">Section Title</th>
+            <th>Content / Requirements</th>
+            <th style="width:130px;">Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><textarea placeholder="e.g. §T1"></textarea></td>
+            <td><textarea placeholder="e.g. .NET MAUI Development Standards"></textarea></td>
+            <td><textarea placeholder="Describe the platform-specific requirement, standard, or process..."></textarea></td>
+            <td><textarea placeholder="Name / Role"></textarea></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="e.g. §T2"></textarea></td>
+            <td><textarea placeholder="e.g. MDM Deployment Process"></textarea></td>
+            <td><textarea placeholder="Describe the platform-specific requirement, standard, or process..."></textarea></td>
+            <td><textarea placeholder="Name / Role"></textarea></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="e.g. §T3"></textarea></td>
+            <td><textarea placeholder="e.g. Mobile-Specific Testing Requirements"></textarea></td>
+            <td><textarea placeholder="Describe the platform-specific requirement, standard, or process..."></textarea></td>
+            <td><textarea placeholder="Name / Role"></textarea></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="e.g. §T4"></textarea></td>
+            <td><textarea placeholder="e.g. Boomi Process Building Standards"></textarea></td>
+            <td><textarea placeholder="Describe the platform-specific requirement, standard, or process..."></textarea></td>
+            <td><textarea placeholder="Name / Role"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="subsection-label">3b. Team-Specific Tool Registry</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:180px;">Tool / Platform</th>
+            <th>Purpose</th>
+            <th style="width:150px;">Required / Optional</th>
+            <th style="width:150px;">Governed By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><textarea placeholder="Tool name + version"></textarea></td>
+            <td><textarea placeholder="What this tool is used for in the team's SDLC"></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Required</option>
+                <option>Optional</option>
+                <option>Conditionally Required</option>
+              </select>
+            </td>
+            <td><textarea placeholder="Policy / standard that governs use"></textarea></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="Tool name + version"></textarea></td>
+            <td><textarea placeholder="What this tool is used for in the team's SDLC"></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Required</option>
+                <option>Optional</option>
+                <option>Conditionally Required</option>
+              </select>
+            </td>
+            <td><textarea placeholder="Policy / standard that governs use"></textarea></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="Tool name + version"></textarea></td>
+            <td><textarea placeholder="What this tool is used for in the team's SDLC"></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Required</option>
+                <option>Optional</option>
+                <option>Conditionally Required</option>
+              </select>
+            </td>
+            <td><textarea placeholder="Policy / standard that governs use"></textarea></td>
+          </tr>
+          <tr>
+            <td><textarea placeholder="Tool name + version"></textarea></td>
+            <td><textarea placeholder="What this tool is used for in the team's SDLC"></textarea></td>
+            <td>
+              <select style="width:100%;padding:5px;border:1px solid var(--border);border-radius:3px;font-size:12px;">
+                <option>Required</option>
+                <option>Optional</option>
+                <option>Conditionally Required</option>
+              </select>
+            </td>
+            <td><textarea placeholder="Policy / standard that governs use"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 4: TECHNOLOGY STACK -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> Technology Stack</div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:180px;">Category</th>
+            <th>Technology / Tool</th>
+            <th style="width:150px;">Version / Tier</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">Languages / Platforms</td>
+            <td><textarea placeholder="e.g. C# / .NET MAUI, Python, Node.js"></textarea></td>
+            <td><textarea placeholder="e.g. .NET 8"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">Frameworks / Libraries</td>
+            <td><textarea placeholder="e.g. React, .NET MAUI, FastAPI"></textarea></td>
+            <td><textarea placeholder="Version"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">Cloud Services</td>
+            <td><textarea placeholder="e.g. Azure App Service, Azure SQL, Azure Service Bus"></textarea></td>
+            <td><textarea placeholder="Tier / SKU"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">CI/CD Tools</td>
+            <td><textarea placeholder="e.g. GitHub Actions, Azure DevOps, Opsera"></textarea></td>
+            <td><textarea placeholder="Version"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">Testing Tools</td>
+            <td><textarea placeholder="e.g. xUnit, Jest, Selenium, Appium"></textarea></td>
+            <td><textarea placeholder="Version"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">Security Tools</td>
+            <td><textarea placeholder="e.g. Snyk, OWASP ZAP, StackHawk"></textarea></td>
+            <td><textarea placeholder="Version"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">Monitoring / Observability</td>
+            <td><textarea placeholder="e.g. Azure Monitor, Application Insights, Datadog"></textarea></td>
+            <td><textarea placeholder="Version"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--navy);">Source Control</td>
+            <td><textarea placeholder="e.g. GitHub / Azure DevOps Repos"></textarea></td>
+            <td><textarea placeholder="Org / project"></textarea></td>
+            <td><textarea placeholder="Notes..."></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 5: GATEKEEPER SIGN-OFF -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> SDLC Gatekeeper Sign-Off</div>
+    <div class="section-body">
+      <div class="signoff-box">
+        <div class="sb-header" style="background:var(--green);">Gatekeeper Review — Srini Peri</div>
+        <div class="sb-body gatekeeper-sign">
+          <div class="meta-field">
+            <label>Gatekeeper Name</label>
+            <div class="value">Srini Peri</div>
+          </div>
+          <div class="meta-field">
+            <label>Date Reviewed</label>
+            <div class="value">YYYY-MM-DD</div>
+          </div>
+          <div class="meta-field">
+            <label>Approved?</label>
+            <div style="margin-top:4px;">
+              <div class="approval-badge">
+                <label class="yes"><input type="radio" name="gk-approved"> Yes — Approved</label>
+                <label class="no"><input type="radio" name="gk-approved"> No — Revisions Required</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0 16px 16px;">
+          <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;display:block;margin-bottom:6px;">Gatekeeper Notes / Conditions of Approval</label>
+          <textarea class="write-area" style="min-height:60px;" placeholder="Notes, conditions, or required changes before final approval..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: TM SIGN-OFF -->
+  <div class="section">
+    <div class="section-title"><span class="num">6</span> Technology Manager Sign-Off</div>
+    <div class="section-body">
+      <div class="signoff-box">
+        <div class="sb-header">Technology Manager Attestation</div>
+        <div class="sb-body">
+          <div class="meta-field">
+            <label>TM Name</label>
+            <div class="value">&nbsp;</div>
+          </div>
+          <div class="meta-field">
+            <label>Date Signed</label>
+            <div class="value">YYYY-MM-DD</div>
+          </div>
+          <div class="meta-field">
+            <label>Attestation</label>
+            <div style="font-size:11px;color:#6B7A99;margin-top:4px;line-height:1.5;">
+              I attest that this document accurately extends the ABM Universal IT SDLC v1.0 and that my team will operate in full compliance with all adopted and extended sections.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection-label">Document History</div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th style="width:80px;">Version</th>
+            <th style="width:120px;">Date</th>
+            <th style="width:160px;">Author</th>
+            <th>Summary of Changes</th>
+            <th style="width:120px;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>v1.0</td>
+            <td>YYYY-MM-DD</td>
+            <td>&nbsp;</td>
+            <td>Initial document creation</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>ABM Industries IT · Child SDLC Attestation &amp; Extension Document v1.0</span>
+  <span>Controlled in Git: abm-it/sdlc-standards/templates/child-sdlc-attestation.html</span>
+</div>
+
+</body>
+</html>
