@@ -765,27 +765,18 @@ tr:hover td { background: #EDF2F9; }
 
   <h3>7.1 Universal Coding Standards</h3>
   <p>Apply to all programming languages and platforms. Team-specific additions are defined in child SDLC documents.</p>
-
-  <div class="card">
-    <div class="card-title">SOLID Principles (Mandatory for all object-oriented code)</div>
-    <table>
-      <tr><th>Principle</th><th>Rule</th></tr>
-      <tr><td><strong>S</strong> — Single Responsibility</td><td>Each class/module has one reason to change; one clear purpose</td></tr>
-      <tr><td><strong>O</strong> — Open/Closed</td><td>Open for extension via interfaces; closed to direct modification</td></tr>
-      <tr><td><strong>L</strong> — Liskov Substitution</td><td>Derived types must be substitutable for their base types without altering behavior</td></tr>
-      <tr><td><strong>I</strong> — Interface Segregation</td><td>Clients must not depend on methods they don't use; prefer focused interfaces</td></tr>
-      <tr><td><strong>D</strong> — Dependency Inversion</td><td>Depend on abstractions; use dependency injection for all service dependencies</td></tr>
-    </table>
-  </div>
+  <ul>
+    <li>No hardcoded secrets, credentials, or connection strings in source code — use Azure Key Vault</li>
+    <li>Input validation on all externally-supplied data; sanitize before use</li>
+    <li>Secure error handling — no stack traces or internal paths exposed in responses</li>
+    <li>Dependencies must be current and free of known High/Critical CVEs at merge time</li>
+  </ul>
 
   <h3>7.2 Code Quality Thresholds</h3>
   <p>The following metrics are enforced by CI/CD pipeline gates. PRs failing these thresholds are automatically blocked from merging. These objective, tool-measured thresholds provide auditable evidence that code quality standards are being met — they are not optional guidelines.</p>
   <table>
     <tr><th>Metric</th><th>Threshold</th><th>Tool</th><th>Enforcement</th></tr>
     <tr><td>Unit test coverage</td><td>≥ 70% (PR gate); 100% must pass</td><td>Coverlet / pytest-cov</td><td>Pipeline blocks on failure</td></tr>
-    <tr><td>Cyclomatic complexity</td><td>≤ 10 per method</td><td>Coverlet / SonarQube</td><td>Pipeline blocks on breach</td></tr>
-    <tr><td>Code duplication</td><td>≤ 3%</td><td>SonarQube / code analyzers</td><td>PR review gate</td></tr>
-    <tr><td>Maintainability index</td><td>≥ 20</td><td>Coverlet / SonarQube</td><td>PR review gate</td></tr>
     <tr><td>High/Critical SAST findings</td><td>Zero tolerance</td><td>Snyk</td><td>Pipeline blocks on finding</td></tr>
   </table>
 
@@ -794,14 +785,10 @@ tr:hover td { background: #EDF2F9; }
   <ul>
     <li>Code complete and checked into feature branch following branching strategy</li>
     <li>Unit tests written with ≥70% coverage; 100% of tests pass</li>
-    <li>Code complexity within thresholds (Coverlet / equivalent report attached to PR)</li>
     <li>Code reviewed and approved by minimum 2 peers + Technology Manager</li>
-    <li>DRY validation — no code duplication introduced</li>
     <li>SAST scan passed (zero High/Critical findings)</li>
     <li>Merged to development branch and deployed to QA / equivalent environment</li>
     <li>QA testing passed (QA exit criteria met)</li>
-    <li>Technical documentation / Wiki updated if applicable</li>
-    <li>Demo completed (P1 features require stakeholder demo)</li>
   </ul>
 
   <h3>7.4 AI-Assisted Development</h3>
