@@ -784,7 +784,6 @@ tr:hover td { background: #EDF2F9; }
     <tr><th>Metric</th><th>Threshold</th><th>Tool</th><th>Enforcement</th></tr>
     <tr><td>Unit test coverage</td><td>≥ 70% (PR gate); 100% must pass</td><td>Coverlet / pytest-cov</td><td>Pipeline blocks on failure</td></tr>
     <tr><td>Cyclomatic complexity</td><td>≤ 10 per method</td><td>Coverlet / SonarQube</td><td>Pipeline blocks on breach</td></tr>
-    <tr><td>CRAP score</td><td>Below platform threshold</td><td>Coverlet</td><td>Pipeline blocks on breach</td></tr>
     <tr><td>Code duplication</td><td>≤ 3%</td><td>SonarQube / code analyzers</td><td>PR review gate</td></tr>
     <tr><td>Maintainability index</td><td>≥ 20</td><td>Coverlet / SonarQube</td><td>PR review gate</td></tr>
     <tr><td>High/Critical SAST findings</td><td>Zero tolerance</td><td>Snyk</td><td>Pipeline blocks on finding</td></tr>
