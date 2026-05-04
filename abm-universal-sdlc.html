@@ -819,10 +819,10 @@ tr:hover td { background: #EDF2F9; }
   <div class="section-header"><div class="section-num">9</div><h2>Source Code Management &amp; Git Workflow</h2></div>
   <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.4</span><span class="tag tag-all">All Paradigms</span></div>
 
-  <h3>8.1 Universal Git Requirements</h3>
+  <h3>9.1 Universal Git Requirements</h3>
   <div class="rule-box">All ABM IT artifacts — source code, integration exports, configuration templates, and SDLC documents — must be in a version-controlled Git repository. Local machine storage, network shares, and zip files are not acceptable as the system of record.</div>
 
-  <h3>8.2 Standard Branching Strategy</h3>
+  <h3>9.2 Standard Branching Strategy</h3>
   <p>All repositories follow this branching model. Child SDLCs may add branch types; protected branches below cannot be removed.</p>
   <div class="callout callout-warn" style="margin-bottom:14px;">
     <div class="callout-label">Low-Code Platforms</div>
@@ -897,14 +897,14 @@ tr:hover td { background: #EDF2F9; }
     </svg>
   </div>
 
-  <h3>8.3 Branch Naming Convention</h3>
+  <h3>9.3 Branch Naming Convention</h3>
   <ul>
     <li>Feature branches: <code>feature/{team}-{ticket-id}-{brief-description}</code> (e.g., <code>feature/TC-1234-clock-in-fix</code>)</li>
     <li>Hotfix branches: <code>hotfix/{ticket-id}-{brief-description}</code></li>
     <li>Release branches: <code>release/{version}</code></li>
   </ul>
 
-  <h3>8.4 Pull Request Standards</h3>
+  <h3>9.4 Pull Request Standards</h3>
   <p>Every merge to <code>develop</code> or above requires a Pull Request. The following are enforced via branch protection policies:</p>
 
   <div class="pipeline-flow">
@@ -928,7 +928,7 @@ tr:hover td { background: #EDF2F9; }
     <tr><td>PR Template Completeness</td><td>PR description includes ticket reference, testing notes, risk flag</td><td>Yes (automated check)</td></tr>
   </table>
 
-  <h3>8.5 Access Control (Source Code)</h3>
+  <h3>9.5 Access Control (Source Code)</h3>
   <table>
     <tr><th>Role</th><th>Repository Access</th><th>Can Promote To</th></tr>
     <tr><td>Developer</td><td>Read + contribute to feature branches</td><td>Develop (via PR)</td></tr>
@@ -940,7 +940,7 @@ tr:hover td { background: #EDF2F9; }
 
   <div class="rule-box">Developers own the feature branch. Only the Technology Manager (or designated senior) promotes code from develop → QA/UAT → main. Segregation of duties is non-negotiable.</div>
 
-  <h3>8.6 Access Review</h3>
+  <h3>9.6 Access Review</h3>
   <ul>
     <li>Repository access reviewed monthly by Technology Manager</li>
     <li>Access revoked immediately upon role change, team change, or departure</li>
@@ -958,7 +958,7 @@ tr:hover td { background: #EDF2F9; }
   <div class="section-header"><div class="section-num">10</div><h2>Environment Management &amp; Deployment</h2></div>
   <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.31</span><span class="tag tag-all">All Paradigms</span></div>
 
-  <h3>11.1 Environment Tiers</h3>
+  <h3>10.1 Environment Tiers</h3>
   <div class="callout callout-iso">
     <div class="callout-label">ISO A.8.31 — Mandatory Control</div>
     Development, testing, and production environments must be separated and independently secured. This applies to all paradigms including SaaS and integration platforms (separate instances/tenants are required).
@@ -980,7 +980,7 @@ tr:hover td { background: #EDF2F9; }
     For low-code (Boomi, Logic Apps) and no-code (Power Apps) platforms, "deployment" means promoting a configuration or component from one environment to another — not compiling or packaging a build artifact. The same promotion gates apply: TM approval, DAST and testing confirmation, and CAB approval for production. Child SDLCs define the platform-specific promotion mechanism.
   </div>
 
-  <h3>11.2 Deployment Pipeline Requirements</h3>
+  <h3>10.2 Deployment Pipeline Requirements</h3>
   <div class="rule-box">No manual deployments. All environment promotions must go through the CI/CD pipeline. Direct deployment from a local machine or IDE is prohibited. Emergency exceptions require Technology Manager and Executive Sponsor authorization, logged as a SNOW ticket within 24 hours.</div>
 
   <div class="pipeline-flow">
@@ -1082,7 +1082,7 @@ tr:hover td { background: #EDF2F9; }
     </div>
   </div>
 
-  <h3>11.3 Blue-Green Deployment (Production)</h3>
+  <h3>10.3 Blue-Green Deployment (Production)</h3>
   <p>All production deployments use a blue-green strategy to achieve zero downtime and instant rollback capability:</p>
   <ol>
     <li>Deploy new version to inactive (green) environment slot</li>
@@ -1092,7 +1092,7 @@ tr:hover td { background: #EDF2F9; }
     <li>Retain blue slot for 24-hour rollback window</li>
   </ol>
 
-  <h3>11.4 Rollback Procedures</h3>
+  <h3>10.4 Rollback Procedures</h3>
   <ul>
     <li><strong>Authority:</strong> Technology Manager or on-call engineer</li>
     <li><strong>Trigger:</strong> P1 defect, data integrity issue, or security event post-deployment</li>
@@ -1107,7 +1107,7 @@ tr:hover td { background: #EDF2F9; }
   <div class="section-header"><div class="section-num">11</div><h2>Testing &amp; Quality Assurance</h2></div>
   <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.29</span><span class="tag tag-iso">ISO A.8.33</span><span class="tag tag-all">All Paradigms</span></div>
 
-  <h3>9.1 Testing Levels</h3>
+  <h3>11.1 Testing Levels</h3>
   <table>
     <tr><th>Level</th><th>Owner</th><th>When</th><th>Tools / Method</th><th>Exit Criteria</th></tr>
     <tr><td>Unit Testing</td><td>Developer</td><td>During development; enforced at PR</td><td>Coverlet, pytest, JUnit, etc.</td><td>≥70% coverage; 100% pass</td></tr>
@@ -1118,7 +1118,7 @@ tr:hover td { background: #EDF2F9; }
     <tr><td>Regression Testing</td><td>QA Team</td><td>Every release cycle; hotfixes</td><td>Full automated suite</td><td>100% pass on regression suite</td></tr>
   </table>
 
-  <h3>9.2 QA / UAT Entry &amp; Exit Gates</h3>
+  <h3>11.2 QA / UAT Entry &amp; Exit Gates</h3>
   <p style="font-size:12px; color:#5C6B84; margin-bottom:8px;">At ABM, QA and UAT are the same environment. QA testing (team-led regression) runs first; UAT (business stakeholder validation) follows in the same environment before promotion to production.</p>
   <table>
     <tr><th></th><th>QA / UAT Entry</th><th>QA Exit (→ UAT)</th><th>UAT Exit (→ PROD)</th></tr>
@@ -1131,7 +1131,7 @@ tr:hover td { background: #EDF2F9; }
     </tr>
   </table>
 
-  <h3>9.3 Test Data Handling</h3>
+  <h3>11.3 Test Data Handling</h3>
   <div class="callout callout-critical">
     <div class="callout-label">Mandatory Control — ISO A.8.33</div>
     Production data MUST NOT be used in non-production environments unless it has been fully anonymized or masked. This applies to all paradigms including SaaS configuration and integration testing.
@@ -1155,7 +1155,7 @@ tr:hover td { background: #EDF2F9; }
   <div class="section-header"><div class="section-num">12</div><h2>DevSecOps &amp; Security Integration</h2></div>
   <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.25</span><span class="tag tag-iso">ISO A.8.26</span><span class="tag tag-iso">ISO A.8.27</span><span class="tag tag-iso">ISO A.8.28</span><span class="tag tag-iso">ISO A.8.29</span></div>
 
-  <h3>10.1 Security at Every Phase</h3>
+  <h3>12.1 Security at Every Phase</h3>
   <table>
     <tr><th>Phase</th><th>Required Security Activity</th><th>Output</th></tr>
     <tr><td>Requirements</td><td>Data classification; identify PII/financial data flows; stakeholder security requirements</td><td>Security section in FRD / requirements doc</td></tr>
@@ -1243,7 +1243,7 @@ tr:hover td { background: #EDF2F9; }
     </div>
   </div>
 
-  <h3>10.2 Approved Security Toolchain</h3>
+  <h3>12.2 Approved Security Toolchain</h3>
   <table>
     <tr><th>Tool</th><th>Type</th><th>Trigger</th><th>Blocking</th></tr>
     <tr><td>Snyk</td><td>SAST + Dependency scanning</td><td>Every commit / PR</td><td>Yes — High/Critical</td></tr>
@@ -1253,14 +1253,14 @@ tr:hover td { background: #EDF2F9; }
     <tr><td>Git secret scanning</td><td>Secrets detection</td><td>Every commit</td><td>Yes — any finding</td></tr>
   </table>
 
-  <h3>10.3 OWASP Compliance</h3>
+  <h3>12.3 OWASP Compliance</h3>
   <ul>
     <li><strong>Full-Code / APIs:</strong> OWASP Top 10 — validated via SAST + DAST + code review checklist</li>
     <li><strong>Mobile applications:</strong> OWASP Mobile Top 10 — addressed in design and validated in testing</li>
     <li><strong>Infrastructure / Cloud:</strong> CIS Benchmarks + Cloud Security Alliance controls — enforced via Wiz guardrails</li>
   </ul>
 
-  <h3>10.4 Secret &amp; Credential Management</h3>
+  <h3>12.4 Secret &amp; Credential Management</h3>
   <div class="rule-box">Zero secrets in code or config files. All secrets, API keys, connection strings, and certificates must be in Azure Key Vault or approved equivalent. Any detected secret triggers immediate rotation and root cause analysis — no exceptions.</div>
   <ul>
     <li>Application-level secrets: Azure Key Vault (or equivalent per platform)</li>
@@ -1270,7 +1270,7 @@ tr:hover td { background: #EDF2F9; }
     <li>Rotation log: SNOW ticket or ADO work item required for each rotation event</li>
   </ul>
 
-  <h3>10.5 Threat Modeling</h3>
+  <h3>12.5 Threat Modeling</h3>
   <p>STRIDE threat modeling is required for all new services, data stores, and external integrations. For incremental feature additions, a lightweight security impact assessment is sufficient. Threat models are stored in SharePoint and referenced in the FTA.</p>
 </div>
 
@@ -1279,7 +1279,7 @@ tr:hover td { background: #EDF2F9; }
   <div class="section-header"><div class="section-num">13</div><h2>Release &amp; Change Management</h2></div>
   <div style="margin-bottom:8px;"><span class="tag tag-all">All Paradigms</span><span class="tag tag-iso">ISO A.8.25</span></div>
 
-  <h3>12.1 Release Types</h3>
+  <h3>13.1 Release Types</h3>
   <table>
     <tr><th>Type</th><th>Trigger</th><th>Cadence</th><th>Testing Required</th></tr>
     <tr><td>Planned Release</td><td>Sprint roadmap</td><td>As defined by team (quarterly or faster)</td><td>Full QA / UAT cycle</td></tr>
@@ -1289,7 +1289,7 @@ tr:hover td { background: #EDF2F9; }
     <tr><td>Break-Fix</td><td>Production defect causing business impact, not classified as a security event</td><td>Expedited (same or next business day)</td><td>Targeted fix testing plus regression on affected area; standard RFC/CAB unless urgency warrants fast-track CAB approval</td></tr>
   </table>
 
-  <h3>12.2 CAB / RFC Process</h3>
+  <h3>13.2 CAB / RFC Process</h3>
   <div class="rule-box">Every production deployment requires a CAB-approved RFC before the deployment window. No exceptions. Security emergencies require retrospective CAB review within 48 hours and RCA within 72 hours.</div>
 
   <p>RFC Template: <code>templates/rfc-cab-template.html</code></p>
@@ -1309,7 +1309,7 @@ tr:hover td { background: #EDF2F9; }
     Section 12.2 (CAB / RFC Process) should be reviewed with Ricardo Relego (Change Management) to confirm alignment with ABM's enterprise change management framework and ServiceNow RFC workflow before this document is published.
   </div>
 
-  <h3>12.3 Release Criteria (Go / No-Go)</h3>
+  <h3>13.3 Release Criteria (Go / No-Go)</h3>
   <ul>
     <li>All P1 stories complete; QA regression passed with sign-off</li>
     <li>QA / UAT exit criteria met: QA team sign-off + business stakeholder sign-off obtained</li>
@@ -1321,7 +1321,7 @@ tr:hover td { background: #EDF2F9; }
     <li>Go/No-Go decision recorded with stakeholder sign-off in ADO</li>
   </ul>
 
-  <h3>12.4 Outsourced Development Controls</h3>
+  <h3>13.4 Outsourced Development Controls</h3>
   <div style="margin-bottom:8px;"><span class="tag tag-iso">ISO A.8.30</span></div>
   <p>When any ABM system component is developed or maintained by a third party:</p>
   <ul>
