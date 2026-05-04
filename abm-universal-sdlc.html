@@ -823,89 +823,77 @@ tr:hover td { background: #EDF2F9; }
   <div class="rule-box">All ABM IT artifacts — source code, integration exports, configuration templates, and SDLC documents — must be in a version-controlled Git repository. Local machine storage, network shares, and zip files are not acceptable as the system of record.</div>
 
   <h3>8.2 Standard Branching Strategy</h3>
-  <p>All repositories follow this branching model. Child SDLCs may define additional branch types but may not remove these protected branches:</p>
+  <p>All repositories follow this branching model. Child SDLCs may add branch types; protected branches below cannot be removed.</p>
   <div class="callout callout-warn" style="margin-bottom:14px;">
-    <div class="callout-label">Branching Adaptation — Low-Code Platforms (Review Required)</div>
-    The branching model above applies directly to full-code repositories. For low-code platforms such as Boomi, where version control uses platform-native mechanisms (Boomi revision history, packaged component exports), the child SDLC defines equivalent branching and promotion controls. The Boomi Integrations SDLC should be reviewed with Alpesh's team to confirm the branching strategy is aligned and documented before this master is finalised.
+    <div class="callout-label">Low-Code Platforms</div>
+    Boomi and similar platforms use native version control (revision history, packaged exports). Equivalent promotion controls must be defined in the team's child SDLC.
   </div>
 
   <table>
     <tr><th>Branch</th><th>Purpose</th><th>Who Can Commit</th><th>Promotion Authority</th></tr>
-    <tr><td><code>main</code></td><td>Production-ready code</td><td>No direct commits — PR only</td><td>Technology Manager + CAB approval</td></tr>
-    <tr><td><code>uat</code></td><td>User acceptance testing</td><td>No direct commits — PR only</td><td>Technology Manager</td></tr>
-    <tr><td><code>qa</code> / <code>staging</code></td><td>Quality assurance testing</td><td>No direct commits — PR only</td><td>Technology Manager or Senior Dev</td></tr>
+    <tr><td><code>main</code></td><td>Production-ready code — mirrors prod</td><td>No direct commits — PR + CAB only</td><td>Technology Manager + CAB approval</td></tr>
+    <tr><td><code>qa/uat</code></td><td>QA testing and business stakeholder validation</td><td>No direct commits — PR only</td><td>Technology Manager or Senior Dev</td></tr>
     <tr><td><code>develop</code></td><td>Active integration branch</td><td>Merge from feature branches only</td><td>Automatic on PR approval</td></tr>
     <tr><td><code>feature/*</code></td><td>Individual feature work</td><td>Assigned developer(s)</td><td>PR to develop</td></tr>
-    <tr><td><code>hotfix/*</code></td><td>Emergency production fixes</td><td>Senior Dev + TM</td><td>Expedited — TM + CAB fast-track</td></tr>
+    <tr><td><code>hotfix/*</code></td><td>Emergency production fixes</td><td>Senior Dev + TM only</td><td>Expedited — TM + CAB fast-track</td></tr>
   </table>
 
   <!-- ── DIAGRAM: GIT BRANCHING STRATEGY ── -->
   <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:20px 16px; margin:16px 0; overflow-x:auto;">
-    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Git Branch Flow — Promotion requires explicit gates at every level</div>
-    <svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; min-width:760px; height:auto; display:block;">
-      <!-- Branch labels -->
-      <text x="10" y="44" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">feature/*</text>
-      <text x="10" y="96" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">develop</text>
-      <text x="10" y="144" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">qa</text>
-      <text x="10" y="192" fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">uat</text>
-      <text x="10" y="240" fill="#1B3DA8" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">main</text>
-      <text x="10" y="270" fill="#C62828" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">hotfix/*</text>
-      <!-- Feature branch lines -->
-      <line x1="80" y1="40" x2="230" y2="40" stroke="#7B8FA6" stroke-width="2" stroke-dasharray="6,3"/>
-      <line x1="80" y1="60" x2="280" y2="60" stroke="#7B8FA6" stroke-width="2" stroke-dasharray="6,3"/>
-      <!-- Merge points to develop (diagonal lines) -->
-      <line x1="230" y1="40" x2="260" y2="92" stroke="#7B8FA6" stroke-width="1.5"/>
-      <line x1="280" y1="60" x2="300" y2="92" stroke="#7B8FA6" stroke-width="1.5"/>
-      <!-- develop line -->
-      <line x1="80" y1="92" x2="750" y2="92" stroke="#2548D4" stroke-width="2.5"/>
-      <!-- Merge dots on develop -->
-      <circle cx="260" cy="92" r="5" fill="#2548D4"/>
-      <circle cx="300" cy="92" r="5" fill="#2548D4"/>
-      <!-- PR Gate 1: develop → qa -->
-      <rect x="370" y="78" width="72" height="28" rx="5" fill="#1B3DA8"/>
-      <text x="406" y="90" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PR GATE</text>
-      <text x="406" y="101" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">TM Approval</text>
-      <line x1="406" y1="106" x2="406" y2="140" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
-      <!-- qa line -->
-      <line x1="80" y1="140" x2="750" y2="140" stroke="#EF8933" stroke-width="2.5"/>
-      <circle cx="406" cy="140" r="5" fill="#EF8933"/>
-      <!-- PR Gate 2: qa → uat -->
-      <rect x="510" y="126" width="88" height="28" rx="5" fill="#7B2FBE"/>
-      <text x="554" y="138" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PR GATE</text>
-      <text x="554" y="149" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">TM + QA Sign-off</text>
-      <line x1="554" y1="154" x2="554" y2="188" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
-      <!-- uat line -->
-      <line x1="80" y1="188" x2="750" y2="188" stroke="#B45309" stroke-width="2.5"/>
-      <circle cx="554" cy="188" r="5" fill="#B45309"/>
-      <!-- PR Gate 3: uat → main -->
-      <rect x="626" y="174" width="100" height="28" rx="5" fill="#C62828"/>
-      <text x="676" y="186" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">CAB GATE</text>
-      <text x="676" y="197" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">RFC Approved</text>
-      <line x1="676" y1="202" x2="676" y2="233" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
-      <!-- main line -->
-      <line x1="80" y1="236" x2="760" y2="236" stroke="#1B3DA8" stroke-width="3"/>
-      <circle cx="676" cy="236" r="6" fill="#1B3DA8"/>
-      <!-- PROD arrow at end -->
-      <rect x="748" y="222" width="48" height="28" rx="5" fill="#EF8933"/>
-      <text x="772" y="234" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PROD</text>
-      <text x="772" y="245" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7" font-family="Segoe UI,Arial,sans-serif">🚀 LIVE</text>
-      <!-- hotfix line -->
-      <line x1="80" y1="265" x2="650" y2="265" stroke="#C62828" stroke-width="2" stroke-dasharray="5,3"/>
-      <line x1="650" y1="265" x2="676" y2="236" stroke="#C62828" stroke-width="1.5"/>
-      <text x="200" y="258" fill="#C62828" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Emergency fix — TM + CAB fast-track required</text>
-      <!-- Legend -->
-      <rect x="80" y="10" width="60" height="12" rx="3" fill="none" stroke="#7B8FA6" stroke-width="1.5" stroke-dasharray="4,2"/>
-      <text x="146" y="21" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Developer-owned branch</text>
-      <rect x="280" y="10" width="60" height="12" rx="3" fill="#2548D4"/>
-      <text x="346" y="21" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Protected branch (no direct commits)</text>
-      <rect x="550" y="10" width="40" height="12" rx="3" fill="#C62828"/>
-      <text x="596" y="21" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Blocking gate</text>
-      <!-- Arrow marker def -->
+    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Git Branch Flow — Every promotion requires an explicit gate</div>
+    <svg viewBox="0 0 860 230" xmlns="http://www.w3.org/2000/svg" style="width:100%; min-width:700px; height:auto; display:block;">
       <defs>
         <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
           <path d="M0,0 L8,4 L0,8 Z" fill="#EF8933"/>
         </marker>
       </defs>
+      <!-- Branch labels -->
+      <text x="10" y="44"  fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">feature/*</text>
+      <text x="10" y="92"  fill="#5C6B84" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">develop</text>
+      <text x="10" y="140" fill="#EF8933" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">qa/uat</text>
+      <text x="10" y="188" fill="#1B3DA8" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">main</text>
+      <text x="10" y="218" fill="#C62828" font-size="9.5" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">hotfix/*</text>
+      <!-- Feature branch lines -->
+      <line x1="80" y1="40" x2="230" y2="40" stroke="#7B8FA6" stroke-width="2" stroke-dasharray="6,3"/>
+      <line x1="80" y1="58" x2="280" y2="58" stroke="#7B8FA6" stroke-width="2" stroke-dasharray="6,3"/>
+      <!-- Merge to develop -->
+      <line x1="230" y1="40" x2="258" y2="88" stroke="#7B8FA6" stroke-width="1.5"/>
+      <line x1="280" y1="58" x2="298" y2="88" stroke="#7B8FA6" stroke-width="1.5"/>
+      <!-- develop line -->
+      <line x1="80" y1="88" x2="750" y2="88" stroke="#2548D4" stroke-width="2.5"/>
+      <circle cx="258" cy="88" r="5" fill="#2548D4"/>
+      <circle cx="298" cy="88" r="5" fill="#2548D4"/>
+      <!-- PR Gate 1: develop → qa/uat -->
+      <rect x="380" y="74" width="88" height="28" rx="5" fill="#1B3DA8"/>
+      <text x="424" y="86"  text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PR GATE</text>
+      <text x="424" y="97" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">TM Approval</text>
+      <line x1="424" y1="102" x2="424" y2="134" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
+      <!-- qa/uat line -->
+      <line x1="80" y1="136" x2="750" y2="136" stroke="#EF8933" stroke-width="2.5"/>
+      <circle cx="424" cy="136" r="5" fill="#EF8933"/>
+      <!-- PR Gate 2: qa/uat → main (CAB) -->
+      <rect x="570" y="122" width="104" height="28" rx="5" fill="#C62828"/>
+      <text x="622" y="134" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">CAB GATE</text>
+      <text x="622" y="145" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7.5" font-family="Segoe UI,Arial,sans-serif">RFC + TM + Stakeholder</text>
+      <line x1="622" y1="150" x2="622" y2="180" stroke="#EF8933" stroke-width="2" marker-end="url(#arr)"/>
+      <!-- main line -->
+      <line x1="80" y1="184" x2="760" y2="184" stroke="#1B3DA8" stroke-width="3"/>
+      <circle cx="622" cy="184" r="6" fill="#1B3DA8"/>
+      <!-- PROD badge -->
+      <rect x="748" y="170" width="48" height="28" rx="5" fill="#EF8933"/>
+      <text x="772" y="182" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Segoe UI,Arial,sans-serif">PROD</text>
+      <text x="772" y="193" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="7" font-family="Segoe UI,Arial,sans-serif">🚀 LIVE</text>
+      <!-- hotfix line -->
+      <line x1="80" y1="213" x2="600" y2="213" stroke="#C62828" stroke-width="2" stroke-dasharray="5,3"/>
+      <line x1="600" y1="213" x2="622" y2="184" stroke="#C62828" stroke-width="1.5"/>
+      <text x="180" y="208" fill="#C62828" font-size="8.5" font-family="Segoe UI,Arial,sans-serif">Emergency fix — TM + CAB fast-track required</text>
+      <!-- Legend -->
+      <rect x="80" y="8" width="52" height="12" rx="3" fill="none" stroke="#7B8FA6" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <text x="138" y="19" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Developer-owned</text>
+      <rect x="270" y="8" width="52" height="12" rx="3" fill="#2548D4"/>
+      <text x="328" y="19" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Protected (no direct commits)</text>
+      <rect x="530" y="8" width="36" height="12" rx="3" fill="#C62828"/>
+      <text x="572" y="19" fill="#5C6B84" font-size="9" font-family="Segoe UI,Arial,sans-serif">Blocking gate</text>
     </svg>
   </div>
 
@@ -933,7 +921,6 @@ tr:hover td { background: #EDF2F9; }
     <tr><th>Gate</th><th>Requirement</th><th>Blocking?</th></tr>
     <tr><td>Build</td><td>Zero compilation errors or warnings</td><td>Yes</td></tr>
     <tr><td>Unit Tests</td><td>100% pass; ≥70% coverage</td><td>Yes</td></tr>
-    <tr><td>Code Complexity</td><td>All methods within cyclomatic complexity threshold</td><td>Yes</td></tr>
     <tr><td>SAST (Snyk)</td><td>Zero High or Critical vulnerabilities</td><td>Yes</td></tr>
     <tr><td>Secrets Scan</td><td>Zero hard-coded secrets, credentials, or API keys</td><td>Yes</td></tr>
     <tr><td>Peer Reviews</td><td>Minimum 2 approved peer reviews</td><td>Yes</td></tr>
@@ -1520,9 +1507,9 @@ tr:hover td { background: #EDF2F9; }
     <table style="margin:0;">
       <tr><th style="width:4%">#</th><th style="width:46%">Control</th><th style="width:30%">Why it matters</th><th style="width:20%">ISO Control</th></tr>
       <tr><td>1</td><td>No secrets, passwords, API keys, or connection strings committed to any Git repository</td><td>Exposed credentials are the leading cause of cloud breaches; automated scanning enforces this at every commit</td><td>A.8.28</td></tr>
-      <tr><td>2</td><td>No direct commits to <code>main</code>, <code>uat</code>, or <code>qa</code> branches — pull request required</td><td>Protects production-bound code from unreviewed changes; enforces peer accountability</td><td>A.8.4, A.8.28</td></tr>
+      <tr><td>2</td><td>No direct commits to <code>main</code> or <code>qa/uat</code> branches — pull request required</td><td>Protects production-bound code from unreviewed changes; enforces peer accountability</td><td>A.8.4, A.8.28</td></tr>
       <tr><td>3</td><td>Every code change must be peer-reviewed by a minimum of 2 peers and approved by the Technology Manager before merge</td><td>Four-eyes principle; required ISO evidence that changes are reviewed before they reach production</td><td>A.8.25, A.8.28</td></tr>
-      <tr><td>4</td><td>SAST scan must pass — zero High or Critical findings — before any merge to <code>qa</code>, <code>uat</code>, or <code>main</code></td><td>Prevents known security vulnerabilities from entering production code</td><td>A.8.29</td></tr>
+      <tr><td>4</td><td>SAST scan must pass — zero High or Critical findings — before any merge to <code>qa/uat</code> or <code>main</code></td><td>Prevents known security vulnerabilities from entering production code</td><td>A.8.29</td></tr>
       <tr><td>5</td><td>All ABM IT source code, integration exports, and configuration templates must be in a version-controlled Git repository — local machine or network share storage is not acceptable as the system of record</td><td>Audit trail, rollback capability, and access control require Git as the single source of truth</td><td>A.8.4</td></tr>
     </table>
   </div>
